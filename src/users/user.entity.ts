@@ -1,9 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Progress } from '../progress/progress.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @OneToMany(() => Progress, progress => progress.user)
+  progress: Progress[];
 
   @Column()
   name: string;
@@ -11,7 +15,7 @@ export class User {
   @Column()
   username: string;
 
-  @Column({unique: true})
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -19,17 +23,5 @@ export class User {
 
   @Column()
   birthday: Date;
-
-  @Column()
-  height: number;
-
-  @Column()
-  weight: number;
-
-  @Column()
-  activity_level: string; // TODO enum not working
-
-  @Column()
-  goal: string; // TODO enum not working
 
 }
