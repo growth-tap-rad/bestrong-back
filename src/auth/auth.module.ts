@@ -5,11 +5,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { jwtConstants } from './auth.constants';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from 'src/users/user.entity';
+import { User } from '../users/user.entity';
 
 @Module({
   imports: [
-    // UsersModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
