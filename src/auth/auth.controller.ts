@@ -11,18 +11,13 @@ import {
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { UserDto } from 'src/users/dtos/user.dto';
-import { User } from 'src/users/user.entity';
+import { User } from '../users/user.entity';
 import { AuthDto } from './dtos/auth.dto';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get()
-    test(): string{
-      return 'Auth working'
-  }
-  
   @Post('sign-up')
   createUser(@Body() createUser: UserDto): Promise<User> {
     return this.authService.signUp(createUser);

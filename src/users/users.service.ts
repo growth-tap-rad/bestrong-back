@@ -1,26 +1,26 @@
-
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { UserDto } from './dtos/user.dto';
 
 @Injectable()
 export class UsersService {
-
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>
-  ){}
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+  ) {}
 
-  test(): string{
-    return 'Service working..'
+  findOneByEmail(email: string) {
+    return this.usersRepository.findOneBy({ email: email });
   }
 
   findById(id: number): Promise<User> {
-    return this.usersRepository.findOneBy({id: id});
+    return this.usersRepository.findOneBy({ id: id });
   }
 
-  findOneByEmail(email: string) {
-    return this.usersRepository.findOneBy({email: email})
+  getUsers(): Promise<User[]> {
+    return this.usersRepository.createQueryBuilder('user')
+    .leftJoinAndSelect('user.progress', 'progress')
+    .getMany();
   }
+
 }
