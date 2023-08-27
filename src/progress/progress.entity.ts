@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from '../users/user.entity';
-import { ActivityLevelEnum, GoalEnum } from './progress.enums';
+import { ActivityLevelEnum, GoalWheightEnum } from './constants/progress.enums';
 
 @Entity()
 export class Progress {

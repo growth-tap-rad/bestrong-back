@@ -39,6 +39,7 @@ export class AuthService {
     newUser.username = user.username;
     newUser.email = user.email;
     newUser.birthday = user.birthday;
+    newUser.gender = user.gender;
   
     newUser.password = await this.hashPassword(user.password);
     const userToSend = this.usersRepository.save(newUser);

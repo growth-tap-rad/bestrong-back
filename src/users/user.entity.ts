@@ -6,7 +6,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToMany(() => Progress, progress => progress.user)
+  @OneToMany(() => Progress, (progress) => progress.user)
   progress: Progress[];
 
   @Column()
@@ -24,4 +24,10 @@ export class User {
   @Column()
   birthday: Date;
 
+  // @Column({
+  //   type: 'enum',
+  //   enum: GenderEnum,,// Doesnt work on Sqlite, but in mysql Do
+  // })
+  @Column()
+  gender: string;
 }

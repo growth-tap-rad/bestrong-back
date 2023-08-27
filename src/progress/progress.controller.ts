@@ -24,12 +24,17 @@ export class ProgressController {
     return this.progressService.recordProgress(progressData, request['user']);
   }
 
-
   @UseGuards(AuthGuard)
   @Get('me/progress')
   getProgress(): Promise<Progress[]> {
     return this.progressService.getProgress();
   }
 
-  // TODO : CREATE NEW ROUTE TO MACROS?
+
+  @UseGuards(AuthGuard)
+  @Get('me/tdee')
+  getTBM(): Promise<Object> {
+    return this.progressService.getTDEE();
+  }
+  
 }

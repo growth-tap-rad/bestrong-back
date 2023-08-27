@@ -5,7 +5,6 @@ import { User } from './user.entity';
 import { Progress } from '../progress/progress.entity';
 import { AuthGuard } from '../auth/auth.guard';
 
-
 // TODO FIX IT!
 
 describe('UsersController', () => {
@@ -17,7 +16,7 @@ describe('UsersController', () => {
       controllers: [UsersController],
       providers: [
         UsersService,
-        AuthGuard
+        AuthGuard,
         // Aqui você pode adicionar mocks para os seus serviços dependentes
         // Caso necessário para isolar os testes do controlador
       ],
@@ -26,7 +25,6 @@ describe('UsersController', () => {
     usersController = module.get<UsersController>(UsersController);
     usersService = module.get<UsersService>(UsersService);
   });
-
 
   describe('getUsers', () => {
     it('should return an array of users', async () => {
@@ -38,6 +36,7 @@ describe('UsersController', () => {
           email: 'joao@gmail',
           password: '1234',
           birthday: new Date('2023-10-10T04:00:00.000Z'),
+          gender: "man",
           progress: [
             {
               id: 1,
