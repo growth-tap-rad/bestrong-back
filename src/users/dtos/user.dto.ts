@@ -5,4 +5,5 @@ export class UserDto {
   email: string;
   password: string; //TODO ADD BCRYPT -> Passport!
   birthday: Date;
+  
 }

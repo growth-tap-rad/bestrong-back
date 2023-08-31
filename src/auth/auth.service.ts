@@ -12,38 +12,37 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   async signIn(userDto: UserDto): Promise<AuthDto> {
     const user = await this.usersRepository.findOneBy({
       email: userDto.email
     });
-
     if (!user) {
       throw new UnauthorizedException();
     }
-
     const passwordMatch = await this.comparePassword(userDto.password, user.password);
-
     if (!passwordMatch) {
       throw new UnauthorizedException();
     }
-
     const payload = { id: user.id, email: user.email };
     return new AuthDto(await this.jwtService.signAsync(payload));
   }
 
-  async signUp(user: UserDto): Promise<User> {
+  async signUp(user: UserDto): Promise<object> {
     let newUser = new User();
 
     newUser.name = user.name;
     newUser.username = user.username;
     newUser.email = user.email;
     newUser.birthday = user.birthday;
-  
+
     newUser.password = await this.hashPassword(user.password);
-    const userToSend = this.usersRepository.save(newUser);
+    const userToSend = await this.usersRepository.save(newUser);
+    const accessToken = await this.jwtService.signAsync({ id: newUser.id, email: newUser.email })
+
     delete (await userToSend).password
-    return userToSend;
+
+    return { user: userToSend, accessToken };
   }
 
   private async hashPassword(password: string): Promise<string> {
