@@ -19,7 +19,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('sign-up')
-  createUser(@Body() createUser: UserDto): Promise<User> {
+  createUser(@Body() createUser: UserDto): Promise<object> {
     return this.authService.signUp(createUser);
   }
 
