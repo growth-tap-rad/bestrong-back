@@ -1,13 +1,15 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Progress } from '../progress/progress.entity';
 
+// export enum GenderEnum {
+//   Man = 'man',
+//   Women = 'women',
+// }
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @OneToMany(() => Progress, (progress) => progress.user)
-  progress: Progress[];
 
   @Column()
   name: string;
@@ -30,4 +32,7 @@ export class User {
   // })
   @Column()
   gender: string;
+
+  @OneToMany(() => Progress, (progress) => progress.user)
+  progress: Progress[];
 }
