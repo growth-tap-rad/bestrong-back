@@ -1,8 +1,8 @@
-import { ActivityLevelEnum, GoalEnum } from '../progress.enums';
+import { ActivityLevelEnum, GoalWheightEnum } from '../constants/progress.enums';
 
-export class ProgressDto {
+export interface ProgressDto {
   height: number;
   weight: number;
   activity_level: ActivityLevelEnum;
-  goal: GoalEnum;
+  goal: GoalWheightEnum;
 }
