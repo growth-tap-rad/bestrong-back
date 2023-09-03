@@ -1,10 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Progress } from '../progress/progress.entity';
 
-// export enum GenderEnum {
-//   Man = 'man',
-//   Women = 'women',
-// }
+export enum GenderEnum {
+  Man = 'man',
+  Women = 'women',
+}
 
 @Entity()
 export class User {
@@ -14,7 +21,7 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ select: false })
   username: string;
 
   @Column({ unique: true })
@@ -28,10 +35,23 @@ export class User {
 
   // @Column({
   //   type: 'enum',
-  //   enum: GenderEnum,,// Doesnt work on Sqlite, but in mysql Do
-  // })
-  @Column()
+  //   enum: GenderEnum, // Doesnt work on Sqlite, but in mysql Do
+  // }) // MYSQL
+  @Column() // sqlite
   gender: string;
+
+  // @CreateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  // })
+  // public created_at: Date; // MYSQL
+
+  // @UpdateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  //   onUpdate: 'CURRENT_TIMESTAMP(6)',
+  // })
+  // public updated_at: Date; // MYSQL
 
   @OneToMany(() => Progress, (progress) => progress.user)
   progress: Progress[];

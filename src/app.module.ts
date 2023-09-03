@@ -29,7 +29,17 @@ import { RouterModule } from '@nestjs/core';
       database: 'users',
       autoLoadEntities: true,
       synchronize: true,
-    }), // temporary.. TODO: trade to mysql
+    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: 'localhost',
+    //   port: 3306,
+    //   username: 'root',
+    //   password: 'Juniper1@',
+    //   database: 'bestrong',
+    //   autoLoadEntities: true,
+    //   synchronize: true,
+    // }),
   ],
   controllers: [AppController],
   providers: [AppService],

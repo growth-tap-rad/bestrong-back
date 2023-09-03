@@ -12,7 +12,7 @@ import { ProgressDto } from './dtos/progress.dto';
 import { Progress } from './progress.entity';
 
 // @UseGuards(AuthGuard) Todo if all have guards..
-@Controller('') 
+@Controller('')
 export class ProgressController {
   constructor(private readonly progressService: ProgressService) {}
 
@@ -27,27 +27,19 @@ export class ProgressController {
 
   @UseGuards(AuthGuard)
   @Get('me/progress')
-  getProgress(): Promise<Progress[]> {
-    return this.progressService.getProgress();
+  getProgress(@Request() request: Request): Promise<Progress[]> {
+    return this.progressService.getProgress(request['user'].id);
   }
-
 
   @UseGuards(AuthGuard)
   @Get('/progress')
   getProgresses(): Promise<Progress[]> {
     return this.progressService.getProgresses();
-  } // Fins de teste, deixara de existir
-
+  }
 
   @UseGuards(AuthGuard)
   @Get('me/tdee')
   getTBM(): Promise<Object> {
-    try {
-      return this.progressService.getTDEE();
-    } catch (error) {
-      console.log(error); // tratar melhor dps
-    }
-    
+    return this.progressService.getTDEE();
   }
-  
 }
