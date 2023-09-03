@@ -1,14 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { User } from '../users/user.entity';
-import { ActivityLevelEnum, GoalEnum } from './progress.enums';
+// import { ActivityLevelEnum, GoalWheightEnum } from './constants/progress.enums';
 
 @Entity()
 export class Progress {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @ManyToOne(() => User, (user) => user.progress)
-  user: User;
 
   @Column()
   height: number;
@@ -31,4 +28,7 @@ export class Progress {
   // })
   @Column()
   goal: string;
+
+  @ManyToOne(() => User, (user) => user.progress)
+  user: User;
 }

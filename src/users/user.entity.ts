@@ -1,13 +1,15 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Progress } from '../progress/progress.entity';
 
+// export enum GenderEnum {
+//   Man = 'man',
+//   Women = 'women',
+// }
+
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @OneToMany(() => Progress, progress => progress.user)
-  progress: Progress[];
 
   @Column()
   name: string;
@@ -24,4 +26,13 @@ export class User {
   @Column()
   birthday: Date;
 
+  // @Column({
+  //   type: 'enum',
+  //   enum: GenderEnum,,// Doesnt work on Sqlite, but in mysql Do
+  // })
+  @Column()
+  gender: string;
+
+  @OneToMany(() => Progress, (progress) => progress.user)
+  progress: Progress[];
 }

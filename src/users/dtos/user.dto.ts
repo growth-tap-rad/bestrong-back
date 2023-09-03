@@ -1,9 +1,9 @@
 
-export class UserDto {
+export interface UserDto {
   name: string;
   username: string;
   email: string;
-  password: string; //TODO ADD BCRYPT -> Passport!
+  password: string;
   birthday: Date;
-  
+  gender: string;
 }
