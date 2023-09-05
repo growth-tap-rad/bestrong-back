@@ -20,7 +20,7 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Get('me')
   show(@Request() request: Request): Promise<User> {
-    return this.usersService.findById(request['user'].id);
+    return this.usersService.getUser(request['user'].id);
   }
 
   @UseGuards(AuthGuard)

@@ -49,35 +49,43 @@ export class ProgressService {
     // Todo: Tratar com ifs ..
     progress.height = progressDto.height;
     progress.weight = progressDto.weight;
-    progress.activity_level = progressDto.activity_level;
+    progress.activity_level = progressDto.activity_level; // tratar se for diferente do enum..
     progress.goal = progressDto.goal;
 
     return this.progressRepository.save(progress);
   }
 
-  getProgress(): Promise<Progress[]> {
+  getProgress(userId: User): Promise<Progress[]> {
     return this.progressRepository
       .createQueryBuilder('progress')
-      .leftJoinAndSelect('progress.user', 'user')
+      .where('progress.userId = :userId', { userId })
       .getMany();
   }
 
-  getProgresses(): Promise<Progress[]> {
-    return this.progressRepository.find({});
-  } // Fins de teste, deixara de existir
+  async getProgresses(): Promise<Progress[]> {
+    const progresses = await this.progressRepository
+      .createQueryBuilder('progress')
+      .leftJoinAndSelect('progress.user', 'user')
+      .getMany();
+
+    return progresses.map((progress) => {
+      delete progress.user.password;
+      return progress;
+    });
+  }
 
   async getTDEE(): Promise<Object> {
     const progress = await this.getProgressForUser();
 
     if (!progress) {
-      throw new Error('Progress not found for the user.');
+      throw new Error('Progress não encontrado para o usuario.');
     }
     const { birthday, gender } = progress.user;
     const { weight, height, activity_level, goal } = progress;
     let bmr = null;
 
     if (!birthday) {
-      throw new Error('User needs a birthday.');
+      throw new Error('Usuário necessita da data de nascimento.');
     }
 
     if (gender === MAN) {
