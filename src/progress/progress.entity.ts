@@ -1,6 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { User } from '../users/user.entity';
-// import { ActivityLevelEnum, GoalWheightEnum } from './constants/progress.enums';
+
+import { ActivityLevelEnum, GoalWheightEnum } from './constants/progress.enums';
 
 @Entity()
 export class Progress {
@@ -15,19 +23,30 @@ export class Progress {
 
   // @Column({
   //   type: 'enum',
-  //   enum: ActivityLevelEnum,
-  //   default: ActivityLevelEnum.Sedentary, // Doesnt work on Sqlite, but in mysql Do
+  //   enum: ActivityLevelEnum, // MYSQL
   // })
-  @Column()
+  @Column() // sqlite
   activity_level: string;
 
   // @Column({
   //   type: 'enum',
-  //   enum: GoalEnum,
-  //   default: GoalEnum.Maintain,// Doesnt work on Sqlite, but in mysql Do
+  //   enum: GoalWheightEnum, // MYSQL
   // })
-  @Column()
+  @Column() // sqlite;
   goal: string;
+
+  // @CreateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  // })
+  // public created_at: Date; // MYSQL
+
+  // @UpdateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  //   onUpdate: 'CURRENT_TIMESTAMP(6)',
+  // })
+  // public updated_at: Date; // MYSQL
 
   @ManyToOne(() => User, (user) => user.progress)
   user: User;
