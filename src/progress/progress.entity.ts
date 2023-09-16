@@ -18,7 +18,9 @@ export class Progress {
   @Column()
   height: number;
 
-  @Column()
+  @Column({
+    type: "double"
+  })
   weight: number;
 
   @Column({
