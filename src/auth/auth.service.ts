@@ -70,8 +70,8 @@ export class AuthService {
 
     if (
       user.gender &&
-      user.gender !== GenderEnum.Man &&
-      user.gender !== GenderEnum.Women
+      user.gender !== GenderEnum.man &&
+      user.gender !== GenderEnum.woman
     ) {
       throw new BadRequestException(
         'Gênero inválido. Apenas "man" ou "woman" são permitidos.',

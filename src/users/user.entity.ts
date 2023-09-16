@@ -9,8 +9,8 @@ import {
 import { Progress } from '../progress/progress.entity';
 
 export enum GenderEnum {
-  Man = 'man',
-  Women = 'women',
+  man = 'man',
+  woman = 'woman',
 }
 
 @Entity()
@@ -33,25 +33,25 @@ export class User {
   @Column()
   birthday: Date;
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: GenderEnum, // Doesnt work on Sqlite, but in mysql Do
-  // }) // MYSQL
-  @Column() // sqlite
+  @Column({
+    type: 'enum',
+    enum: GenderEnum, // Doesnt work on Sqlite, but in mysql Do
+  }) // MYSQL
+ // @Column() // sqlite
   gender: string;
 
-  // @CreateDateColumn({
-  //   type: 'timestamp',
-  //   default: () => 'CURRENT_TIMESTAMP(6)',
-  // })
-  // public created_at: Date; // MYSQL
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public created_at: Date; // MYSQL
 
-  // @UpdateDateColumn({
-  //   type: 'timestamp',
-  //   default: () => 'CURRENT_TIMESTAMP(6)',
-  //   onUpdate: 'CURRENT_TIMESTAMP(6)',
-  // })
-  // public updated_at: Date; // MYSQL
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updated_at: Date; // MYSQL
 
   @OneToMany(() => Progress, (progress) => progress.user)
   progress: Progress[];
