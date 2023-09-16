@@ -21,32 +21,32 @@ export class Progress {
   @Column()
   weight: number;
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: ActivityLevelEnum, // MYSQL
-  // })
-  @Column() // sqlite
+  @Column({
+    type: 'enum',
+    enum: ActivityLevelEnum, // MYSQL
+  })
+  // @Column() // sqlite
   activity_level: string;
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: GoalWheightEnum, // MYSQL
-  // })
-  @Column() // sqlite;
+  @Column({
+    type: 'enum',
+    enum: GoalWheightEnum, // MYSQL
+  })
+  //@Column() // sqlite;
   goal: string;
 
-  // @CreateDateColumn({
-  //   type: 'timestamp',
-  //   default: () => 'CURRENT_TIMESTAMP(6)',
-  // })
-  // public created_at: Date; // MYSQL
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public created_at: Date; // MYSQL
 
-  // @UpdateDateColumn({
-  //   type: 'timestamp',
-  //   default: () => 'CURRENT_TIMESTAMP(6)',
-  //   onUpdate: 'CURRENT_TIMESTAMP(6)',
-  // })
-  // public updated_at: Date; // MYSQL
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updated_at: Date; // MYSQL
 
   @ManyToOne(() => User, (user) => user.progress)
   user: User;
