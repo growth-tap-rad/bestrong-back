@@ -27,14 +27,14 @@ export class Progress {
     type: 'enum',
     enum: ActivityLevelEnum, // MYSQL
   })
-  // @Column() // sqlite
+ // @Column() // sqlite
   activity_level: string;
 
   @Column({
     type: 'enum',
     enum: GoalWheightEnum, // MYSQL
   })
-  //@Column() // sqlite;
+//  @Column() // sqlite;
   goal: string;
 
   @CreateDateColumn({
