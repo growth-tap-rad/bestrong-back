@@ -45,6 +45,9 @@ export class Diary {
   @Column()
   fat: number
 
+  @Column()
+  water:number
+  
   @ManyToOne(() => User, (user) => user.diary)
   user: User;
 }

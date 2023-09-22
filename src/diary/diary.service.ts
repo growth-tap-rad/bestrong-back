@@ -11,17 +11,33 @@ export class DiaryService {
     @InjectRepository(Diary) private readonly diaryRepository: Repository<Diary>,
   ) { }
 
-  createDiary(diary: DiaryDto, user: User): Promise<object> {
+  createDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
 
     let newDiary = new Diary();
-    newDiary.daily_goal_kcal = diary.daily_goal_kcal;
-    newDiary.burned_kcal = diary.burned_kcal;
-    newDiary.consumed_kcal = diary.consumed_kcal;
-    newDiary.carb = diary.carb;
-    newDiary.protein = diary.protein;
-    newDiary.fat = diary.fat;
+
+    Object.assign(newDiary, diaryDto);
     newDiary.user = user;
-    
     return this.diaryRepository.save(newDiary);
   }
+  async editDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
+
+    let diary = await this.diaryRepository
+      .createQueryBuilder('diary')
+      .where('diary.userId = :userId', { userId: user.id })
+      .getOne();
+    /* Object.assign(diary, diaryDto)*/
+
+    diary.water += diaryDto.water
+
+    return this.diaryRepository.save(diary)
+  }
+  async getDiary(user: User): Promise<Diary> {
+    let diary = await this.diaryRepository
+      .createQueryBuilder('diary')
+      .where('diary.userId = :userId', { userId: user.id })
+      .getOne();
+    return diary
+  }
+
+
 }
