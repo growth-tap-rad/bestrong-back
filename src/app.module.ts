@@ -6,12 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ProgressModule } from './progress/progress.module';
 import { RouterModule } from '@nestjs/core';
+import { DiaryModule } from './diary/diary.module';
 
 @Module({
   imports: [
     UsersModule,
     AuthModule,
     ProgressModule,
+    DiaryModule,
     RouterModule.register([
       {
         path: 'users',
@@ -20,6 +22,11 @@ import { RouterModule } from '@nestjs/core';
           {
             path: '/',
             module: ProgressModule,
+
+          },
+          {
+            path: '/',
+            module: DiaryModule,
           }
         ],
       },
@@ -35,7 +42,7 @@ import { RouterModule } from '@nestjs/core';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'Juniper1@',
+      password: 'ucdb',
       database: 'bestrong',
       autoLoadEntities: true,
       synchronize: true,
@@ -44,4 +51,4 @@ import { RouterModule } from '@nestjs/core';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
