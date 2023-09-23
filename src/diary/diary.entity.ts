@@ -15,20 +15,32 @@ export class Diary {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  daily_goal_kcal: number
+  @Column({default: "0"})
+  consumed_daily_goal_kcal: number;
 
-  @Column()
-  burned_kcal: number
+  @Column({default: "0"})
+  burned_kcal: number;
 
-  @Column()
-  consumed_kcal: number
+  @Column({default: "0"})
+  consumed_kcal: number;
+
+  @Column({default: "0"})
+  consumed_carb: number;
+
+  @Column({default: "0"})
+  consumed_protein: number;
+
+  @Column({default: "0"})
+  consumed_fat: number;
+
+  @Column({default: "0"})
+  consumed_water:number
 
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
-  created_at: Date
+  created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
@@ -37,25 +49,10 @@ export class Diary {
   })
   updated_at: Date
 
-  @Column()
-  carb: number
-
-  @Column()
-  protein: number
-
-  @Column()
-  fat: number
-
-  @Column({
-    default: '0'
-  })
-  water: number
-
-
   @ManyToOne(() => User, (user) => user.diary)
   user: User;
 
   @ManyToOne(() => Progress, (progress) => progress.diary)
   progress: Progress;
-  
-} 
+}
+
