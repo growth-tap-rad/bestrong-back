@@ -4,12 +4,13 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserDto } from './dtos/user.dto';
 import { hashPassword } from 'src/utils/hashPassword';
+import { Diary } from 'src/diary/diary.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   findOneByEmail(email: string) {
     return this.usersRepository.findOneBy({ email: email });

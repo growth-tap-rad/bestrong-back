@@ -5,10 +5,12 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 
 import { ActivityLevelEnum, GoalWheightEnum } from './constants/progress.enums';
+import { Diary } from 'src/diary/diary.entity';
 
 @Entity()
 export class Progress {
@@ -34,7 +36,7 @@ export class Progress {
     type: 'enum',
     enum: GoalWheightEnum, // MYSQL
   })
-  //@Column() // sqlite;
+  //  @Column() // sqlite;
   goal: string;
 
   @CreateDateColumn({
@@ -52,4 +54,7 @@ export class Progress {
 
   @ManyToOne(() => User, (user) => user.progress)
   user: User;
+  
+  @OneToMany(() => Diary, (diary) => diary.progress)
+  diary: Diary[];
 }

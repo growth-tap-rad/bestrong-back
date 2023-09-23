@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Progress } from '../progress/progress.entity';
+import { Diary } from 'src/diary/diary.entity';
 
 export enum GenderEnum {
   man = 'man',
@@ -55,4 +56,7 @@ export class User {
 
   @OneToMany(() => Progress, (progress) => progress.user)
   progress: Progress[];
+
+  @OneToMany(() => Diary, (diary) => diary.user)
+  diary: Diary[];
 }
