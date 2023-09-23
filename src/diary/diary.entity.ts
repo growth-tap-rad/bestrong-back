@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { generateKeyPair } from 'crypto';
+import { Progress } from 'src/progress/progress.entity';
 
 @Entity()
 export class Diary {
@@ -41,13 +42,20 @@ export class Diary {
 
   @Column()
   protein: number
-  
+
   @Column()
   fat: number
 
-  @Column()
-  water:number
-  
+  @Column({
+    default: '0'
+  })
+  water: number
+
+
   @ManyToOne(() => User, (user) => user.diary)
   user: User;
-}
+
+  @ManyToOne(() => Progress, (progress) => progress.diary)
+  progress: Progress;
+  
+} 
