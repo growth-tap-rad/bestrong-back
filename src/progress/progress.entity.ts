@@ -20,9 +20,7 @@ export class Progress {
   @Column()
   height: number;
 
-  @Column({
-    type: "double"
-  })
+  @Column()
   weight: number;
 
   @Column({
@@ -38,6 +36,22 @@ export class Progress {
   })
   //  @Column() // sqlite;
   goal: string;
+
+  @Column()
+  //  @Column() // sqlite;
+  daily_goal_kcal: number;
+
+  @Column()
+  //  @Column() // sqlite;
+  carb: number;
+
+  @Column()
+  //  @Column() // sqlite;
+  protein: number;
+
+  @Column()
+  //  @Column() // sqlite;
+  fat: number;
 
   @CreateDateColumn({
     type: 'timestamp',
