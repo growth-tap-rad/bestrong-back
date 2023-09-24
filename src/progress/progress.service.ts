@@ -34,7 +34,7 @@ const GOAL_FACTOR = {
 };
 
 const MAN = 'man';
-const WOMEN = 'women';
+const WOMEN = 'woman';
 
 @Injectable()
 export class ProgressService {
