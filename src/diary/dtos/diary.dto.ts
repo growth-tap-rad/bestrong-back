@@ -1,9 +1,9 @@
 export class DiaryDto {
-  daily_goal_kcal: number;
+  consumed_daily_goal_kcal: number;
   burned_kcal: number;
   consumed_kcal: number;
-  carb: number;
-  protein: number;
-  fat: number;
-  water:number;
+  consumed_carb: number;
+  consumed_protein: number;
+  consumed_fat: number;
+  consumed_water:number;
 }
