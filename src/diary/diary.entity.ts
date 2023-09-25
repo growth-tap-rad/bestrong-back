@@ -5,10 +5,13 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { generateKeyPair } from 'crypto';
 import { Progress } from 'src/progress/progress.entity';
+import { Meal } from 'src/meal/meal.entity';
 
 @Entity()
 export class Diary {
@@ -54,5 +57,11 @@ export class Diary {
 
   @ManyToOne(() => Progress, (progress) => progress.diary)
   progress: Progress;
+  
+  @ManyToMany((type) => Meal, (meal) => meal.diaries, {
+      cascade: true,
+  })
+  @JoinTable()
+  meals: Meal[]
 }
 
