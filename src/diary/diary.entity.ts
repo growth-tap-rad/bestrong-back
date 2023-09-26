@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 import { User } from '../users/user.entity';
 import { generateKeyPair } from 'crypto';
@@ -58,10 +59,9 @@ export class Diary {
   @ManyToOne(() => Progress, (progress) => progress.diary)
   progress: Progress;
   
-  @ManyToMany((type) => Meal, (meal) => meal.diaries, {
-      cascade: true,
-  })
-  @JoinTable()
-  meals: Meal[]
+  @OneToMany (()=> Meal, (meal)=> meal.diary)
+  meals: Meal[];
+
 }
+
 

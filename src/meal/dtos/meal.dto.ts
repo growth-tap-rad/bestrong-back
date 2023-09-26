@@ -1,4 +1,4 @@
-export class MealDto {
+export interface MealDto {
     name: string;
-    
+    type: string;
   }

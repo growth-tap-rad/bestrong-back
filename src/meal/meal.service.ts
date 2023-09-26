@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "src/users/user.entity";
@@ -15,18 +15,36 @@ export class MealService {
   async createMeal(mealDto: MealDto, user: User): Promise<Meal> {
 
     let newMeal = new Meal();
-
-
     newMeal.name = mealDto.name;
+
+    if (!newMeal.type)
+    {
+      throw new BadRequestException(
+        'tipo de refeiçao obrigtorio',
+      );
+    }
+    
+    newMeal.type = mealDto.type;
 
     const fondUser = await this.userRepository.createQueryBuilder('user')
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
       .orderBy('diary.created_at', 'DESC')
       .getOne();
+      // conferir se é para pegar o utimo diario ou fazer busca pelo create at 
 
-    newMeal.diaries = fondUser.diary
+      newMeal.diary = fondUser.diary[0]
+       
+      console.log(fondUser)
+    // newMeal.diaries = fondUser.diary
+
+
     return this.mealRepository.save(newMeal);
+
+
+
+    
+
   }
 
 
