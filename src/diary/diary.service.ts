@@ -13,7 +13,7 @@ export class DiaryService {
     private readonly diaryRepository: Repository<Diary>,
     @InjectRepository(Progress)
     private readonly progressRepository: Repository<Progress>,
-  ) {}
+  ) { }
 
   async createDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
     let newDiary = new Diary();
@@ -34,13 +34,8 @@ export class DiaryService {
       .createQueryBuilder('diary')
       .where('diary.userId = :userId', { userId: user.id })
       .getOne();
-    /* Object.assign(diary, diaryDto)*/
-
-    diary.consumed_water += diaryDto.consumed_water;
-    // Fazer somente =, para sobrescever, caso ele precise adicionar agua
-    //faca isso no front pegando o valor da agua atual da req, e somando com oq ele adicionar na agua
-    // ai nesta rota ele recebe somente o valor  diary.water = diaryDto.water
-
+    Object.assign(diary, diaryDto)
+    
     return this.diaryRepository.save(diary);
   }
   async getDiary(user: User): Promise<Diary> {
