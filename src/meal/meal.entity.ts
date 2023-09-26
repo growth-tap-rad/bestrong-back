@@ -3,8 +3,7 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-
-  ManyToMany,
+  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
 
@@ -12,15 +11,29 @@ import {
 
 import { Diary } from 'src/diary/diary.entity';
 
+export enum TypeMealEnum {
+  cafeManha = 'cafeDaManha',
+  lanche = 'lanche',
+  almoco = 'almoço',
+  lancheTarde = 'lancheDaTarde',
+  jantar = 'jantar',
+  ceia = 'ceia'
+}
 
 @Entity()
-
 export class Meal {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   name: string;
+
+  @Column({
+    type: 'enum',
+    enum: TypeMealEnum
+  })
+  type: string 
+
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -36,8 +49,6 @@ export class Meal {
   public updated_at: Date; // MYSQL
 
  
-  @ManyToMany((type) => Diary, (diary) => diary.meals)
-  diaries: Diary[]
-
-
+  @ManyToOne(() => Diary, (diary) => diary.meals)
+  diary: Diary
 }

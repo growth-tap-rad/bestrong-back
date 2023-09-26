@@ -9,8 +9,6 @@ import { User } from "src/users/user.entity";
     imports:[TypeOrmModule.forFeature([Meal,User])],
     controllers:[MealController],
     providers:[MealService]
-
-    
 })
 
 export class MealModule{}
