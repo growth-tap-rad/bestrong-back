@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserDto } from './dtos/user.dto';
 import { hashPassword } from 'src/utils/hashPassword';
-import { Diary } from 'src/diary/diary.entity';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +36,7 @@ export class UsersService {
 
     const { name, username, email, birthday, gender, password } = userDto;
 
-    // Tratar com ifs...
+
     foundUser.name = name;
     foundUser.username = username;
     foundUser.email = email;
