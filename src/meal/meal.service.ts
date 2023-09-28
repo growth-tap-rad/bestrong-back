@@ -27,17 +27,14 @@ export class MealService {
     newMeal.type = mealDto.type;
 
     const foundUser = await this.userRepository.createQueryBuilder('user')
+
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
       .orderBy('diary.created_at', 'DESC')
       .getOne();
-      // conferir se é para pegar o utimo diario ou fazer busca pelo create at 
+
       newMeal.diary = foundUser.diary[0]
 
     return this.mealRepository.save(newMeal);
-
   }
-
-
-
 }
