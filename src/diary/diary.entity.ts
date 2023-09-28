@@ -10,7 +10,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import { generateKeyPair } from 'crypto';
 import { Progress } from 'src/progress/progress.entity';
 import { Meal } from 'src/meal/meal.entity';
 

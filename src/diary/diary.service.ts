@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Diary } from './diary.entity';
 import { Repository } from 'typeorm';
 import { DiaryDto } from './dtos/diary.dto';
 import { User } from 'src/users/user.entity';
 import { Progress } from 'src/progress/progress.entity';
+
 
 @Injectable()
 export class DiaryService {
@@ -19,7 +20,7 @@ export class DiaryService {
     let newDiary = new Diary();
     let foundProgress = await this.findProgressById(user.id);
     if (!foundProgress) {
-      throw new Error('progresso não encontrado');
+      throw new NotFoundException('progresso não encontrado');
     }
     Object.assign(newDiary, diaryDto);
 
@@ -45,7 +46,6 @@ export class DiaryService {
       .where('diary.userId = :userId', { userId: user.id })
       .orderBy('diary.created_at', 'DESC')
       .getOne();
-
     return diary;
   }
 
@@ -54,6 +54,6 @@ export class DiaryService {
       .createQueryBuilder('progress')
       .where('progress.userId = :userId', { userId })
       .orderBy('progress.created_at', 'DESC')
-      .getOne(); // ver se pega é o ultimo
+      .getOne(); 
   }
 }

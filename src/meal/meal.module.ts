@@ -1,7 +1,8 @@
 import { Module } from "@nestjs/common";
+
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { MealService } from "./meal.service";
 import { MealController } from "./meal.controller";
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { Meal } from "./meal.entity";
 import { User } from "src/users/user.entity";
 
