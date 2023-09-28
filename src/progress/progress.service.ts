@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
 import { Repository } from 'typeorm';
@@ -49,8 +49,8 @@ export class ProgressService {
     const newProgress = new Progress();
     
     newProgress.height = progressDto.height;
-    newProgress.weight = progressDto.weight;    // Todo: Tratar com ifs ..??
-    newProgress.activity_level = progressDto.activity_level; // tratar se for diferente do enum..
+    newProgress.weight = progressDto.weight;   
+    newProgress.activity_level = progressDto.activity_level; 
     newProgress.goal = progressDto.goal;
 
     const foundedUser = await this.usersRepository.findOneBy({id: user.id})
@@ -132,72 +132,6 @@ export class ProgressService {
       return progress;
     });
   }
-
-  // TODO: CONFERIR SE NAO VAI USAR, E REMOVER DPS
-  // async getTDEE(): Promise<Object> {
-  //   const progress = await this.getProgressForUser();
-
-  //   if (!progress) {
-  //     throw new Error('Progress não encontrado para o usuario.');
-  //   }
-  //   const { birthday, gender } = progress.user;
-  //   const { weight, height, activity_level, goal } = progress;
-  //   let bmr = null;
-
-  //   if (!birthday) {
-  //     throw new Error('Usuário necessita da data de nascimento.');
-  //   }
-
-  //   if (gender === MAN) {
-  //     bmr = BMR_MAN(weight, height, CALC_AGE(birthday));
-  //   } else if (gender === WOMEN) {
-  //     bmr = BMR_WOMEN(weight, height, CALC_AGE(birthday));
-  //   } else {
-  //     throw new Error('User gender invalid!');
-  //   }
-
-  //   const activityFactor = ACTIVITY_FACTOR[activity_level];
-  //   const goalFactor = GOAL_FACTOR[goal];
-  //   const macros = MACROS[activity_level];
-
-  //   const per_gram_porcents = {
-  //     protein: macros[goal].protein,
-  //     carb: macros[goal].carb,
-  //     fat: macros[goal].fat,
-  //   };
-
-  //   const protein = this.macroCalorieToGrams(
-  //     per_gram_porcents['protein'],
-  //     this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
-  //     PER_GRAM_CALORIE.protein,
-  //   );
-  //   const carb = this.macroCalorieToGrams(
-  //     per_gram_porcents['carb'],
-  //     this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
-  //     PER_GRAM_CALORIE.carb,
-  //   );
-  //   const fat = this.macroCalorieToGrams(
-  //     per_gram_porcents['fat'],
-  //     this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
-  //     PER_GRAM_CALORIE.fat,
-  //   );
-
-  //   const weightMacros = {
-  //     protein: protein,
-  //     carb: carb,
-  //     fat: fat,
-  //   };
-
-  //   const dailyGoal = this.dailyGoalFormated(
-  //     this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
-  //   );
-
-  //   return {
-  //     daily_goal: dailyGoal,
-  //     macros: weightMacros,
-  //   };
-  // }
-
   dailyGoalFormated(dailyGoal: number): number {
     return parseFloat(dailyGoal.toFixed(2));
   }
@@ -227,6 +161,6 @@ export class ProgressService {
       .createQueryBuilder('progress')
       .leftJoinAndSelect('progress.user', 'user')
       .orderBy('progress.created_at', 'DESC')
-      .getOne(); // Ver se pega o ultimo
+      .getOne(); 
   }
 }
