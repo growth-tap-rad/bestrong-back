@@ -34,54 +34,34 @@ const GOAL_FACTOR = {
 };
 
 const MAN = 'man';
-const WOMEN = 'women';
+const WOMEN = 'woman';
 
 @Injectable()
 export class ProgressService {
   constructor(
     @InjectRepository(Progress)
     private progressRepository: Repository<Progress>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
-  recordProgress(progressDto: ProgressDto, user: User) {
-    const progress = new Progress();
-    progress.user = user;
-    // Todo: Tratar com ifs ..
-    progress.height = progressDto.height;
-    progress.weight = progressDto.weight;
-    progress.activity_level = progressDto.activity_level; // tratar se for diferente do enum..
-    progress.goal = progressDto.goal;
+  async recordProgress(progressDto: ProgressDto, user: User) {
+    const newProgress = new Progress();
+    
+    newProgress.height = progressDto.height;
+    newProgress.weight = progressDto.weight;    // Todo: Tratar com ifs ..??
+    newProgress.activity_level = progressDto.activity_level; // tratar se for diferente do enum..
+    newProgress.goal = progressDto.goal;
 
-    return this.progressRepository.save(progress);
-  }
-
-  getProgress(userId: User): Promise<Progress[]> {
-    return this.progressRepository
-      .createQueryBuilder('progress')
-      .where('progress.userId = :userId', { userId })
-      .getMany();
-  }
-
-  async getProgresses(): Promise<Progress[]> {
-    const progresses = await this.progressRepository
-      .createQueryBuilder('progress')
-      .leftJoinAndSelect('progress.user', 'user')
-      .getMany();
-
-    return progresses.map((progress) => {
-      delete progress.user.password;
-      return progress;
-    });
-  }
-
-  async getTDEE(): Promise<Object> {
-    const progress = await this.getProgressForUser();
-
-    if (!progress) {
-      throw new Error('Progress não encontrado para o usuario.');
+    const foundedUser = await this.usersRepository.findOneBy({id: user.id})
+    if(!foundedUser){
+      throw new Error('Usuario não encontrado para o progresso.');
     }
-    const { birthday, gender } = progress.user;
-    const { weight, height, activity_level, goal } = progress;
+
+    newProgress.user = user;
+
+    const { birthday, gender } = foundedUser;
+    const { weight, height, activity_level, goal } = newProgress;
     let bmr = null;
 
     if (!birthday) {
@@ -121,22 +101,102 @@ export class ProgressService {
       this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
       PER_GRAM_CALORIE.fat,
     );
-
-    const weightMacros = {
-      protein: protein,
-      carb: carb,
-      fat: fat,
-    };
-
     const dailyGoal = this.dailyGoalFormated(
       this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
     );
+    
+    newProgress.protein = protein;
+    newProgress.carb = carb; 
+    newProgress.fat = fat; 
+    newProgress.daily_goal_kcal = dailyGoal
 
-    return {
-      daily_goal: dailyGoal,
-      macros: weightMacros,
-    };
+    return this.progressRepository.save(newProgress);
   }
+
+  getProgress(userId: User): Promise<Progress[]> {
+    return this.progressRepository
+      .createQueryBuilder('progress')
+      .where('progress.userId = :userId', { userId })
+      .getMany();
+  }
+
+  // Rota vai ser mudada
+  async getProgresses(): Promise<Progress[]> {
+    const progresses = await this.progressRepository
+      .createQueryBuilder('progress')
+      .leftJoinAndSelect('progress.user', 'user')
+      .getMany();
+
+    return progresses.map((progress) => {
+      delete progress.user.password;
+      return progress;
+    });
+  }
+
+  // TODO: CONFERIR SE NAO VAI USAR, E REMOVER DPS
+  // async getTDEE(): Promise<Object> {
+  //   const progress = await this.getProgressForUser();
+
+  //   if (!progress) {
+  //     throw new Error('Progress não encontrado para o usuario.');
+  //   }
+  //   const { birthday, gender } = progress.user;
+  //   const { weight, height, activity_level, goal } = progress;
+  //   let bmr = null;
+
+  //   if (!birthday) {
+  //     throw new Error('Usuário necessita da data de nascimento.');
+  //   }
+
+  //   if (gender === MAN) {
+  //     bmr = BMR_MAN(weight, height, CALC_AGE(birthday));
+  //   } else if (gender === WOMEN) {
+  //     bmr = BMR_WOMEN(weight, height, CALC_AGE(birthday));
+  //   } else {
+  //     throw new Error('User gender invalid!');
+  //   }
+
+  //   const activityFactor = ACTIVITY_FACTOR[activity_level];
+  //   const goalFactor = GOAL_FACTOR[goal];
+  //   const macros = MACROS[activity_level];
+
+  //   const per_gram_porcents = {
+  //     protein: macros[goal].protein,
+  //     carb: macros[goal].carb,
+  //     fat: macros[goal].fat,
+  //   };
+
+  //   const protein = this.macroCalorieToGrams(
+  //     per_gram_porcents['protein'],
+  //     this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+  //     PER_GRAM_CALORIE.protein,
+  //   );
+  //   const carb = this.macroCalorieToGrams(
+  //     per_gram_porcents['carb'],
+  //     this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+  //     PER_GRAM_CALORIE.carb,
+  //   );
+  //   const fat = this.macroCalorieToGrams(
+  //     per_gram_porcents['fat'],
+  //     this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+  //     PER_GRAM_CALORIE.fat,
+  //   );
+
+  //   const weightMacros = {
+  //     protein: protein,
+  //     carb: carb,
+  //     fat: fat,
+  //   };
+
+  //   const dailyGoal = this.dailyGoalFormated(
+  //     this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+  //   );
+
+  //   return {
+  //     daily_goal: dailyGoal,
+  //     macros: weightMacros,
+  //   };
+  // }
 
   dailyGoalFormated(dailyGoal: number): number {
     return parseFloat(dailyGoal.toFixed(2));
@@ -166,6 +226,7 @@ export class ProgressService {
     return await this.progressRepository
       .createQueryBuilder('progress')
       .leftJoinAndSelect('progress.user', 'user')
-      .getOne();
+      .orderBy('progress.created_at', 'DESC')
+      .getOne(); // Ver se pega o ultimo
   }
 }
