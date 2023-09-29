@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { UserDto } from './dtos/user.dto';
 import { hashPassword } from 'src/utils/hashPassword';
-import { Diary } from 'src/diary/diary.entity';
 
 @Injectable()
 export class UsersService {
@@ -35,17 +34,10 @@ export class UsersService {
   async update(id: number, userDto: UserDto): Promise<User> {
     let foundUser = await this.findById(id);
 
-    const { name, username, email, birthday, gender, password } = userDto;
+    Object.assign(foundUser,userDto)
 
-    // Tratar com ifs...
-    foundUser.name = name;
-    foundUser.username = username;
-    foundUser.email = email;
-    foundUser.birthday = birthday;
-    foundUser.gender = gender;
-
-    if (password) {
-      foundUser.password = await hashPassword(password);
+    if (userDto.password) {
+      foundUser.password = await hashPassword(userDto.password);
     }
 
     const userToSend = await this.usersRepository.save(foundUser);

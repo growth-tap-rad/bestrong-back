@@ -1,11 +1,7 @@
-import { Controller, Post, Body, UseGuards, Request, Put, Patch, Get } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Request, Put, Get } from "@nestjs/common";
 import { DiaryService } from "./diary.service";
-import { Diary } from "./diary.entity";
 import { DiaryDto } from "./dtos/diary.dto";
 import { AuthGuard } from "src/auth/auth.guard";
-import { request } from "http";
-
-
 
 @Controller('')
 export class DiaryController {
@@ -29,7 +25,7 @@ export class DiaryController {
   }
 
   @UseGuards(AuthGuard)
-  @Put('me/edit-diary')
+  @Put('me/diary')
   async editDiary(
     @Body() diaryData: DiaryDto,
     @Request() request: Request,
@@ -37,9 +33,6 @@ export class DiaryController {
   ) {
     return this.diaryService.editDiary(diaryData, request['user'])
   }
-
-
-
 }
 
 
