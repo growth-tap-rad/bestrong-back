@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
+import { RouterModule } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ProgressModule } from './progress/progress.module';
-import { RouterModule } from '@nestjs/core';
 import { DiaryModule } from './diary/diary.module';
 import { MealModule } from './meal/meal.module';
 

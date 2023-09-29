@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Diary } from './diary.entity';
 import { Repository } from 'typeorm';
+import { Diary } from './diary.entity';
 import { DiaryDto } from './dtos/diary.dto';
 import { User } from 'src/users/user.entity';
 import { Progress } from 'src/progress/progress.entity';

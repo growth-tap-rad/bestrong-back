@@ -4,9 +4,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
 import { UserDto } from 'src/users/dtos/user.dto';
 import { hashPassword } from 'src/utils/hashPassword';
 import { GenderEnum, User } from '../users/user.entity';
@@ -79,11 +79,7 @@ export class AuthService {
     if (errors.length > 0) {
       throw new BadRequestException(errors.join(' '));
     }
-
-    newUser.name = user.name;
-    newUser.username = user.username;
-    newUser.email = user.email;
-    newUser.gender = user.gender;
+    Object.assign(newUser,user)
 
     newUser.password = await hashPassword(user.password);
     const userToSend = await this.usersRepository.save(newUser);

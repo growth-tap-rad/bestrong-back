@@ -6,7 +6,6 @@ import { AuthController } from './auth.controller';
 import { jwtConstants } from './auth.constants';
 import { User } from '../users/user.entity';
 
-
 @Module({
   imports: [
     JwtModule.register({

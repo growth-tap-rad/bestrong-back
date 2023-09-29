@@ -5,8 +5,6 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
-  JoinTable,
   OneToMany,
 } from 'typeorm';
 import { User } from '../users/user.entity';
@@ -19,7 +17,7 @@ export class Diary {
   id: number;
 
   @Column({default: "0"})
-  consumed_daily_goal_kcal: number;
+  remaning_daily_goal_kcal: number;
 
   @Column({default: "0"})
   burned_kcal: number;
