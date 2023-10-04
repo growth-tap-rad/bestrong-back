@@ -6,7 +6,6 @@ import { DiaryDto } from './dtos/diary.dto';
 import { User } from 'src/users/user.entity';
 import { Progress } from 'src/progress/progress.entity';
 
-
 @Injectable()
 export class DiaryService {
   constructor(
@@ -36,7 +35,6 @@ export class DiaryService {
       .where('diary.userId = :userId', { userId: user.id })
       .getOne();
     Object.assign(diary, diaryDto)
-    
     return this.diaryRepository.save(diary);
   }
   async getDiary(user: User): Promise<Diary> {
@@ -54,6 +52,6 @@ export class DiaryService {
       .createQueryBuilder('progress')
       .where('progress.userId = :userId', { userId })
       .orderBy('progress.created_at', 'DESC')
-      .getOne(); 
+      .getOne();
   }
 }
