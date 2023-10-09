@@ -49,6 +49,6 @@ export class Meal {
   public updated_at: Date; // MYSQL
 
  
-  @ManyToOne(() => Diary, (diary) => diary.meals)
+  @ManyToOne(() => Diary, (diary) => diary.meal)
   diary: Diary
 }

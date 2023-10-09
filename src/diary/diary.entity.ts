@@ -57,7 +57,7 @@ export class Diary {
   progress: Progress;
   
   @OneToMany (()=> Meal, (meal)=> meal.diary)
-  meals: Meal[];
+  meal: Meal[];
 
 }
 
