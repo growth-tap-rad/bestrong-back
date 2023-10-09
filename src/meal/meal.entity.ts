@@ -11,15 +11,6 @@ import {
 
 import { Diary } from 'src/diary/diary.entity';
 
-export enum TypeMealEnum {
-  cafeManha = 'cafeDaManha',
-  lanche = 'lanche',
-  almoco = 'almoço',
-  lancheTarde = 'lancheDaTarde',
-  jantar = 'jantar',
-  ceia = 'ceia'
-}
-
 @Entity()
 export class Meal {
   @PrimaryGeneratedColumn()
@@ -28,12 +19,8 @@ export class Meal {
   @Column()
   name: string;
 
-  @Column({
-    type: 'enum',
-    enum: TypeMealEnum
-  })
-  type: string 
-
+  @Column({ default: "0" })
+  meal_consumed_kcal: number
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -48,7 +35,7 @@ export class Meal {
   })
   public updated_at: Date; // MYSQL
 
- 
-  @ManyToOne(() => Diary, (diary) => diary.meals)
+
+  @ManyToOne(() => Diary, (diary) => diary.meal)
   diary: Diary
 }
