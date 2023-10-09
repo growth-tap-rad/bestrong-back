@@ -41,6 +41,7 @@ export class DiaryService {
     let diary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.progress', 'progress')
+      .leftJoinAndSelect('diary.meal', 'meal')
       .where('diary.userId = :userId', { userId: user.id })
       .orderBy('diary.created_at', 'DESC')
       .getOne();
