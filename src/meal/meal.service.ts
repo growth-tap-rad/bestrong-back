@@ -15,14 +15,6 @@ export class MealService {
   async createMeal(mealDto: MealDto, user: User): Promise<Meal> {
 
     let newMeal = new Meal();
-
-    Object.assign(newMeal, mealDto)
-
-    if (!newMeal.type) {
-      throw new BadRequestException(
-        'tipo de refeiçao obrigtorio',
-      );
-    }
     const foundUser = await this.userRepository
 
       .createQueryBuilder('user')
@@ -30,6 +22,9 @@ export class MealService {
       .where('user.id = :userId', { userId: user.id })
       .orderBy('diary.created_at', 'DESC')
       .getOne();
+
+
+    Object.assign(newMeal, mealDto)
 
     newMeal.diary = foundUser.diary[0]
 
@@ -42,8 +37,8 @@ export class MealService {
       .where('meal.diaryId = :userId', { userId: user.id })
       .getOne();
 
-       // ver como relaciona essa parte
-      
+    // ver como relaciona essa parte
+
   }
 
 }
