@@ -8,7 +8,6 @@ import {
   OneToMany,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-
 import { ActivityLevelEnum, GoalWheightEnum } from './constants/progress.enums';
 import { Diary } from 'src/diary/diary.entity';
 

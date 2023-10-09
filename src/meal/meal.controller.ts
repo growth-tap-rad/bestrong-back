@@ -1,10 +1,8 @@
-import { Controller, Post, Body, UseGuards, Request, Put, Patch, Get } from "@nestjs/common";
+
+import { Controller, Post, Body, UseGuards, Request, Get} from "@nestjs/common";
 import { AuthGuard } from "src/auth/auth.guard";
-import { request } from "http";
 import { MealService } from "./meal.service";
 import { MealDto } from "./dtos/meal.dto";
-
-
 
 @Controller('')
 export class MealController {
@@ -18,6 +16,13 @@ export class MealController {
 
   ) {
     return this.mealService.createMeal(mealData, request['user'])
+  }
+  @UseGuards(AuthGuard)
+  @Get('me/meal')
+  async getDiary(
+    @Request() request: Request,
+  ) {
+    return this.mealService.getMeal(request['user'])
   }
  
 }

@@ -3,15 +3,14 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthDto } from './dtos/auth.dto';
-import { UserDto } from 'src/users/dtos/user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GenderEnum, User } from '../users/user.entity';
-import { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
+import { UserDto } from 'src/users/dtos/user.dto';
 import { hashPassword } from 'src/utils/hashPassword';
-
+import { GenderEnum, User } from '../users/user.entity';
+import { AuthDto } from './dtos/auth.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -80,11 +79,7 @@ export class AuthService {
     if (errors.length > 0) {
       throw new BadRequestException(errors.join(' '));
     }
-
-    newUser.name = user.name;
-    newUser.username = user.username;
-    newUser.email = user.email;
-    newUser.gender = user.gender;
+    Object.assign(newUser,user)
 
     newUser.password = await hashPassword(user.password);
     const userToSend = await this.usersRepository.save(newUser);

@@ -37,9 +37,4 @@ export class ProgressController {
     return this.progressService.getProgresses();
   }
 
-  // @UseGuards(AuthGuard)
-  // @Get('me/tdee')
-  // getTBM(): Promise<Object> {
-  //   return this.progressService.getTDEE();
-  // }
 }

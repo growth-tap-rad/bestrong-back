@@ -5,12 +5,9 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToMany,
-  JoinTable,
   OneToMany,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import { generateKeyPair } from 'crypto';
 import { Progress } from 'src/progress/progress.entity';
 import { Meal } from 'src/meal/meal.entity';
 
@@ -20,7 +17,7 @@ export class Diary {
   id: number;
 
   @Column({default: "0"})
-  consumed_daily_goal_kcal: number;
+  remaning_daily_goal_kcal: number;
 
   @Column({default: "0"})
   burned_kcal: number;
@@ -60,7 +57,7 @@ export class Diary {
   progress: Progress;
   
   @OneToMany (()=> Meal, (meal)=> meal.diary)
-  meals: Meal[];
+  meal: Meal[];
 
 }
 
