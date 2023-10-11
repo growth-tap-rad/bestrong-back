@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProgressModule } from './progress/progress.module';
 import { DiaryModule } from './diary/diary.module';
 import { MealModule } from './meal/meal.module';
+import { WaterModule } from './water/water.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { MealModule } from './meal/meal.module';
     ProgressModule,
     DiaryModule,
     MealModule,
+    WaterModule,
     RouterModule.register([
       {
         path: 'users',
@@ -34,6 +36,10 @@ import { MealModule } from './meal/meal.module';
             path:'/',
             module: MealModule
           },
+          {
+            path:'/',
+            module:WaterModule
+          }
         ],
       },
     ]),

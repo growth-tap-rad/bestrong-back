@@ -4,10 +4,11 @@ import { Diary } from './diary.entity';
 import { DiaryService } from './diary.service';
 import { DiaryController } from './diary.controller';
 import { Progress } from 'src/progress/progress.entity';
+import { Water } from 'src/water/water.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Diary, Progress])
+    TypeOrmModule.forFeature([Diary, Progress, Water])
   ],
   providers: [DiaryService],
   controllers: [DiaryController],
