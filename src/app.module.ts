@@ -10,6 +10,8 @@ import { DiaryModule } from './diary/diary.module';
 import { MealModule } from './meal/meal.module';
 import { WaterModule } from './water/water.module';
 
+console.log(process.env.dbusername)
+
 @Module({
   imports: [
     UsersModule,
@@ -33,7 +35,7 @@ import { WaterModule } from './water/water.module';
             module: DiaryModule,
           },
           {
-            path:'/',
+            path: '/',
             module: MealModule
           },
           {
@@ -43,21 +45,22 @@ import { WaterModule } from './water/water.module';
         ],
       },
     ]),
-    // TypeOrmModule.forRoot({
+    // TypeOrmModule.forRoot({ sql-lite
     //   type: 'sqlite',
     //   database: 'users',
     //   autoLoadEntities: true,
     //   synchronize: true,
     // }),
+  
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'ucdb',
-      database: 'bestrong',
-      autoLoadEntities: true,
-      synchronize: true,
+      type: "mysql",
+      host: process.env.host,
+      port: parseInt(process.env.port),
+      username: process.env.dbusername,
+      password: process.env.dbpassword,
+      database: process.env.database,
+      autoLoadEntities: Boolean(process.env.autoLoadEntities),
+      synchronize: Boolean(process.env.synchronize),
     }),
   ],
   controllers: [AppController],

@@ -1,3 +1,4 @@
+import 'dotenv/config'
 export const jwtConstants = {
-  secret: 'Terces@123',
-};
+  secret: process.env.secret,
+};  

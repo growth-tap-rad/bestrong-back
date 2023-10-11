@@ -27,14 +27,13 @@ export class UsersService {
       .getOne();
 
     delete user.password;
-
     return user;
   }
 
   async update(id: number, userDto: UserDto): Promise<User> {
     let foundUser = await this.findById(id);
 
-    Object.assign(foundUser,userDto)
+    Object.assign(foundUser, userDto)
 
     if (userDto.password) {
       foundUser.password = await hashPassword(userDto.password);

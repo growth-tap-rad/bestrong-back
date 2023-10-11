@@ -7,19 +7,19 @@ export class Water{
     id:number
 
     @Column()
-    amount_of_water: number
+    consumed_water: number
 
    
-    // @CreateDateColumn({
-    //     type: 'timestamp',
-    //     default: () => 'CURRENT_TIMESTAMP(6)',
-    //   })
-    //   created_at: Date;
+    @CreateDateColumn({
+        type: 'timestamp',
+        default: () => 'CURRENT_TIMESTAMP(6)',
+      })
+      created_at: Date;
 
 
 
-    // @Column()
-    // time: number
+    //  @Column()
+    //  time: number
 
 
 

@@ -8,14 +8,14 @@ export class WaterController{
   constructor(private readonly waterService: WaterService){}
 
 //criando as rotas crud post, get,delete para chamar na service
-@Post('/water')
+@Post('me/water')
 async createWater(
     @Body() waterData: WaterDto
 ){
    return this.waterService.createWater(waterData)
 }
 
-@Get('/water')
+@Get('me/water')
 async getWater(
    @Body() waterData: WaterDto
 ){
@@ -23,7 +23,7 @@ async getWater(
 }
 
 
-@Delete('/water')
+@Delete('me/water')
 async deleteWater (
     @Body () waterData: WaterDto
 ){

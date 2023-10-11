@@ -24,9 +24,8 @@ export class WaterService{
     async getWater(waterData:WaterDto){
         let water = await this.waterRepository
         .createQueryBuilder('water')
-        .where('water.id = :waterid',{waterid: waterData.id})
-        .getOne()
-
+        // .where('water.id = :waterid',{waterid: waterData.id})
+        .getMany()
         return water;
     }
 
