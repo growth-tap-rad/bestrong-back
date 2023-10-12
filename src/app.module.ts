@@ -8,8 +8,11 @@ import { AuthModule } from './auth/auth.module';
 import { ProgressModule } from './progress/progress.module';
 import { DiaryModule } from './diary/diary.module';
 import { MealModule } from './meal/meal.module';
+import { FoodModule } from './food/food.module';
+import { MealFoodModule } from './meal_food/meal_food.module';
+import { MeasureModule } from './measure/measure.module';
+import { SeedModule } from './seed/seed.module';
 
-console.log(process.env.dbusername)
 
 @Module({
   imports: [
@@ -18,6 +21,10 @@ console.log(process.env.dbusername)
     ProgressModule,
     DiaryModule,
     MealModule,
+    FoodModule,
+    MeasureModule,
+    MealFoodModule,
+    SeedModule,
     RouterModule.register([
       {
         path: 'users',
@@ -45,7 +52,6 @@ console.log(process.env.dbusername)
     //   autoLoadEntities: true,
     //   synchronize: true,
     // }),
-  
     TypeOrmModule.forRoot({
       type: "mysql",
       host: process.env.host,

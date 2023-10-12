@@ -16,13 +16,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseGuards(AuthGuard)
-  @Get('me')
+  @Get('/me')
   show(@Request() request: Request): Promise<User> {
     return this.usersService.getUser(request['user'].id);
   }
 
   @UseGuards(AuthGuard)
-  @Put('me')
+  @Put('/me')
   update(@Request() request: Request, @Body() userDto: UserDto): Promise<User> {
     return this.usersService.update(request['user'].id, userDto);
   }
