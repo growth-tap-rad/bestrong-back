@@ -8,10 +8,12 @@ import { AuthModule } from './auth/auth.module';
 import { ProgressModule } from './progress/progress.module';
 import { DiaryModule } from './diary/diary.module';
 import { MealModule } from './meal/meal.module';
+import { WaterModule } from './water/water.module';
 import { FoodModule } from './food/food.module';
 import { MealFoodModule } from './meal_food/meal_food.module';
 import { MeasureModule } from './measure/measure.module';
 import { SeedModule } from './seed/seed.module';
+
 
 
 @Module({
@@ -21,6 +23,7 @@ import { SeedModule } from './seed/seed.module';
     ProgressModule,
     DiaryModule,
     MealModule,
+    WaterModule,
     FoodModule,
     MeasureModule,
     MealFoodModule,
@@ -43,6 +46,10 @@ import { SeedModule } from './seed/seed.module';
             path: '/',
             module: MealModule
           },
+          {
+            path:'/',
+            module:WaterModule
+          }
         ],
       },
     ]),
