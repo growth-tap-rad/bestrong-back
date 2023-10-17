@@ -3,15 +3,13 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Water } from "./water.entity";
 import { WaterService } from "./water.service";
 import { WaterController } from "./water.controller";
-
-
+import { User } from "src/users/user.entity";
 @Module({
-    imports:[
-        //passar a entidade na forFeature
-        TypeOrmModule.forFeature([Water])     
+    imports: [
+        TypeOrmModule.forFeature([Water, User])
     ],
-    providers:[WaterService],
-    controllers:[WaterController]
+    providers: [WaterService],
+    controllers: [WaterController]
 })
 
-export class WaterModule{}
+export class WaterModule { }
