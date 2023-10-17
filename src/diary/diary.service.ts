@@ -48,7 +48,7 @@ export class DiaryService {
       .leftJoinAndSelect('diary.water', 'water')
       .leftJoinAndSelect('diary.meal', 'meal')
       .where('diary.userId = :userId', { userId: user.id })
-      .orderBy('diary.created_at', 'DESC')
+      .orderBy('diary.id', 'DESC')
       .getOne();
     return diary;
   }
@@ -59,7 +59,7 @@ export class DiaryService {
     return this.progressRepository
       .createQueryBuilder('progress')
       .where('progress.userId = :userId', { userId })
-      .orderBy('progress.created_at', 'DESC')
+      .orderBy('progress.id', 'DESC')
       .getOne();
   }
 }

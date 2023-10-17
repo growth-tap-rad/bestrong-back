@@ -8,7 +8,7 @@ export class DiaryController {
   constructor(private readonly diaryService: DiaryService) { }
 
   @UseGuards(AuthGuard)
-  @Post('me/diary')
+  @Post('/me/diary')
   async createDiary(
     @Body() diaryData: DiaryDto,
     @Request() request: Request,
@@ -17,7 +17,7 @@ export class DiaryController {
     return this.diaryService.createDiary(diaryData, request['user'])
   }
   @UseGuards(AuthGuard)
-  @Get('me/diary')
+  @Get('/me/diary')
   async getDiary(
     @Request() request: Request,
   ) {
@@ -25,7 +25,7 @@ export class DiaryController {
   }
 
   @UseGuards(AuthGuard)
-  @Put('me/diary')
+  @Put('/me/diary')
   async editDiary(
     @Body() diaryData: DiaryDto,
     @Request() request: Request,
