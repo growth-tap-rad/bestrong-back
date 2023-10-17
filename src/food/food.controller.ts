@@ -6,10 +6,12 @@ import {
   Request,
   Get,
   Param,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { FoodService } from './food.service';
 import { FoodDto } from './dtos/food.dto';
+import { FoodPaginationDto } from './dtos/food.pagination';
 
 @Controller('foods')
 export class FoodController {
@@ -17,8 +19,10 @@ export class FoodController {
 
  // @UseGuards(AuthGuard) // COLOCAR
   @Get('')
-  async getFoods() {
-    return this.foodService.getFoods();
+  async getFoods(
+    @Query() per_page: FoodPaginationDto
+  ) {
+    return this.foodService.getFoods(per_page);
   }
 
    // @UseGuards(AuthGuard) // COLOCAR
