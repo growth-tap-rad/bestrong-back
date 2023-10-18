@@ -36,23 +36,22 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: GenderEnum, // Doesnt work on Sqlite, but in mysql Do
-  }) // MYSQL
- // @Column() // sqlite
+    enum: GenderEnum,
+  })
   gender: string;
 
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
-  public created_at: Date; // MYSQL
+  public created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
-  public updated_at: Date; // MYSQL
+  public updated_at: Date;
 
   @OneToMany(() => Progress, (progress) => progress.user)
   progress: Progress[];
