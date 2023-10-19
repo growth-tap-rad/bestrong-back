@@ -33,6 +33,7 @@ export class MealService {
   async findMeal(id: string): Promise<Meal> {
     return await this.mealRepository
       .createQueryBuilder('meal')
+      .leftJoinAndSelect('meal.meal_food', 'foods')
       .where('meal.id = :id', { id })
       .getOne();
 
