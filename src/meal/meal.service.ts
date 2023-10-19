@@ -20,7 +20,7 @@ export class MealService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
-      .orderBy('diary.created_at', 'DESC')
+      .orderBy('diary.id', 'DESC')
       .getOne();
 
 
@@ -30,15 +30,26 @@ export class MealService {
 
     return this.mealRepository.save(newMeal);
   }
-  async getMeal(user: User): Promise<Meal> {
-
+  async findMeal(id: string): Promise<Meal> {
     return await this.mealRepository
       .createQueryBuilder('meal')
-      .where('meal.diaryId = :userId', { userId: user.id })
+      .leftJoinAndSelect('meal.meal_food', 'meal_food')
+      .leftJoinAndSelect('meal_food.food', 'foods')
+      .where('meal.id = :id', { id })
       .getOne();
 
     // ver como relaciona essa parte
 
+  }
+  async editMeal(mealData: MealDto, id: string): Promise<Meal> {
+
+    let meal = await this.mealRepository
+      .createQueryBuilder('meal')
+      .where('meal.id= :id', { id })
+      .getOne()
+
+    Object.assign(meal, mealData)
+    return await this.mealRepository.save(meal)
   }
 
 }

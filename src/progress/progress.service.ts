@@ -160,7 +160,7 @@ export class ProgressService {
     return await this.progressRepository
       .createQueryBuilder('progress')
       .leftJoinAndSelect('progress.user', 'user')
-      .orderBy('progress.created_at', 'DESC')
+      .orderBy('progress.id', 'DESC')
       .getOne(); 
   }
 }
