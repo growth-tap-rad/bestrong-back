@@ -15,9 +15,15 @@ export class MeasureService {
     return measures;
   }
 
-  async getMeasureById(id: string): Promise<Measure> {
+  async getMeasureById(id: string): Promise<Measure[]> {
     const numberId = parseInt(id);
-    let measure = await this.measureRepository.findOneBy({id : numberId});
+    let measure = await this.measureRepository
+ 
+    .createQueryBuilder('measure')
+    .where('foodId = :measureId', { measureId: numberId })
+    .getMany();
+    
+
     return measure;
   }
 }

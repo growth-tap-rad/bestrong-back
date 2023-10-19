@@ -16,7 +16,7 @@ export class WaterService {
         private readonly userRepository: Repository<User>,
 
     ) { }
-    
+
     async createWater(waterData: WaterDto, user: User): Promise<Water> {
 
         let newWater = new Water();
@@ -34,18 +34,18 @@ export class WaterService {
 
     async getWater(user: User) {
         const waterAndDiary = await this.waterRepository
-          .createQueryBuilder('water')
-          .leftJoin('water.diary', 'diary')
-          .where('diary.userId = :userId', { userId: user.id })
-          .orderBy('diary.id', 'DESC')
-          .getMany();
-      
+            .createQueryBuilder('water')
+            .leftJoin('water.diary', 'diary')
+            .where('diary.userId = :userId', { userId: user.id })
+            .orderBy('diary.id', 'DESC')
+            .getMany();
+
         return waterAndDiary;
-      }
-      
+    }
+
 
     async deleteWater(id: string) {
-     
+
         return this.waterRepository.delete(id)
     }
 
