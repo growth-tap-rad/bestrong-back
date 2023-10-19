@@ -23,7 +23,10 @@ export class MealFood {
   name: string;
 
   @Column()
-  grams: number;
+  unity: string;
+
+  @Column()
+  quantity: number;
 
   @ManyToOne(() => Meal, (meal) => meal.meal_food)
   @JoinColumn({ name: 'mealId' })

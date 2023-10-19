@@ -13,7 +13,7 @@ export class SeedService {
     private readonly measureRepository: Repository<Measure>,
     @InjectRepository(Food)
     private readonly foodRepository: Repository<Food>,
-  ) {}
+  ) { }
 
   async seed(): Promise<string> {
     try {
@@ -271,10 +271,24 @@ export class SeedService {
             id_ibge: row[0],
           });
 
+          const DESC = row[2];
+          const AMOUNT = row[3];
+
+          const GRAMA = "Grama";
+          const UNIDADE = "Unidade";
+          const UNIDADE_PEQ = "Unidade Pequena";
+          const ML = "Mililitro";
+
+
           if (food) {
+
+            if (DESC != GRAMA && DESC != UNIDADE && DESC != UNIDADE_PEQ && DESC != ML) {
+              return
+            }
+
             measure.food = food;
-            measure.description = row[2] || '';
-            measure.amount = parseFloat(row[3]) || null;
+            measure.description = DESC || '';
+            measure.amount = parseFloat(AMOUNT) || null;
 
             try {
               await this.measureRepository.save(measure);
