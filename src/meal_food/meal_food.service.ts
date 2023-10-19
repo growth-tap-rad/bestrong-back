@@ -30,7 +30,6 @@ export class MealFoodService {
     meal_food.food = food;
     meal_food.meal = meal;
 
-    console.log(meal_food)
     return this.mealFoodRepository.save(meal_food);
   }
 
