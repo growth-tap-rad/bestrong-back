@@ -10,6 +10,7 @@ import {
 import { User } from '../users/user.entity';
 import { Progress } from 'src/progress/progress.entity';
 import { Meal } from 'src/meal/meal.entity';
+import { Water } from 'src/water/water.entity';
 
 @Entity()
 export class Diary {
@@ -57,7 +58,12 @@ export class Diary {
   progress: Progress;
   
   @OneToMany (()=> Meal, (meal)=> meal.diary)
-  meals: Meal[];
+  meal: Meal[];
+
+  // criar relação com o diary
+
+  @OneToMany(()=> Water, (water) => water.diary)
+  water: Water[];
 
 }
 

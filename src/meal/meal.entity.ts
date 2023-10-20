@@ -6,19 +6,12 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 
 } from 'typeorm';
 
 import { Diary } from 'src/diary/diary.entity';
-
-export enum TypeMealEnum {
-  cafeManha = 'cafeDaManha',
-  lanche = 'lanche',
-  almoco = 'almoço',
-  lancheTarde = 'lancheDaTarde',
-  jantar = 'jantar',
-  ceia = 'ceia'
-}
+import { MealFood } from 'src/meal_food/meal_food.entity';
 
 @Entity()
 export class Meal {
@@ -28,27 +21,25 @@ export class Meal {
   @Column()
   name: string;
 
-  @Column({
-    type: 'enum',
-    enum: TypeMealEnum
-  })
-  type: string 
-
+  @Column({ default: "0" })
+  meal_consumed_kcal: number
 
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
-  public created_at: Date; // MYSQL
+  public created_at: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
-  public updated_at: Date; // MYSQL
+  public updated_at: Date;
 
- 
-  @ManyToOne(() => Diary, (diary) => diary.meals)
+  @ManyToOne(() => Diary, (diary) => diary.meal)
   diary: Diary
+
+  @OneToMany(() => MealFood, (mealFood) => mealFood.meal)
+  meal_food: MealFood[];
 }

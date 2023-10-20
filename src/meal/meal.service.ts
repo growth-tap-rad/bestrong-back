@@ -15,26 +15,41 @@ export class MealService {
   async createMeal(mealDto: MealDto, user: User): Promise<Meal> {
 
     let newMeal = new Meal();
-    newMeal.name = mealDto.name;
+    const foundUser = await this.userRepository
 
-    if (!newMeal.type)
-    {
-      throw new BadRequestException(
-        'tipo de refeiçao obrigtorio',
-      );
-    }
-    
-    newMeal.type = mealDto.type;
-
-    const foundUser = await this.userRepository.createQueryBuilder('user')
-
+      .createQueryBuilder('user')
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
-      .orderBy('diary.created_at', 'DESC')
+      .orderBy('diary.id', 'DESC')
       .getOne();
 
-      newMeal.diary = foundUser.diary[0]
+
+    Object.assign(newMeal, mealDto)
+
+    newMeal.diary = foundUser.diary[0]
 
     return this.mealRepository.save(newMeal);
   }
+  async findMeal(id: string): Promise<Meal> {
+    return await this.mealRepository
+      .createQueryBuilder('meal')
+      .leftJoinAndSelect('meal.meal_food', 'meal_food')
+      .leftJoinAndSelect('meal_food.food', 'foods')
+      .where('meal.id = :id', { id })
+      .getOne();
+
+    // ver como relaciona essa parte
+
+  }
+  async editMeal(mealData: MealDto, id: string): Promise<Meal> {
+
+    let meal = await this.mealRepository
+      .createQueryBuilder('meal')
+      .where('meal.id= :id', { id })
+      .getOne()
+
+    Object.assign(meal, mealData)
+    return await this.mealRepository.save(meal)
+  }
+
 }

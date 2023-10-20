@@ -1,4 +1,4 @@
 export interface MealDto {
     name: string;
-    type: string;
+    meal_consumed_kcal:number;
   }

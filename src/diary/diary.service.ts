@@ -5,6 +5,10 @@ import { Diary } from './diary.entity';
 import { DiaryDto } from './dtos/diary.dto';
 import { User } from 'src/users/user.entity';
 import { Progress } from 'src/progress/progress.entity';
+import { Water } from 'src/water/water.entity';
+import { MealFood } from 'src/meal_food/meal_food.entity';
+import { Meal } from 'src/meal/meal.entity';
+
 
 @Injectable()
 export class DiaryService {
@@ -13,11 +17,15 @@ export class DiaryService {
     private readonly diaryRepository: Repository<Diary>,
     @InjectRepository(Progress)
     private readonly progressRepository: Repository<Progress>,
+    @InjectRepository(Water)
+    private readonly waterRepository: Repository<Water>,
+    @InjectRepository(Water)
+    private readonly mealFoodRespository: Repository<MealFood>,
   ) { }
 
   async createDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
-    let newDiary = new Diary();
-    let foundProgress = await this.findProgressById(user.id);
+    const newDiary = new Diary();
+    const foundProgress = await this.findProgressById(user.id);
     if (!foundProgress) {
       throw new NotFoundException('progresso não encontrado');
     }
@@ -30,28 +38,35 @@ export class DiaryService {
   }
 
   async editDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
-    let diary = await this.diaryRepository
+    const diary = await this.diaryRepository
       .createQueryBuilder('diary')
       .where('diary.userId = :userId', { userId: user.id })
       .getOne();
     Object.assign(diary, diaryDto)
     return this.diaryRepository.save(diary);
   }
+  
   async getDiary(user: User): Promise<Diary> {
-    let diary = await this.diaryRepository
+    const diary = await this.diaryRepository
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.progress', 'progress')
+      .leftJoinAndSelect('diary.water', 'water')
+      .leftJoinAndSelect('diary.meal', 'meal')
+      .leftJoinAndSelect('meal.meal_food', 'foods')
       .where('diary.userId = :userId', { userId: user.id })
-      .orderBy('diary.created_at', 'DESC')
+      .orderBy('diary.id', 'DESC')
       .getOne();
+ 
     return diary;
   }
+
+
 
   findProgressById(userId: number): Promise<Progress> {
     return this.progressRepository
       .createQueryBuilder('progress')
       .where('progress.userId = :userId', { userId })
-      .orderBy('progress.created_at', 'DESC')
+      .orderBy('progress.id', 'DESC')
       .getOne();
   }
 }
