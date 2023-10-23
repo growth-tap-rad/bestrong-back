@@ -24,6 +24,15 @@ export class Meal {
   @Column({ default: "0" })
   meal_consumed_kcal: number
 
+  @Column({ default: "0" })
+  meal_consumed_protein: number
+
+  @Column({ default: "0" })
+  meal_consumed_carb: number
+
+  @Column({ default: "0" })
+  meal_consumed_fat: number
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

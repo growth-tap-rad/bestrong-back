@@ -38,6 +38,7 @@ export class DiaryService {
   }
 
   async editDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
+    console.log(diaryDto)
     const diary = await this.diaryRepository
       .createQueryBuilder('diary')
       .where('diary.userId = :userId', { userId: user.id })
