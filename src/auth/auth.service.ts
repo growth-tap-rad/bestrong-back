@@ -29,7 +29,7 @@ export class AuthService {
       user.password,
     );
     if (!passwordMatch) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Credenciais inválidas!');
     }
     const payload = { id: user.id, email: user.email };
     return new AuthDto(await this.jwtService.signAsync(payload));

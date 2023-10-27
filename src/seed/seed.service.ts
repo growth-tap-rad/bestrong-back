@@ -162,10 +162,22 @@ export class SeedService {
             description: row[1],
           });
 
+          const DESC = row[2];
+
+          const SCOOP = "scoop";
+          const BARRA = "barra";
+          const COMP = "comprimido";
+          const CAPS = "capsulas";
+
+
           if (food) {
             measure.food = food;
             measure.description = row[2] || '';
-            measure.amount = parseFloat(row[3]) || null;
+            measure.amount = parseFloat(row[3]) || 1;
+
+            if (!DESC && (!DESC.includes(SCOOP)  && !DESC.includes(BARRA) && !DESC.includes(COMP) && !DESC.includes(CAPS))) {
+              return
+            }
 
             try {
               return await this.measureRepository.save(measure);
@@ -195,10 +207,22 @@ export class SeedService {
             description: row[1],
           });
 
+          const DESC = row[2];
+
+          const GRAMA = "Grama";
+          const UNIDADE = "Unidade";
+          const ML = "Mililitro";
+
           if (food) {
             measure.food = food;
             measure.description = row[2] || '';
-            measure.amount = 100; // Regra de contexto
+            //measure.amount = 100; // Regra de contexto
+            measure.amount = 1;
+
+       
+            if (!DESC &&( DESC != GRAMA && DESC != UNIDADE && DESC != ML)) {
+              return
+            }
 
             try {
               return await this.measureRepository.save(measure);
@@ -276,19 +300,22 @@ export class SeedService {
 
           const GRAMA = "Grama";
           const UNIDADE = "Unidade";
-          const UNIDADE_PEQ = "Unidade Pequena";
           const ML = "Mililitro";
 
 
           if (food) {
 
-            if (DESC != GRAMA && DESC != UNIDADE && DESC != UNIDADE_PEQ && DESC != ML) {
+            if (!DESC && (DESC != GRAMA && DESC != UNIDADE && DESC != ML)) {
               return
             }
 
             measure.food = food;
             measure.description = DESC || '';
-            measure.amount = parseFloat(AMOUNT) || null;
+            measure.amount = parseFloat(AMOUNT) || 1;
+
+            if (!measure.description) {
+              return
+            }
 
             try {
               await this.measureRepository.save(measure);
