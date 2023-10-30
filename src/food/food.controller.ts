@@ -13,7 +13,7 @@ import { FoodService } from './food.service';
 import { FoodDto } from './dtos/food.dto';
 import { FoodPaginationDto } from './dtos/food.pagination';
 
-@Controller('foods')
+@Controller('')
 export class FoodController {
   constructor(private readonly foodService: FoodService) {}
 

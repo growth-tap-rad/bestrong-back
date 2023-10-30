@@ -12,13 +12,14 @@ export class FoodService {
     @InjectRepository(Food) private readonly foodRepository: Repository<Food>,
   ) {}
   async getFoods(pageDto: FoodPaginationDto, search: string): Promise<Food[]> {
-   
+
     const pagination = {
       page: pageDto?.page || 0,
       limit: pageDto?.limit || 20,
     };
 
     let query = this.foodRepository
+
       .createQueryBuilder('food')
       .skip(pagination.page)
       .take(pagination.limit);
