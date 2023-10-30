@@ -231,8 +231,7 @@ export class SeedService {
           if (food) {
             measure.food = food;
             measure.description = row[2] || '';
-            //measure.amount = 100; // Regra de contexto
-            measure.amount = 1;
+            measure.amount = 100; // Regra de contexto
 
             if (
               !DESC.includes(GRAMA) &&
@@ -345,6 +344,61 @@ export class SeedService {
               reject(error);
             }
           }
+        })
+        .on('end', async () => {
+          resolve();
+        });
+    });
+  }
+
+  async seedExercises(filePath: string): Promise<void> {
+    console.log('Seeding Exercises...\n');
+
+    return new Promise(async (resolve, reject) => {
+      fs.createReadStream(filePath)
+        .pipe(csvParser({ separator: ';', headers: false }))
+        .on('data', async (row) => {
+          //console.log('Linha do CSV:', row);
+
+          // TODO: Esperar tableas Exercises, Trains, etc..
+          // const measure = new Measure();
+
+          // const food = await this.foodRepository.findOneBy({
+          //   id_ibge: row[0],
+          // });
+
+          // const DESC = row[2];
+          // const AMOUNT = row[3];
+
+          // const GRAMA = 'Grama';
+          // const UNIDADE = 'Unidade';
+          // const ML = 'Mililitro';
+
+          // if (food) {
+          //   if (
+          //     !DESC.includes(GRAMA) &&
+          //     !DESC.includes(UNIDADE) &&
+          //     !DESC.includes(ML)
+          //   ) {
+          //     return;
+          //   }
+
+          //   measure.food = food;
+          //   measure.description = DESC || '';
+          //   measure.amount = parseFloat(AMOUNT) || 1;
+
+          //   if (!measure.description) {
+          //     return;
+          //   }
+
+          //   try {
+          //     await this.measureRepository.save(measure);
+          //     // console.log('\n -Seed finished- \n');
+          //   } catch (error) {
+          //     console.error('Erro em seed mesure foods growth:', error);
+          //     reject(error);
+          //   }
+          // }
         })
         .on('end', async () => {
           resolve();
