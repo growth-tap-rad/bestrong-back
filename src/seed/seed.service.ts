@@ -133,13 +133,19 @@ export class SeedService {
       try {
         console.log('Seeding update Null fileds on Food... \n');
         for (const field of fieldsToUpdate) {
-          await this.foodRepository
-            .createQueryBuilder()
-            .update(Food)
-            .set({ [field]: 0 })
-            .where(`${field} IS NULL`)
-            .execute();
+          try {
+            // console.log('Updating field:', field);
+            await this.foodRepository
+              .createQueryBuilder()
+              .update(Food)
+              .set({ [field]: 0 })
+              .where(`${field} IS NULL`)
+              .execute();
+          } catch (error) {
+            console.error(`Error updating field - ${field}: ${error}`);
+          }
         }
+        console.log('Updated Null fileds on Food. \n');
         resolve();
       } catch (error) {
         console.error('Erro em seed update null fileds:', error);
@@ -231,8 +237,7 @@ export class SeedService {
           if (food) {
             measure.food = food;
             measure.description = row[2] || '';
-            //measure.amount = 100; // Regra de contexto
-            measure.amount = 1;
+            measure.amount = 100; // Regra de contexto
 
             if (
               !DESC.includes(GRAMA) &&
@@ -351,4 +356,51 @@ export class SeedService {
         });
     });
   }
+
+  // async seedExercises(filePath: string): Promise<void> {
+  //   console.log('Seeding Exercises...\n');
+
+  //   return new Promise(async (resolve, reject) => {
+  //     fs.createReadStream(filePath)
+  //       .pipe(csvParser({ separator: ';', headers: false }))
+  //       .on('data', async (row) => {
+  //         //console.log('Linha do CSV:', row);
+  //         // TODO: Esperar tableas Exercises, Trains, etc..
+  //         // const measure = new Measure();
+  //         // const food = await this.foodRepository.findOneBy({
+  //         //   id_ibge: row[0],
+  //         // });
+  //         // const DESC = row[2];
+  //         // const AMOUNT = row[3];
+  //         // const GRAMA = 'Grama';
+  //         // const UNIDADE = 'Unidade';
+  //         // const ML = 'Mililitro';
+  //         // if (food) {
+  //         //   if (
+  //         //     !DESC.includes(GRAMA) &&
+  //         //     !DESC.includes(UNIDADE) &&
+  //         //     !DESC.includes(ML)
+  //         //   ) {
+  //         //     return;
+  //         //   }
+  //         //   measure.food = food;
+  //         //   measure.description = DESC || '';
+  //         //   measure.amount = parseFloat(AMOUNT) || 1;
+  //         //   if (!measure.description) {
+  //         //     return;
+  //         //   }
+  //         //   try {
+  //         //     await this.measureRepository.save(measure);
+  //         //     // console.log('\n -Seed finished- \n');
+  //         //   } catch (error) {
+  //         //     console.error('Erro em seed mesure foods growth:', error);
+  //         //     reject(error);
+  //         //   }
+  //         // }
+  //       })
+  //       .on('end', async () => {
+  //         resolve();
+  //       });
+  //   });
+  // }
 }
