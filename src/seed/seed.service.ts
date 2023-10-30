@@ -13,7 +13,7 @@ export class SeedService {
     private readonly measureRepository: Repository<Measure>,
     @InjectRepository(Food)
     private readonly foodRepository: Repository<Food>,
-  ) { }
+  ) {}
 
   async seed(): Promise<string> {
     try {
@@ -164,19 +164,34 @@ export class SeedService {
 
           const DESC = row[2];
 
-          const SCOOP = "scoop";
-          const BARRA = "barra";
-          const COMP = "comprimido";
-          const CAPS = "capsulas";
-
+          const SCOOP = 'scoop';
+          const BARRA = 'barra';
+          const COMP = 'comprimido';
+          const CAPS = 'capsulas';
 
           if (food) {
             measure.food = food;
             measure.description = row[2] || '';
             measure.amount = parseFloat(row[3]) || 1;
 
-            if (!DESC && (!DESC.includes(SCOOP)  && !DESC.includes(BARRA) && !DESC.includes(COMP) && !DESC.includes(CAPS))) {
-              return
+            //         if (!DESC.includes('Grama')) {
+            // //CALCULO AINDA NAO FUNCIONANDO COM GRAMAS, DE SUPLEMENTOS GROWTH, POIS OS MACROS
+            // // E CALORIAS DELES SAO BASEADOS EM SCOOPS POR EXEMPLO 1 SCOOP, POSSUI 30 GRAMAS
+            // // E O WHEY CALCULA A CALORIA BASEADO EM 1 SCOOP, E NAO EM 1 GRAMA
+            //           const measureGram = new Measure();
+            //           measureGram.food = food;
+            //           measureGram.description = 'Gramas';
+            //           measureGram.amount = 1;
+            //           await this.measureRepository.save(measureGram);
+            //         }
+
+            if (
+              !DESC.includes(SCOOP) &&
+              !DESC.includes(BARRA) &&
+              !DESC.includes(COMP) &&
+              !DESC.includes(CAPS)
+            ) {
+              return;
             }
 
             try {
@@ -209,9 +224,9 @@ export class SeedService {
 
           const DESC = row[2];
 
-          const GRAMA = "Grama";
-          const UNIDADE = "Unidade";
-          const ML = "Mililitro";
+          const GRAMA = 'Grama';
+          const UNIDADE = 'Unidade';
+          const ML = 'Mililitro';
 
           if (food) {
             measure.food = food;
@@ -219,9 +234,12 @@ export class SeedService {
             //measure.amount = 100; // Regra de contexto
             measure.amount = 1;
 
-       
-            if (!DESC &&( DESC != GRAMA && DESC != UNIDADE && DESC != ML)) {
-              return
+            if (
+              !DESC.includes(GRAMA) &&
+              !DESC.includes(UNIDADE) &&
+              !DESC.includes(ML)
+            ) {
+              return;
             }
 
             try {
@@ -298,15 +316,17 @@ export class SeedService {
           const DESC = row[2];
           const AMOUNT = row[3];
 
-          const GRAMA = "Grama";
-          const UNIDADE = "Unidade";
-          const ML = "Mililitro";
-
+          const GRAMA = 'Grama';
+          const UNIDADE = 'Unidade';
+          const ML = 'Mililitro';
 
           if (food) {
-
-            if (!DESC && (DESC != GRAMA && DESC != UNIDADE && DESC != ML)) {
-              return
+            if (
+              !DESC.includes(GRAMA) &&
+              !DESC.includes(UNIDADE) &&
+              !DESC.includes(ML)
+            ) {
+              return;
             }
 
             measure.food = food;
@@ -314,7 +334,7 @@ export class SeedService {
             measure.amount = parseFloat(AMOUNT) || 1;
 
             if (!measure.description) {
-              return
+              return;
             }
 
             try {
