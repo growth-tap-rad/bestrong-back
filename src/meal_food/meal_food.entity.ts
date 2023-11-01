@@ -26,6 +26,9 @@ export class MealFood {
   unity: string;
 
   @Column()
+  amount: number;
+
+  @Column()
   quantity: number;
 
   @ManyToOne(() => Meal, (meal) => meal.meal_food)

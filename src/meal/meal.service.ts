@@ -23,7 +23,6 @@ export class MealService {
       .orderBy('diary.id', 'DESC')
       .getOne();
 
-
     Object.assign(newMeal, mealDto)
 
     newMeal.diary = foundUser.diary[0]
@@ -37,9 +36,6 @@ export class MealService {
       .leftJoinAndSelect('meal_food.food', 'foods')
       .where('meal.id = :id', { id })
       .getOne();
-
-    // ver como relaciona essa parte
-
   }
   async editMeal(mealData: MealDto, id: string): Promise<Meal> {
 

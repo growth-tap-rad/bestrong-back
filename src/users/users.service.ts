@@ -9,10 +9,16 @@ import { hashPassword } from 'src/utils/hashPassword';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
-  findOneByEmail(email: string) {
-    return this.usersRepository.findOneBy({ email: email });
+  async findOneByEmail(email: string): Promise<Boolean> {
+    const foundEmail = await this.usersRepository.findOneBy({ email: email });
+    let hasEmail = false;
+
+    if (foundEmail && foundEmail.id) {
+      hasEmail = true;
+    }
+    return hasEmail;
   }
 
   findById(id: number): Promise<User> {
@@ -33,7 +39,7 @@ export class UsersService {
   async update(id: number, userDto: UserDto): Promise<User> {
     let foundUser = await this.findById(id);
 
-    Object.assign(foundUser, userDto)
+    Object.assign(foundUser, userDto);
 
     if (userDto.password) {
       foundUser.password = await hashPassword(userDto.password);

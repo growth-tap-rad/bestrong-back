@@ -22,7 +22,7 @@ export class AuthService {
       email: userDto.email,
     });
     if (!user) {
-      throw new UnauthorizedException('Credenciais inválidas!');
+      throw new UnauthorizedException('Credenciais inválidas');
     }
     const passwordMatch = await this.comparePassword(
       userDto.password,
