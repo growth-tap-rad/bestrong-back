@@ -197,6 +197,7 @@ export class SeedService {
               !DESC.includes(COMP) &&
               !DESC.includes(CAPS)
             ) {
+              await this.foodRepository.delete(food)
               return;
             }
 
@@ -244,6 +245,7 @@ export class SeedService {
               !DESC.includes(UNIDADE) &&
               !DESC.includes(ML)
             ) {
+              await this.foodRepository.delete(food)
               return;
             }
 
@@ -331,6 +333,7 @@ export class SeedService {
               !DESC.includes(UNIDADE) &&
               !DESC.includes(ML)
             ) {
+              await this.foodRepository.delete(food)
               return;
             }
 
@@ -338,9 +341,9 @@ export class SeedService {
             measure.description = DESC || '';
             measure.amount = parseFloat(AMOUNT) || 1;
 
-            if (!measure.description) {
-              return;
-            }
+            // if (!measure.description) {
+            //   return;
+            // }
 
             try {
               await this.measureRepository.save(measure);
