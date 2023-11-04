@@ -8,6 +8,7 @@ import { Progress } from 'src/progress/progress.entity';
 import { Water } from 'src/water/water.entity';
 import { MealFood } from 'src/meal_food/meal_food.entity';
 import { Meal } from 'src/meal/meal.entity';
+import { Train } from 'src/train/train.entity';
 
 
 @Injectable()
@@ -54,6 +55,8 @@ export class DiaryService {
       .leftJoinAndSelect('diary.water', 'water')
       .leftJoinAndSelect('diary.meal', 'meal')
       .leftJoinAndSelect('meal.meal_food', 'foods')
+      // aqui tenho que fazer um leftjoin com treino?
+      .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
       .orderBy('diary.id', 'DESC')
       .getOne();
