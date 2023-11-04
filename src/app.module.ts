@@ -13,6 +13,9 @@ import { FoodModule } from './food/food.module';
 import { MealFoodModule } from './meal_food/meal_food.module';
 import { MeasureModule } from './measure/measure.module';
 import { SeedModule } from './seed/seed.module';
+import { ExercisesModule } from './exercises/exercises.module';
+import { TrainsModule } from './train/train.module';
+import { TrainsExercisesModule } from './trains_exercises/trains_exercises.module';
 
 
 
@@ -28,6 +31,9 @@ import { SeedModule } from './seed/seed.module';
     MeasureModule,
     MealFoodModule,
     SeedModule,
+    ExercisesModule,
+    TrainsModule,
+    TrainsExercisesModule,
     RouterModule.register([
       {
         path: 'users',
@@ -36,7 +42,6 @@ import { SeedModule } from './seed/seed.module';
           {
             path: '/',
             module: ProgressModule,
-
           },
           {
             path: '/',
@@ -49,6 +54,18 @@ import { SeedModule } from './seed/seed.module';
           {
             path:'/',
             module:WaterModule
+          },
+          {
+            path:'/',
+            module:ExercisesModule
+          },
+          {
+            path:'/',
+            module:TrainsModule
+          },
+          {
+            path:'/',
+            module:TrainsExercisesModule
           }
         ],
       },
