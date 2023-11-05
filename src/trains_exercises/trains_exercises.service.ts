@@ -16,7 +16,7 @@ export class TrainsExercisesService{
 
     async createTrain(trainsExercisesDto:TrainExerciseDto) {
 
-        const train_exercisies = new TrainExercise();
+        const train_exercises = new TrainExercise();
         const train = await this.trainRepository.findOneBy({ id: trainsExercisesDto.train_id })
         const exercises = await this.exercisesRepository.findOneBy({ id: trainsExercisesDto.exercise_id })
     
@@ -25,10 +25,10 @@ export class TrainsExercisesService{
           throw new NotFoundException('Treino ou exercício não existe')
         }
     
-        Object.assign(train_exercisies, trainsExercisesDto);
-        train_exercisies.trains = train;
-        train_exercisies.exercises = exercises;
+        Object.assign(train_exercises, trainsExercisesDto);
+        train_exercises.trains = train;
+        train_exercises.exercises = exercises;
     
-        return this.trainsExercisesRepository.save(train_exercisies);
+        return this.trainsExercisesRepository.save(train_exercises);
       }
 }
