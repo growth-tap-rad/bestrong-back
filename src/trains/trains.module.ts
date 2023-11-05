@@ -1,8 +1,8 @@
 import { Module } from "@nestjs/common";
 import { Train } from "./train.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { TrainService } from "./train.service";
-import { TrainsController } from "./train.controller";
+import { TrainService } from "./trains.service";
+import { TrainsController } from "./trains.controller";
 
 @Module({
     imports: [TypeOrmModule.forFeature([Train])],

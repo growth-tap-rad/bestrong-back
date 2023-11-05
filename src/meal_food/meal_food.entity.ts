@@ -1,4 +1,3 @@
-
 import { Food } from 'src/food/food.entity';
 import { Meal } from 'src/meal/meal.entity';
 import {
@@ -10,9 +9,7 @@ import {
   OneToMany,
   ManyToOne,
   JoinColumn,
-
 } from 'typeorm';
-
 
 @Entity()
 export class MealFood {
@@ -30,6 +27,19 @@ export class MealFood {
 
   @Column()
   quantity: number;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
+  public created_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
+  public updated_at: Date;
 
   @ManyToOne(() => Meal, (meal) => meal.meal_food)
   @JoinColumn({ name: 'mealId' })

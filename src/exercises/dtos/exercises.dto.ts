@@ -1,4 +1,4 @@
-export class ExercisesDto{
+export class ExerciseDto{
     id:number;
     exercise: string;
 }

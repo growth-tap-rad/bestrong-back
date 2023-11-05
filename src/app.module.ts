@@ -14,10 +14,9 @@ import { MealFoodModule } from './meal_food/meal_food.module';
 import { MeasureModule } from './measure/measure.module';
 import { SeedModule } from './seed/seed.module';
 import { ExercisesModule } from './exercises/exercises.module';
-import { TrainsModule } from './train/train.module';
+import { TrainsModule } from './trains/trains.module';
 import { TrainsExercisesModule } from './trains_exercises/trains_exercises.module';
-
-
+import { MuscleModule } from './muscle/muscle.module';
 
 @Module({
   imports: [
@@ -34,6 +33,7 @@ import { TrainsExercisesModule } from './trains_exercises/trains_exercises.modul
     ExercisesModule,
     TrainsModule,
     TrainsExercisesModule,
+    MuscleModule,
     RouterModule.register([
       {
         path: 'users',
@@ -49,24 +49,26 @@ import { TrainsExercisesModule } from './trains_exercises/trains_exercises.modul
           },
           {
             path: '/',
-            module: MealModule
+            module: MealModule,
           },
           {
-            path:'/',
-            module:WaterModule
+            path: '/',
+            module: WaterModule,
           },
           {
-            path:'/',
-            module:ExercisesModule
+            path: '/',
+            module: TrainsModule,
           },
+        ],
+      },
+      {
+        path: 'exercises',
+        module: ExercisesModule,
+        children: [
           {
-            path:'/',
-            module:TrainsModule
+            path: '/',
+            module: MuscleModule,
           },
-          {
-            path:'/',
-            module:TrainsExercisesModule
-          }
         ],
       },
     ]),
@@ -77,7 +79,7 @@ import { TrainsExercisesModule } from './trains_exercises/trains_exercises.modul
     //   synchronize: true,
     // }),
     TypeOrmModule.forRoot({
-      type: "mysql",
+      type: 'mysql',
       host: process.env.host,
       port: parseInt(process.env.port),
       username: process.env.dbusername,
@@ -90,4 +92,4 @@ import { TrainsExercisesModule } from './trains_exercises/trains_exercises.modul
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
