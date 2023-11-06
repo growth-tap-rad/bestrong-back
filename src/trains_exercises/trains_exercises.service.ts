@@ -1,34 +1,34 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { TrainsExercises } from "./trains_exercises.entity";
-import { Train } from "src/train/train.entity";
+import { TrainExercise } from "./train_exercise.entity";
+import { Train } from "src/trains/train.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Exercises } from "src/exercises/exercises.entity";
-import { TrainsExercisesDto } from "./dtos/trains_exercises.dto";
+import { Exercise } from "src/exercises/exercise.entity";
+import { TrainExerciseDto } from "./dtos/train_exercise.dto";
 
 @Injectable()
 export class TrainsExercisesService{
     constructor(
-        @InjectRepository(TrainsExercises) private readonly trainsExercisesRepository: Repository<TrainsExercises>,
+        @InjectRepository(TrainExercise) private readonly trainsExercisesRepository: Repository<TrainExercise>,
         @InjectRepository(Train) private readonly trainRepository: Repository<Train>,
-        @InjectRepository(Exercises) private readonly exercisesRepository: Repository<Exercises>,
+        @InjectRepository(Exercise) private readonly exercisesRepository: Repository<Exercise>,
     ){}
 
-    async createTrain(trainsExercisesDto:TrainsExercisesDto) {
+    async createTrain(trainsExercisesDto:TrainExerciseDto) {
 
-        const train_exercisies = new TrainsExercises();
+        const train_exercises = new TrainExercise();
         const train = await this.trainRepository.findOneBy({ id: trainsExercisesDto.train_id })
-        const exercises = await this.exercisesRepository.findOneBy({ id: trainsExercisesDto.exercises_id })
+        const exercises = await this.exercisesRepository.findOneBy({ id: trainsExercisesDto.exercise_id })
     
       
         if (!(train && exercises)) {
-          throw new NotFoundException('Treino ou exercicio não existe')
+          throw new NotFoundException('Treino ou exercício não existe')
         }
     
-        Object.assign(train_exercisies, trainsExercisesDto);
-        train_exercisies.trains = train;
-        train_exercisies.exercises = exercises;
+        Object.assign(train_exercises, trainsExercisesDto);
+        train_exercises.trains = train;
+        train_exercises.exercises = exercises;
     
-        return this.trainsExercisesRepository.save(train_exercisies);
+        return this.trainsExercisesRepository.save(train_exercises);
       }
 }

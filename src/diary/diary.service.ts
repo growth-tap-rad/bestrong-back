@@ -8,7 +8,7 @@ import { Progress } from 'src/progress/progress.entity';
 import { Water } from 'src/water/water.entity';
 import { MealFood } from 'src/meal_food/meal_food.entity';
 import { Meal } from 'src/meal/meal.entity';
-import { Train } from 'src/train/train.entity';
+import { Train } from 'src/trains/train.entity';
 
 
 @Injectable()
