@@ -43,9 +43,7 @@ export class WaterService {
         return waterAndDiary;
     }
 
-
     async deleteWater(id: string) {
-
         return this.waterRepository.delete(id)
     }
 

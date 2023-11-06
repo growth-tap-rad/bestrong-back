@@ -13,8 +13,10 @@ import { FoodModule } from './food/food.module';
 import { MealFoodModule } from './meal_food/meal_food.module';
 import { MeasureModule } from './measure/measure.module';
 import { SeedModule } from './seed/seed.module';
-
-
+import { ExercisesModule } from './exercises/exercises.module';
+import { TrainsModule } from './trains/trains.module';
+import { TrainsExercisesModule } from './trains_exercises/trains_exercises.module';
+import { MuscleModule } from './muscle/muscle.module';
 
 @Module({
   imports: [
@@ -28,6 +30,10 @@ import { SeedModule } from './seed/seed.module';
     MeasureModule,
     MealFoodModule,
     SeedModule,
+    ExercisesModule,
+    TrainsModule,
+    TrainsExercisesModule,
+    MuscleModule,
     RouterModule.register([
       {
         path: 'users',
@@ -36,7 +42,6 @@ import { SeedModule } from './seed/seed.module';
           {
             path: '/',
             module: ProgressModule,
-
           },
           {
             path: '/',
@@ -44,12 +49,26 @@ import { SeedModule } from './seed/seed.module';
           },
           {
             path: '/',
-            module: MealModule
+            module: MealModule,
           },
           {
-            path:'/',
-            module:WaterModule
-          }
+            path: '/',
+            module: WaterModule,
+          },
+          {
+            path: '/',
+            module: TrainsModule,
+          },
+        ],
+      },
+      {
+        path: 'exercises',
+        module: ExercisesModule,
+        children: [
+          {
+            path: '/',
+            module: MuscleModule,
+          },
         ],
       },
     ]),
@@ -60,7 +79,7 @@ import { SeedModule } from './seed/seed.module';
     //   synchronize: true,
     // }),
     TypeOrmModule.forRoot({
-      type: "mysql",
+      type: 'mysql',
       host: process.env.host,
       port: parseInt(process.env.port),
       username: process.env.dbusername,
@@ -73,4 +92,4 @@ import { SeedModule } from './seed/seed.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
