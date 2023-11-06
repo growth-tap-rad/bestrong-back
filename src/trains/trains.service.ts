@@ -15,8 +15,6 @@ export class TrainService {
   ) { }
   async createTrain(trainDto: TrainDto, user: User) {
     let newTrain = new Train();
-
-    console.log("trainDto ",trainDto, "user ",user)
     Object.assign(newTrain, trainDto);
 
     const foundUser = await this.userRepository
