@@ -48,4 +48,8 @@ export class MealService {
     return await this.mealRepository.save(meal)
   }
 
+  async deleteMeal(id: string){
+    return await this.mealRepository.delete(id)
+  }
+
 }

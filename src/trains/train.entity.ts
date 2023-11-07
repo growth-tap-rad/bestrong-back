@@ -15,13 +15,13 @@ export class Train {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: 'nome' })
   name: string;
 
   @Column({ default: 'hipertrofia' })
   goal: string; //verify
 
-  @Column()
+  @Column({ default: 'level1' })
   level: string; //verify
 
   // @Column()
