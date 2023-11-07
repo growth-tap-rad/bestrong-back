@@ -1,5 +1,5 @@
 
-import { Controller, Post, Body, UseGuards, Request, Get, Param, Put } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Request, Get, Param, Put, Delete } from "@nestjs/common";
 import { AuthGuard } from "src/auth/auth.guard";
 import { MealService } from "./meal.service";
 import { MealDto } from "./dtos/meal.dto";
@@ -32,6 +32,14 @@ export class MealController {
     @Param('id') id: string,
     @Body() mealData: MealDto,
   ) {
-    return this.mealService.editMeal(mealData ,id  )
+    return this.mealService.editMeal(mealData, id)
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('/:id')
+  async deleteMeal(
+    @Param('id') id: string,
+  ) {
+    return this.mealService.deleteMeal(id)
   }
 }

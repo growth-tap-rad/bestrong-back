@@ -5,6 +5,9 @@ import { Measure } from 'src/measure/measure.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs';
 import * as csvParser from 'csv-parser';
+import { Muscle } from 'src/muscle/muscle.entity';
+import { EXERCISES } from './definitions/Exercises';
+import { Exercise } from 'src/exercises/exercise.entity';
 
 @Injectable()
 export class SeedService {
@@ -13,6 +16,10 @@ export class SeedService {
     private readonly measureRepository: Repository<Measure>,
     @InjectRepository(Food)
     private readonly foodRepository: Repository<Food>,
+    @InjectRepository(Muscle)
+    private readonly muscleRepository: Repository<Muscle>,
+    @InjectRepository(Exercise)
+    private readonly exerciseRepository: Repository<Exercise>,
   ) {}
 
   async seed(): Promise<string> {
@@ -37,7 +44,10 @@ export class SeedService {
 
       await this.seedMeasureIbge('src/assets/seeds/ibge_medidas.csv');
 
-      console.log('Seeds Successfull Finished!');
+      await this.seedMuscles();
+      await this.seedExercises();
+
+      console.log('\nSeeds Successfull Finished!');
 
       return 'Seeds Successfull Finished!';
     } catch (error) {
@@ -197,6 +207,7 @@ export class SeedService {
               !DESC.includes(COMP) &&
               !DESC.includes(CAPS)
             ) {
+              await this.foodRepository.delete(food)
               return;
             }
 
@@ -244,6 +255,7 @@ export class SeedService {
               !DESC.includes(UNIDADE) &&
               !DESC.includes(ML)
             ) {
+              await this.foodRepository.delete(food)
               return;
             }
 
@@ -331,6 +343,7 @@ export class SeedService {
               !DESC.includes(UNIDADE) &&
               !DESC.includes(ML)
             ) {
+              await this.foodRepository.delete(food)
               return;
             }
 
@@ -338,9 +351,9 @@ export class SeedService {
             measure.description = DESC || '';
             measure.amount = parseFloat(AMOUNT) || 1;
 
-            if (!measure.description) {
-              return;
-            }
+            // if (!measure.description) {
+            //   return;
+            // }
 
             try {
               await this.measureRepository.save(measure);
@@ -357,50 +370,66 @@ export class SeedService {
     });
   }
 
-  // async seedExercises(filePath: string): Promise<void> {
-  //   console.log('Seeding Exercises...\n');
+  async seedMuscles(): Promise<void> {
+    console.log('Seeding Muscles...\n');
 
-  //   return new Promise(async (resolve, reject) => {
-  //     fs.createReadStream(filePath)
-  //       .pipe(csvParser({ separator: ';', headers: false }))
-  //       .on('data', async (row) => {
-  //         //console.log('Linha do CSV:', row);
-  //         // TODO: Esperar tableas Exercises, Trains, etc..
-  //         // const measure = new Measure();
-  //         // const food = await this.foodRepository.findOneBy({
-  //         //   id_ibge: row[0],
-  //         // });
-  //         // const DESC = row[2];
-  //         // const AMOUNT = row[3];
-  //         // const GRAMA = 'Grama';
-  //         // const UNIDADE = 'Unidade';
-  //         // const ML = 'Mililitro';
-  //         // if (food) {
-  //         //   if (
-  //         //     !DESC.includes(GRAMA) &&
-  //         //     !DESC.includes(UNIDADE) &&
-  //         //     !DESC.includes(ML)
-  //         //   ) {
-  //         //     return;
-  //         //   }
-  //         //   measure.food = food;
-  //         //   measure.description = DESC || '';
-  //         //   measure.amount = parseFloat(AMOUNT) || 1;
-  //         //   if (!measure.description) {
-  //         //     return;
-  //         //   }
-  //         //   try {
-  //         //     await this.measureRepository.save(measure);
-  //         //     // console.log('\n -Seed finished- \n');
-  //         //   } catch (error) {
-  //         //     console.error('Erro em seed mesure foods growth:', error);
-  //         //     reject(error);
-  //         //   }
-  //         // }
-  //       })
-  //       .on('end', async () => {
-  //         resolve();
-  //       });
-  //   });
-  // }
+    const MUSCLES_DEFAULT = [
+      'Peitoral',
+      'Dorsal',
+      'Deltóides',
+      'Quadríceps',
+      'Femural',
+      'Bíceps',
+      'Tríceps',
+      'Abdominal',
+      'Panturrilha',
+    ];
+
+    return new Promise(async (resolve, reject) => {
+      const muscles_array = [];
+
+      MUSCLES_DEFAULT.forEach(async (name) => {
+        const newMuscle = new Muscle();
+        newMuscle.name = name;
+        muscles_array.push(newMuscle);
+      });
+
+      try {
+        await this.muscleRepository.save(muscles_array);
+        resolve();
+      } catch (error) {
+        console.error('Erro em seed muscles:', error);
+        reject(error);
+      }
+    });
+  }
+
+  async seedExercises(): Promise<void> {
+    console.log('Seeding Exercises...\n');
+
+    return new Promise(async (resolve, reject) => {
+      const exercisesArray = [];
+
+      for (const exercise of EXERCISES) {
+        const newExercise = new Exercise();
+        newExercise.name = exercise.name;
+        newExercise.level = exercise.level;
+
+        const muscle = await this.muscleRepository.findOneBy({
+          id: exercise.muscleId,
+        });
+        newExercise.muscle = muscle;
+
+        exercisesArray.push(newExercise);
+      }
+
+      try {
+        await this.exerciseRepository.save(exercisesArray);
+        resolve();
+      } catch (error) {
+        console.error('Erro em seed exercises:', error);
+        reject(error);
+      }
+    });
+  }
 }
