@@ -32,6 +32,7 @@ export class MealFoodService {
 
     return this.mealFoodRepository.save(meal_food);
   }
-
-
+  async deleteMealFood(id: string) {
+    return await this.mealFoodRepository.delete(id)
+  }
 }

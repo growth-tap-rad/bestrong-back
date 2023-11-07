@@ -15,12 +15,17 @@ export class ExercisesController {
   }
 
   @Get('/:id')
-  async getExercises(
+  async getExercise(
     @Param('id') id: string
   ) {
-    return this.exercisesServices.getExercises(id)
+    return this.exercisesServices.getExercise(id)
   }
 
+  @Get('/')
+  async getExercises(
+  ) {
+    return this.exercisesServices.getExercises()
+  }
 
   @Put('/:id')
   async editExercises(

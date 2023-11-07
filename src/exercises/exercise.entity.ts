@@ -15,10 +15,10 @@ export class Exercise {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({default:'name'}) //lembrar de tirar default
   name: string;
 
-  @Column()
+  @Column({default:'All'}) 
   level: string;
 
   @CreateDateColumn({

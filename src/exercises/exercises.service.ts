@@ -9,7 +9,7 @@ export class ExercisesService {
   constructor(
     @InjectRepository(Exercise)
     private readonly exercisesRepository: Repository<Exercise>,
-  ) {}
+  ) { }
   async createExercises(exerciseDto: ExerciseDto) {
     let newExercise = new Exercise();
     Object.assign(newExercise, exerciseDto);
@@ -17,11 +17,16 @@ export class ExercisesService {
     return this.exercisesRepository.save(newExercise);
   }
 
-  async getExercises(id: string): Promise<Exercise> {
+  async getExercise(id: string): Promise<Exercise> {
     return await this.exercisesRepository
       .createQueryBuilder('execises')
       .where('execises.id = :id', { id })
       .getOne();
+  }
+  async getExercises(): Promise<Exercise[]> {
+    return await this.exercisesRepository
+      .createQueryBuilder('execises')
+      .getMany();
   }
 
   async editExercises(
