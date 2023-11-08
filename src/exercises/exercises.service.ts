@@ -19,8 +19,8 @@ export class ExercisesService {
   }
   async getExercise(id: string): Promise<Exercise> {
     return await this.exercisesRepository
-      .createQueryBuilder('exercises')
-      .where('exercises.id = :id', { id })
+      .createQueryBuilder('exercise')
+      .where('exercise.id = :id', { id })
       .getOne();
   }
   async getExercises(pageDto: ExercisePaginationDto, search: string): Promise<Exercise[]> {
@@ -31,10 +31,10 @@ export class ExercisesService {
     };
 
     let query = this.exercisesRepository
-      .createQueryBuilder('exercises')
+      .createQueryBuilder('exercise')
       .skip(pagination.page)
       .take(pagination.limit)
-      .orderBy('exercises.name');
+      .orderBy('exercise.name');
 
     if (search) {
       console.log(query)
