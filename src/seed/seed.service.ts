@@ -359,7 +359,7 @@ export class SeedService {
               await this.measureRepository.save(measure);
               // console.log('\n -Seed finished- \n');
             } catch (error) {
-              console.error('Erro em seed mesure foods growth:', error);
+              console.error('Erro em seed mesure foods ibge:', error);
               reject(error);
             }
           }

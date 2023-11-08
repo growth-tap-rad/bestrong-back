@@ -18,7 +18,7 @@ export class Exercise {
   @Column()
   name: string;
 
-  @Column()
+  @Column({default: 'all'})
   level: string;
 
   @CreateDateColumn({
