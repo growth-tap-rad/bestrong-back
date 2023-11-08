@@ -18,17 +18,14 @@ export class TrainExercise {
   @Column()
   name: string;
 
-  @Column({ default: 0 })//lembrar de tirar
-  rest_between_series: number;
+  @Column()
+  rest_duration: number;
 
-  @Column({ default: 0 })//lembrar de tirar
+  @Column()
   reps: number;
 
-  @Column({ default: 0 })//lembrar de tirar
+  @Column()
   wheight: number;
-
-  //@Column({default:0})//lembrar de tirar
-  // quantity_series: number;
 
   // @Column()
   // description: string; // verify

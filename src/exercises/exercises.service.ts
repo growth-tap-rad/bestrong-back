@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Exercise } from './exercise.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExerciseDto } from './dtos/exercises.dto';
 import { Repository } from 'typeorm';
+import { Exercise } from './exercise.entity';
+import { ExercisePaginationDto } from "./dtos/exercises.pagination"
 
 @Injectable()
 export class ExercisesService {
@@ -16,17 +17,35 @@ export class ExercisesService {
 
     return this.exercisesRepository.save(newExercise);
   }
-
   async getExercise(id: string): Promise<Exercise> {
     return await this.exercisesRepository
-      .createQueryBuilder('execises')
+      .createQueryBuilder('exercises')
       .where('execises.id = :id', { id })
       .getOne();
   }
-  async getExercises(): Promise<Exercise[]> {
-    return await this.exercisesRepository
-      .createQueryBuilder('execises')
-      .getMany();
+  async getExercises(pageDto: ExercisePaginationDto, search: string): Promise<Exercise[]> {
+
+    const pagination = {
+      page: pageDto?.page || 0,
+      limit: pageDto?.limit || 20,
+    };
+
+    let query = this.exercisesRepository
+      .createQueryBuilder('exercises')
+      .skip(pagination.page)
+      .take(pagination.limit)
+      .orderBy('exercises.name');
+
+    if (search) {
+      console.log(query)
+      query = query.andWhere('exercise.name LIKE :name', {
+        name: `%${search}%`,
+      });
+    }
+
+    const exercises = await query.getMany();
+    return exercises;
+
   }
 
   async editExercises(
