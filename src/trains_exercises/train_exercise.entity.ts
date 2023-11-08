@@ -15,16 +15,16 @@ export class TrainExercise {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: 'name' })
   name: string;
 
-  @Column()
+  @Column({ default: 0 })
   rest_duration: number;
 
-  @Column()
+  @Column({ default: 0 })
   reps: number;
 
-  @Column()
+  @Column({ default: 0 })
   wheight: number;
 
   // @Column()

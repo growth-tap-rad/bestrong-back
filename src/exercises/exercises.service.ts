@@ -20,7 +20,7 @@ export class ExercisesService {
   async getExercise(id: string): Promise<Exercise> {
     return await this.exercisesRepository
       .createQueryBuilder('exercises')
-      .where('execises.id = :id', { id })
+      .where('exercises.id = :id', { id })
       .getOne();
   }
   async getExercises(pageDto: ExercisePaginationDto, search: string): Promise<Exercise[]> {
