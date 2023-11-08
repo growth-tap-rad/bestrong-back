@@ -36,6 +36,7 @@ export class TrainService {
     return await this.trainsRepository
       .createQueryBuilder('train')
       .leftJoin('train.diary', 'diary')
+      .leftJoin('train.trains_exercises', 'trains_exercises')
       .where('diary.userId = :userId', { userId: user.id })
       .orderBy('diary.id', 'DESC')
       .getMany();

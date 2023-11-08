@@ -1,10 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {  Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Food } from './food.entity';
-import { FoodDto } from './dtos/food.dto';
 import { FoodPaginationDto } from './dtos/food.pagination';
-import { skip } from 'node:test';
+
 
 @Injectable()
 export class FoodService {
@@ -22,7 +21,8 @@ export class FoodService {
 
       .createQueryBuilder('food')
       .skip(pagination.page)
-      .take(pagination.limit);
+      .take(pagination.limit)
+      .orderBy('food.description');
 
     if (search) {
       query = query.andWhere('food.description LIKE :description', {
