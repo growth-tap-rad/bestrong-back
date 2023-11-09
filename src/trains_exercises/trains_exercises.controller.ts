@@ -32,7 +32,7 @@ export class TrainsExercisesController {
   @UseGuards(AuthGuard)
   @Get('/:id')
   async getTrainExercise(
-    @Param() trainsExercisesDto: TrainExerciseDto,
+    @Param('id') trainsExercisesDto: TrainExerciseDto,
   ) {
     return this.trainsExercisesService.getTrainExercise(trainsExercisesDto.id)
   }

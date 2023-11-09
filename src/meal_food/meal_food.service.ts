@@ -16,7 +16,7 @@ export class MealFoodService {
     @InjectRepository(Meal) private readonly MealRepository: Repository<Meal>,
   ) { }
 
-  async createMeal(mealFoodDto: MealFoodDto) {
+  async createMealFood(mealFoodDto: MealFoodDto) {
 
     const meal_food = new MealFood();
     const food = await this.FoodRepository.findOneBy({ id: mealFoodDto.food_id })
@@ -32,6 +32,8 @@ export class MealFoodService {
 
     return this.mealFoodRepository.save(meal_food);
   }
-
+  async deleteMealFood(id: number) {
+    return await this.mealFoodRepository.delete(id)
+  }
 
 }
