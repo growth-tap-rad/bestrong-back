@@ -30,6 +30,24 @@ export class TrainsExercisesService {
     train_exercises.trains = train;
     train_exercises.exercises = exercises;
 
-    return this.trainsExercisesRepository.save(train_exercises);
+    return await this.trainsExercisesRepository.save(train_exercises);
+  }
+
+  async editTrainExercise(trainsExercisesDto: TrainExerciseDto, id: number): Promise<TrainExercise> {
+
+    console.log(id)
+    const train_exercises = await this.trainsExercisesRepository.findOneBy({ id :id})
+
+    Object.assign(train_exercises, trainsExercisesDto);
+    console.log(train_exercises)
+    return await this.trainsExercisesRepository.save(train_exercises);
+  }
+
+  async getTrainExercise(id: number): Promise<TrainExercise> {
+    return await this.trainsExercisesRepository.findOneBy({ id: id })
+  }
+
+  async deleteTrainExercise(id: number) {
+    return await this.trainsExercisesRepository.delete(id)
   }
 }
