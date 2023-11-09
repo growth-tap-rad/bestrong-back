@@ -35,11 +35,8 @@ export class TrainsExercisesService {
 
   async editTrainExercise(trainsExercisesDto: TrainExerciseDto, id: number): Promise<TrainExercise> {
 
-    console.log(id)
     const train_exercises = await this.trainsExercisesRepository.findOneBy({ id :id})
-
     Object.assign(train_exercises, trainsExercisesDto);
-    console.log(train_exercises)
     return await this.trainsExercisesRepository.save(train_exercises);
   }
 
