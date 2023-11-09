@@ -15,14 +15,16 @@ export class Train {
   @PrimaryGeneratedColumn()
   id: number;
 
+
   @Column()
   name: string;
 
-  @Column()
+  @Column({ default: 'hipertrofia' })
   goal: string;
 
-  @Column()
+  @Column({ default: 'all' })
   level: string;
+
 
   // @Column()
   // type: string; // verificar, like A, AB, ABC...
