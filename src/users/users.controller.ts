@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Put,
+  Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -31,5 +32,12 @@ export class UsersController {
   @Get('')
   showUsers(): Promise<User[]> {
     return this.usersService.getUsers();
+  }
+
+  // Perguntar se posso ter essa rota sem autheticacao...
+  @Get('/verify-email')
+  verifyEmail(@Query('email') email: string): Promise<Boolean> {
+
+    return this.usersService.findOneByEmail(email);
   }
 }

@@ -15,7 +15,7 @@
 17;BCAA (10:1:1) (200) (EM PÓ) (sabor laranja) - Growth SUPPLEMENTS;5 scoop;5;20;5;0;0
 18;BCAA (10:1:1) (200) (EM PÓ) (sabor limão) - Growth SUPPLEMENTS;5 scoop;5;20;5;0;0
 19;BCAA (10:1:1) (200) (EM PÓ) (sabor natural) - Growth SUPPLEMENTS;5 scoop;5;20;5;0;0
-20;BCAA (120 caps) - Growth Supplements;2r;0;8;2;0;0
+20;BCAA (120 caps) - Growth Supplements;2 capsulas;0;8;2;0;0
 21;BCAA (2:1:1) (200) (em pó) - Growth supplements Sabor laranja;5 scoop;5;20;5;0;0
 22;BCAA (2:1:1) (200) (em pó) - Growth supplements Sabor Limão;5 scoop;5;20;5;0;0
 23;BCAA (2:1:1) (200) (em pó) - Growth supplements Sabor Melancia;5 scoop;5;20;5;0;0
@@ -28,10 +28,10 @@
 30;Blend Vean (Sabor Chocolate) - Growth Supplements;1.5 scoop;30;95;1;21;1
 31;Blend Vean (Sabor Natural) - Growth Supplements;1.5 scoop;30;95;0;22;1
 32;CAFEÍNA (210M) 120 CAPS - Growth SUPPLEMENTS;1 capsula;1;0;0;0;0
-33;CAFEÍNA (210M) 60 CAPS - Growth SUPPLEMENTS;2 capsula;1;0;0;0;0
-34;Cafeína (420M) 120caps - Growth Supplements (thermoênico);3 capsula;1;0;0;0;0
-35;Cafeína (420M) 60 caps - Growth Supplements (thermoênico);4 capsula;1;0;0;0;0
-36;Cafeína com óleo de cártamo 120 caps - Growth Supplements;2 capsulas;1;0;0;0;0
+33;CAFEÍNA (210M) 60 CAPS - Growth SUPPLEMENTS;1 capsula;1;0;0;0;0
+34;Cafeína (420M) 120caps - Growth Supplements (thermoênico);1 capsula;1;0;0;0;0
+35;Cafeína (420M) 60 caps - Growth Supplements (thermoênico);1 capsula;1;0;0;0;0
+36;Cafeína com óleo de cártamo 120 caps - Growth Supplements;1 capsula;1;0;0;0;0
 37;Chá verde 200 instantâneo (sabor natural) - Growth Supplements;10 scoop;10;0;0;0;0
 38;Cloreto de Manésio 120 caps - Growth Supplements;3 comprimidos;3;0;0;0;0
 39;Coenzima Q10 - Growth Supplements;2 capsulas;1;7.4;0.5;0;0.6
@@ -76,7 +76,7 @@
 78;Pasta de Amendoim Interal Torrado 1k - Growth Supplements;1 col de sopa;15;91;4.1;3;7
 79;Pasta de Amendoim sabor Briadeiro 500r - Growth Supplements;1 col de sopa;15;88;3.5;4;6.5
 80;Picolinato de Cromo 120caps - Growth Supplements;1 capsula;1;0;0;0;0
-81;Polivitaminico mastiavel 120 comp - Growth Supplements;#REF!;1;0;0;0;0
+81;Polivitaminico mastiavel 120 comp - Growth Supplements;1 comprimido;1;0;0;0;0
 82;Power Alanine (120 caps) - Growth Supplements;1 capsula;1;0;0;0;0
 83;Power Arinine (120caps) - Growth Supplements;1 capsula;1;0;0;0;0
 84;Pré-treino Challener (300r/30treinos) - Growth Supplements;10 scoop;10;28;4;1;0
@@ -89,16 +89,16 @@
 91;Six Protein (1k) - Growth supplements Sabor Chocolate;1.5 scoop;30;116;23;5;0
 92;Soy Protein (Proteína isolada de soja) (1k) (sabor natural) - Growth Supplements;1.5 scoop;30;120;27;0;1.5
 93;Soy Protein (Proteína isolada de soja) (Sabor Chocolate) 1k - Growth Supplements;1.5 scoop;30;120;26;1;1.5
-94;Spirulina (75 cápsulas) - Growth Supplements;2 capsulas;2;15;0.7;0;1.3
+94;Spirulina (75 cápsulas) - Growth Supplements;1 capsula;2;15;0.7;0;1.3
 95;Tempero zero sódio - sabor queijo - Growth;0;1;0;0;0;0
 96;Tempero zero sódio - tempero salante - Growth;0;1;0;0;0;0
 97;TERMOÊNICO - 60 COMPRIMIDOS - Growth Supplements;1 comprimido;1;0;0;0;0
 98;Triptofano 120 caps - Growth Supplements;1 capsula;1;0;0;0;0
 99;Vitamina C (120 caps) - Growth Supplements;1 capsula;1;0;0;0;0
-100;Vitamina C Ultra (450m) 120 caps - Growth Supplements;4 capsulas;1;0;0;0;0
+100;Vitamina C Ultra (450m) 120 caps - Growth Supplements;1 capsula;1;0;0;0;0
 101;Vitamina D (2000UI) 120 caps - Growth Supplements;1 capsula;1;0;0;0;0
 102;Vitamina D (75 cápsulas) - Growth Supplements;1 capsula;1;0;0;0;0
-175;Vitamina E (1490UI) 120 caps - Growth Supplements;1;2 capsulas;0;0;0;0
+175;Vitamina E (1490UI) 120 caps - Growth Supplements;1;1 capsula;0;0;0;0
 176;Vitamina E (75caps) - Growth Supplements;1;1 capsula;0;0;0;0
 177;Waxy Maize (1k) - Growth supplements Sabor Açaí com uaraná;1.5 scoop;30;104;0;26;0
 178;Waxy Maize (1k) - Growth supplements Sabor laranja;1.5 scoop;30;104;0;26;0
@@ -121,7 +121,7 @@
 195;Whey Protein Isolado (1k) - Growth supplements sabor Morano;1.5 scoop;30;110;26;2;0
 196;Whey Protein Isolado (1k) - Growth supplements sabor Natural;1.5 scoop;30;110;27;1;0
 197;Xylitol 250r - Growth Supplements;1;1;3;0;1;0
-198;ZMA (120 caps) - Growth Supplements;1;2 capsulas;0;0;0;0
+198;ZMA (120 caps) - Growth Supplements;1;1 capsula;0;0;0;0
 199;Insanity;10scoop;10;12;2;3;0
 200;Taurina;1;1;4;1;0;0
 201;Amino Powder;10scoop;10;37;7.4;2;0

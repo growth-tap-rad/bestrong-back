@@ -17,22 +17,23 @@ import { FoodPaginationDto } from './dtos/food.pagination';
 export class FoodController {
   constructor(private readonly foodService: FoodService) {}
 
- // @UseGuards(AuthGuard) // COLOCAR
+ @UseGuards(AuthGuard)
   @Get('')
   async getFoods(
-    @Query() per_page: FoodPaginationDto
+    @Query('') paginationDto: FoodPaginationDto,
+    @Query('search') search: string,
   ) {
-    return this.foodService.getFoods(per_page);
+    return this.foodService.getFoods(paginationDto, search);
   }
 
-   // @UseGuards(AuthGuard) // COLOCAR
+  @UseGuards(AuthGuard)
   @Get('/:id')
   async getFoodById(
     @Param('id') id: string
   ) {
     return this.foodService.getFoodById(id);
   }
-
+  @UseGuards(AuthGuard)
   @Get('/:idIbge')
   async getFoodByIdIbge(
     @Param('idIbge') idIbge: string

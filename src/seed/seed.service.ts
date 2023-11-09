@@ -5,6 +5,9 @@ import { Measure } from 'src/measure/measure.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs';
 import * as csvParser from 'csv-parser';
+import { Muscle } from 'src/muscle/muscle.entity';
+import { EXERCISES } from './definitions/Exercises';
+import { Exercise } from 'src/exercises/exercise.entity';
 
 @Injectable()
 export class SeedService {
@@ -13,7 +16,11 @@ export class SeedService {
     private readonly measureRepository: Repository<Measure>,
     @InjectRepository(Food)
     private readonly foodRepository: Repository<Food>,
-  ) { }
+    @InjectRepository(Muscle)
+    private readonly muscleRepository: Repository<Muscle>,
+    @InjectRepository(Exercise)
+    private readonly exerciseRepository: Repository<Exercise>,
+  ) {}
 
   async seed(): Promise<string> {
     try {
@@ -37,7 +44,10 @@ export class SeedService {
 
       await this.seedMeasureIbge('src/assets/seeds/ibge_medidas.csv');
 
-      console.log('Seeds Successfull Finished!');
+      await this.seedMuscles();
+      await this.seedExercises();
+
+      console.log('\nSeeds Successfull Finished!');
 
       return 'Seeds Successfull Finished!';
     } catch (error) {
@@ -133,13 +143,19 @@ export class SeedService {
       try {
         console.log('Seeding update Null fileds on Food... \n');
         for (const field of fieldsToUpdate) {
-          await this.foodRepository
-            .createQueryBuilder()
-            .update(Food)
-            .set({ [field]: 0 })
-            .where(`${field} IS NULL`)
-            .execute();
+          try {
+            // console.log('Updating field:', field);
+            await this.foodRepository
+              .createQueryBuilder()
+              .update(Food)
+              .set({ [field]: 0 })
+              .where(`${field} IS NULL`)
+              .execute();
+          } catch (error) {
+            console.error(`Error updating field - ${field}: ${error}`);
+          }
         }
+        console.log('Updated Null fileds on Food. \n');
         resolve();
       } catch (error) {
         console.error('Erro em seed update null fileds:', error);
@@ -162,10 +178,38 @@ export class SeedService {
             description: row[1],
           });
 
+          const DESC = row[2];
+
+          const SCOOP = 'scoop';
+          const BARRA = 'barra';
+          const COMP = 'comprimido';
+          const CAPS = 'capsulas';
+
           if (food) {
             measure.food = food;
             measure.description = row[2] || '';
-            measure.amount = parseFloat(row[3]) || null;
+            measure.amount = parseFloat(row[3]) || 1;
+
+            //         if (!DESC.includes('Grama')) {
+            // //CALCULO AINDA NAO FUNCIONANDO COM GRAMAS, DE SUPLEMENTOS GROWTH, POIS OS MACROS
+            // // E CALORIAS DELES SAO BASEADOS EM SCOOPS POR EXEMPLO 1 SCOOP, POSSUI 30 GRAMAS
+            // // E O WHEY CALCULA A CALORIA BASEADO EM 1 SCOOP, E NAO EM 1 GRAMA
+            //           const measureGram = new Measure();
+            //           measureGram.food = food;
+            //           measureGram.description = 'Gramas';
+            //           measureGram.amount = 1;
+            //           await this.measureRepository.save(measureGram);
+            //         }
+
+            if (
+              !DESC.includes(SCOOP) &&
+              !DESC.includes(BARRA) &&
+              !DESC.includes(COMP) &&
+              !DESC.includes(CAPS)
+            ) {
+              await this.foodRepository.delete(food)
+              return;
+            }
 
             try {
               return await this.measureRepository.save(measure);
@@ -195,10 +239,25 @@ export class SeedService {
             description: row[1],
           });
 
+          const DESC = row[2];
+
+          const GRAMA = 'Grama';
+          const UNIDADE = 'Unidade';
+          const ML = 'Mililitro';
+
           if (food) {
             measure.food = food;
             measure.description = row[2] || '';
             measure.amount = 100; // Regra de contexto
+
+            if (
+              !DESC.includes(GRAMA) &&
+              !DESC.includes(UNIDADE) &&
+              !DESC.includes(ML)
+            ) {
+              await this.foodRepository.delete(food)
+              return;
+            }
 
             try {
               return await this.measureRepository.save(measure);
@@ -274,27 +333,33 @@ export class SeedService {
           const DESC = row[2];
           const AMOUNT = row[3];
 
-          const GRAMA = "Grama";
-          const UNIDADE = "Unidade";
-          const UNIDADE_PEQ = "Unidade Pequena";
-          const ML = "Mililitro";
-
+          const GRAMA = 'Grama';
+          const UNIDADE = 'Unidade';
+          const ML = 'Mililitro';
 
           if (food) {
-
-            if (DESC != GRAMA && DESC != UNIDADE && DESC != UNIDADE_PEQ && DESC != ML) {
-              return
+            if (
+              !DESC.includes(GRAMA) &&
+              !DESC.includes(UNIDADE) &&
+              !DESC.includes(ML)
+            ) {
+              await this.foodRepository.delete(food)
+              return;
             }
 
             measure.food = food;
             measure.description = DESC || '';
-            measure.amount = parseFloat(AMOUNT) || null;
+            measure.amount = parseFloat(AMOUNT) || 1;
+
+            // if (!measure.description) {
+            //   return;
+            // }
 
             try {
               await this.measureRepository.save(measure);
               // console.log('\n -Seed finished- \n');
             } catch (error) {
-              console.error('Erro em seed mesure foods growth:', error);
+              console.error('Erro em seed mesure foods ibge:', error);
               reject(error);
             }
           }
@@ -302,6 +367,69 @@ export class SeedService {
         .on('end', async () => {
           resolve();
         });
+    });
+  }
+
+  async seedMuscles(): Promise<void> {
+    console.log('Seeding Muscles...\n');
+
+    const MUSCLES_DEFAULT = [
+      'Peitoral',
+      'Dorsal',
+      'Deltóides',
+      'Quadríceps',
+      'Femural',
+      'Bíceps',
+      'Tríceps',
+      'Abdominal',
+      'Panturrilha',
+    ];
+
+    return new Promise(async (resolve, reject) => {
+      const muscles_array = [];
+
+      MUSCLES_DEFAULT.forEach(async (name) => {
+        const newMuscle = new Muscle();
+        newMuscle.name = name;
+        muscles_array.push(newMuscle);
+      });
+
+      try {
+        await this.muscleRepository.save(muscles_array);
+        resolve();
+      } catch (error) {
+        console.error('Erro em seed muscles:', error);
+        reject(error);
+      }
+    });
+  }
+
+  async seedExercises(): Promise<void> {
+    console.log('Seeding Exercises...\n');
+
+    return new Promise(async (resolve, reject) => {
+      const exercisesArray = [];
+
+      for (const exercise of EXERCISES) {
+        const newExercise = new Exercise();
+        newExercise.name = exercise.name;
+        newExercise.level = exercise.level;
+
+        const muscle = await this.muscleRepository.findOneBy({
+          id: exercise.muscleId,
+        });
+        newExercise.muscle = muscle;
+
+        exercisesArray.push(newExercise);
+      }
+
+      try {
+        await this.exerciseRepository.save(exercisesArray);
+        resolve();
+      } catch (error) {
+        console.error('Erro em seed exercises:', error);
+        reject(error);
+      }
     });
   }
 }

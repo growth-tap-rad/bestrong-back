@@ -26,7 +26,7 @@ export class WaterController {
     @UseGuards(AuthGuard)
     @Delete('me/water/:id')
     async deleteWater(
-        @Param() id: string
+        @Param('id') id: string
     ) {
 
         return this.waterService.deleteWater(id)

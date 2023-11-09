@@ -11,4 +11,5 @@ export interface FoodDto {
     fat_sat: number;
     fat_trans: number;
     sugar: number;
+    calcium: number;
   }

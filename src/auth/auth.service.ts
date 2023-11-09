@@ -22,14 +22,14 @@ export class AuthService {
       email: userDto.email,
     });
     if (!user) {
-      throw new UnauthorizedException('Credenciais inválidas!');
+      throw new UnauthorizedException('Credenciais inválidas');
     }
     const passwordMatch = await this.comparePassword(
       userDto.password,
       user.password,
     );
     if (!passwordMatch) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Credenciais inválidas!');
     }
     const payload = { id: user.id, email: user.email };
     return new AuthDto(await this.jwtService.signAsync(payload));
