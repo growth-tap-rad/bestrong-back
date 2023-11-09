@@ -37,7 +37,6 @@ export class ExercisesService {
       .orderBy('exercise.name');
 
     if (search) {
-      console.log(query)
       query = query.andWhere('exercise.name LIKE :name', {
         name: `%${search}%`,
       });

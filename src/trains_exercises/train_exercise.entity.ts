@@ -50,7 +50,7 @@ export class TrainExercise {
   public updated_at: Date;
 
   @ManyToOne(() => Exercise, (exercises) => exercises.trains_exercises)
-  @JoinColumn({ name: 'exercisesId' }) // trocar para exerciseId
+  @JoinColumn({ name: 'exerciseId' })
   exercises: Exercise;
 
   @ManyToOne(() => Train, (train) => train.trains_exercises)

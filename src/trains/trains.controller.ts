@@ -7,13 +7,14 @@ import {
   UseGuards,
   Param,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { TrainService } from './trains.service';
 import { TrainDto } from './dtos/train.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('me/trains')
 export class TrainsController {
-  constructor(private readonly trainService: TrainService) {}
+  constructor(private readonly trainService: TrainService) { }
 
   @UseGuards(AuthGuard)
   @Post('')
@@ -42,5 +43,13 @@ export class TrainsController {
     @Body() trainsDto: TrainDto,
   ) {
     return this.trainService.editTrain(trainsDto, id)
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('/:id')
+  async deleteMeal(
+    @Param('id') id: string,
+  ) {
+    return this.trainService.deleteTrain(id)
   }
 }

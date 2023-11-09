@@ -5,30 +5,49 @@ import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Exercise } from "src/exercises/exercise.entity";
 import { TrainExerciseDto } from "./dtos/train_exercise.dto";
+import { User } from "src/users/user.entity";
 
 @Injectable()
-export class TrainsExercisesService{
-    constructor(
-        @InjectRepository(TrainExercise) private readonly trainsExercisesRepository: Repository<TrainExercise>,
-        @InjectRepository(Train) private readonly trainRepository: Repository<Train>,
-        @InjectRepository(Exercise) private readonly exercisesRepository: Repository<Exercise>,
-    ){}
+export class TrainsExercisesService {
+  constructor(
+    @InjectRepository(TrainExercise) private readonly trainsExercisesRepository: Repository<TrainExercise>,
+    @InjectRepository(Train) private readonly trainRepository: Repository<Train>,
+    @InjectRepository(Exercise) private readonly exercisesRepository: Repository<Exercise>,
+  ) { }
 
-    async createTrain(trainsExercisesDto:TrainExerciseDto) {
+  async createTrain(trainsExercisesDto: TrainExerciseDto) {
 
-        const train_exercises = new TrainExercise();
-        const train = await this.trainRepository.findOneBy({ id: trainsExercisesDto.train_id })
-        const exercises = await this.exercisesRepository.findOneBy({ id: trainsExercisesDto.exercise_id })
-    
-      
-        if (!(train && exercises)) {
-          throw new NotFoundException('Treino ou exercício não existe')
-        }
-    
-        Object.assign(train_exercises, trainsExercisesDto);
-        train_exercises.trains = train;
-        train_exercises.exercises = exercises;
-    
-        return this.trainsExercisesRepository.save(train_exercises);
-      }
+    const train_exercises = new TrainExercise();
+    const train = await this.trainRepository.findOneBy({ id: trainsExercisesDto.train_id })
+    const exercises = await this.exercisesRepository.findOneBy({ id: trainsExercisesDto.exercise_id })
+
+
+    if (!(train && exercises)) {
+      throw new NotFoundException('Treino ou exercício não existe')
+    }
+
+    Object.assign(train_exercises, trainsExercisesDto);
+    train_exercises.trains = train;
+    train_exercises.exercises = exercises;
+
+    return await this.trainsExercisesRepository.save(train_exercises);
+  }
+
+  async editTrainExercise(trainsExercisesDto: TrainExerciseDto, id: number): Promise<TrainExercise> {
+
+    console.log(id)
+    const train_exercises = await this.trainsExercisesRepository.findOneBy({ id :id})
+
+    Object.assign(train_exercises, trainsExercisesDto);
+    console.log(train_exercises)
+    return await this.trainsExercisesRepository.save(train_exercises);
+  }
+
+  async getTrainExercise(id: number): Promise<TrainExercise> {
+    return await this.trainsExercisesRepository.findOneBy({ id: id })
+  }
+
+  async deleteTrainExercise(id: number) {
+    return await this.trainsExercisesRepository.delete(id)
+  }
 }

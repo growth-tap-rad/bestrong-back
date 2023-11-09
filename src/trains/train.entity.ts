@@ -18,10 +18,10 @@ export class Train {
   @Column()
   name: string;
 
-  @Column({ default: 'hipertrofia' })
+  @Column()
   goal: string;
 
-  @Column({ default: 'all' })
+  @Column()
   level: string;
 
   // @Column()

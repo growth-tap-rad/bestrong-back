@@ -12,7 +12,7 @@ export class TrainService {
     private readonly trainsRepository: Repository<Train>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
   async createTrain(trainDto: TrainDto, user: User) {
     let newTrain = new Train();
     Object.assign(newTrain, trainDto);
@@ -32,23 +32,25 @@ export class TrainService {
   async getTrains(user: User): Promise<Train[]> {
     return await this.trainsRepository
       .createQueryBuilder('train')
-      .leftJoin('train.diary', 'diary')
-      .leftJoin('train.trains_exercises', 'trains_exercises')
-      .where('diary.userId = :userId', { userId: user.id })
+      .leftJoinAndSelect('train.diary', 'diary')
+      .leftJoinAndSelect('train.trains_exercises', 'trains_exercises')
+      .where('diary.id = :userId', { userId: user.id })
       .orderBy('diary.id', 'DESC')
-      .getMany(); // todo: corrigir isso
+      .getMany();
+
   }
 
   async getTrain(id: string): Promise<Train> {
     return await this.trainsRepository
       .createQueryBuilder('train')
-      .leftJoin('train.trains_exercises', 'trains_exercises')
-      .leftJoin('trains_exercises.exercises', 'exercise')
+      .leftJoinAndSelect('train.diary', 'diary')
+      .leftJoinAndSelect('train.trains_exercises', 'trains_exercises')
       .where('train.id = :id', { id })
       .getOne();
   }
 
   async editTrain(trainDto: TrainDto, id: string): Promise<Train> {
+
     let train = await this.trainsRepository
       .createQueryBuilder('train')
       .where('train.id= :id', { id })
@@ -56,5 +58,9 @@ export class TrainService {
 
     Object.assign(train, trainDto);
     return await this.trainsRepository.save(train);
+  }
+
+  async deleteTrain(id: string) {
+    return await this.trainsRepository.delete(id)
   }
 }
