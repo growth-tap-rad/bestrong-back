@@ -18,14 +18,17 @@ export class TrainExercise {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ default: "30" })
   rest_duration: number;
 
-  @Column()
+  @Column({ default: "0" }) // tirar default
   reps: number;
 
-  @Column()
+  @Column({ default: "0" }) // tirar default
   wheight: number;
+
+  @Column({ default: "1" }) 
+  series: number;
 
   // @Column()
   // description: string; // verify
@@ -47,7 +50,7 @@ export class TrainExercise {
   public updated_at: Date;
 
   @ManyToOne(() => Exercise, (exercises) => exercises.trains_exercises)
-  @JoinColumn({ name: 'exercisesId' })
+  @JoinColumn({ name: 'exerciseId' })
   exercises: Exercise;
 
   @ManyToOne(() => Train, (train) => train.trains_exercises)

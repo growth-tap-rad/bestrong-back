@@ -1,27 +1,50 @@
 import { Injectable } from '@nestjs/common';
-import { Exercise } from './exercise.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExerciseDto } from './dtos/exercises.dto';
 import { Repository } from 'typeorm';
+import { Exercise } from './exercise.entity';
+import { ExercisePaginationDto } from "./dtos/exercises.pagination"
 
 @Injectable()
 export class ExercisesService {
   constructor(
     @InjectRepository(Exercise)
     private readonly exercisesRepository: Repository<Exercise>,
-  ) {}
+  ) { }
   async createExercises(exerciseDto: ExerciseDto) {
     let newExercise = new Exercise();
     Object.assign(newExercise, exerciseDto);
 
     return this.exercisesRepository.save(newExercise);
   }
-
-  async getExercises(id: string): Promise<Exercise> {
+  async getExercise(id: string): Promise<Exercise> {
     return await this.exercisesRepository
-      .createQueryBuilder('execises')
-      .where('execises.id = :id', { id })
+      .createQueryBuilder('exercise')
+      .where('exercise.id = :id', { id })
       .getOne();
+  }
+  async getExercises(pageDto: ExercisePaginationDto, search: string): Promise<Exercise[]> {
+
+    const pagination = {
+      page: pageDto?.page || 0,
+      limit: pageDto?.limit || 20,
+    };
+
+    let query = this.exercisesRepository
+      .createQueryBuilder('exercise')
+      .skip(pagination.page)
+      .take(pagination.limit)
+      .orderBy('exercise.name');
+
+    if (search) {
+      query = query.andWhere('exercise.name LIKE :name', {
+        name: `%${search}%`,
+      });
+    }
+
+    const exercises = await query.getMany();
+    return exercises;
+
   }
 
   async editExercises(
