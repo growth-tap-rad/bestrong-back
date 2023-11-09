@@ -32,11 +32,12 @@ export class TrainService {
   async getTrains(user: User): Promise<Train[]> {
     return await this.trainsRepository
       .createQueryBuilder('train')
-      .leftJoin('train.diary', 'diary')
-      .leftJoin('train.trains_exercises', 'trains_exercises')
-      .where('diary.userId = :userId', { userId: user.id })
+      .leftJoinAndSelect('train.diary', 'diary')
+      .leftJoinAndSelect('train.trains_exercises', 'trains_exercises')
+      .where('diary.id = :userId', { userId: user.id })
       .orderBy('diary.id', 'DESC')
-      .getMany(); // todo: corrigir isso
+      .getMany();
+ 
   }
 
   async getTrain(id: string): Promise<Train> {
