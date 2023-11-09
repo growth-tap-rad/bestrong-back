@@ -45,7 +45,7 @@ export class ExercisesController {
   @UseGuards(AuthGuard)
   @Delete('/:id')
   async deleteExercise(
-    @Param() id: string
+    @Param('id') id: string
   ) {
     return this.exercisesServices.deleteExercise(id)
   }
