@@ -1,38 +1,34 @@
-import { Controller, Post, Body, UseGuards, Request, Put, Get } from "@nestjs/common";
-import { DiaryService } from "./diary.service";
-import { DiaryDto } from "./dtos/diary.dto";
-import { AuthGuard } from "src/auth/auth.guard";
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  Put,
+  Get,
+  Query,
+} from '@nestjs/common';
+import { DiaryService } from './diary.service';
+import { DiaryDto } from './dtos/diary.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('')
 export class DiaryController {
-  constructor(private readonly diaryService: DiaryService) { }
+  constructor(private readonly diaryService: DiaryService) {}
 
-  @UseGuards(AuthGuard)
   @Post('/me/diary')
-  async createDiary(
-    @Body() diaryData: DiaryDto,
-    @Request() request: Request,
-
-  ) {
-    return this.diaryService.createDiary(diaryData, request['user'])
+  async createDiary(@Body() diaryData: DiaryDto, @Request() request: Request) {
+    return this.diaryService.createDiary(diaryData, request['user']);
   }
-  @UseGuards(AuthGuard)
+
   @Get('/me/diary')
-  async getDiary(
-    @Request() request: Request,
-  ) {
-    return this.diaryService.getDiary(request['user'])
+  async getDiary(@Request() request: Request, @Query('date') date: string) {
+    return this.diaryService.getDiary(request['user'], date);
   }
 
-  @UseGuards(AuthGuard)
   @Put('/me/diary')
-  async editDiary(
-    @Body() diaryData: DiaryDto,
-    @Request() request: Request,
-
-  ) {
-    return this.diaryService.editDiary(diaryData, request['user'])
+  async editDiary(@Body() diaryData: DiaryDto, @Request() request: Request) {
+    return this.diaryService.editDiary(diaryData, request['user']);
   }
 }
-
-

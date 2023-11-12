@@ -34,10 +34,8 @@ export class UsersController {
     return this.usersService.getUsers();
   }
 
-  // Perguntar se posso ter essa rota sem autheticacao...
   @Get('/verify-email')
   verifyEmail(@Query('email') email: string): Promise<Boolean> {
-
     return this.usersService.findOneByEmail(email);
   }
 }

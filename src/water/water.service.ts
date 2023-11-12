@@ -1,50 +1,83 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Water } from "./water.entity";
-import { Repository } from "typeorm";
-import { WaterDto } from "./dtos/water.dto";
-import { User } from "src/users/user.entity";
-
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Water } from './water.entity';
+import { Repository } from 'typeorm';
+import { WaterDto } from './dtos/water.dto';
+import { User } from 'src/users/user.entity';
+import { Diary } from 'src/diary/diary.entity';
 
 @Injectable()
 export class WaterService {
+  constructor(
+    @InjectRepository(Water)
+    private readonly waterRepository: Repository<Water>,
+    @InjectRepository(Diary)
+    private readonly diaryRepository: Repository<Diary>,
+  ) {}
 
-    constructor(
-        @InjectRepository(Water)
-        private readonly waterRepository: Repository<Water>,
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
+  async createWater(waterData: WaterDto, user: User): Promise<Water> {
+    let newWater = new Water();
+    Object.assign(newWater, waterData);
 
-    ) { }
+    const dateValid = new Date(waterData.date + 'T00:00:00.000');
+    dateValid.setHours(0, 0, 0, 0);
 
-    async createWater(waterData: WaterDto, user: User): Promise<Water> {
-
-        let newWater = new Water();
-        Object.assign(newWater, waterData)
-        const foundUser = await this.userRepository
-
-            .createQueryBuilder('user')
-            .leftJoinAndSelect('user.diary', 'diary')
-            .where('user.id = :userId', { userId: user.id })
-            .orderBy('diary.created_at', 'DESC')
-            .getOne();
-        newWater.diary = foundUser.diary[0]
-        return this.waterRepository.save(newWater)
+    if (isNaN(dateValid.getTime())) {
+      throw new BadRequestException('Data especificada inválida');
     }
 
-    async getWater(user: User) {
-        const waterAndDiary = await this.waterRepository
-            .createQueryBuilder('water')
-            .leftJoin('water.diary', 'diary')
-            .where('diary.userId = :userId', { userId: user.id })
-            .orderBy('diary.id', 'DESC')
-            .getMany();
+    const foundDiary = await this.diaryRepository
+      .createQueryBuilder('diary')
+      .leftJoinAndSelect('diary.water', 'water')
+      .where('diary.userId = :userId', { userId: user.id })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .orderBy('diary.id', 'DESC')
+      .getOne();
 
-        return waterAndDiary;
+    if (!foundDiary) {
+      throw new NotFoundException(
+        'Diário não encontrado para a data especificada',
+      );
     }
 
-    async deleteWater(id: string) {
-        return this.waterRepository.delete(id)
+    newWater.diary = foundDiary;
+    return this.waterRepository.save(newWater);
+  }
+
+  async getWater(user: User, date: string) {
+    const dateValid = new Date(date + 'T00:00:00.000');
+    dateValid.setHours(0, 0, 0, 0);
+
+    if (isNaN(dateValid.getTime())) {
+      throw new BadRequestException('Data especificada inválida');
     }
 
+    const foundDiary = await this.waterRepository
+    .createQueryBuilder('water')
+      .leftJoinAndSelect('water.diary', 'diary')
+      .where('diary.userId = :userId', { userId: user.id })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .orderBy('diary.id', 'DESC')
+      .getMany();
+
+    if (!foundDiary) {
+      throw new NotFoundException(
+        'Diário não encontrado para a data especificada',
+      );
+    }
+
+    return foundDiary;
+  }
+
+  async deleteWater(id: string) {
+    return this.waterRepository.delete(id);
+  }
 }
