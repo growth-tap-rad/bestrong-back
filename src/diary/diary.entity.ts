@@ -39,11 +39,20 @@ export class Diary {
   @Column({default: "0"})
   consumed_water:number
 
-  @CreateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-  })
-  created_at: Date;
+  @Column({ type: 'int', default: "0" })
+  year: number;
+
+  @Column({ type: 'int', default: "0" })
+  month: number;
+
+  @Column({ type: 'int', default: "0" })
+  day: number;
+
+  // @CreateDateColumn({
+  //   type: 'timestamp',
+  //   default: () => 'CURRENT_TIMESTAMP(6)',
+  // })
+  // created_at: Date; // TODO: retirar dps de testar
 
   @UpdateDateColumn({
     type: 'timestamp',

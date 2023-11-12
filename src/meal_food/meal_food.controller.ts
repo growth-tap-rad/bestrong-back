@@ -4,11 +4,11 @@ import { AuthGuard } from "src/auth/auth.guard";
 import { MealFoodService } from "./meal_food.service";
 import { MealFoodDto } from "src/meal_food/dtos/meal_food.dto";
 
+@UseGuards(AuthGuard)
 @Controller('meal_food')
 export class MealFoodController {
   constructor(private readonly mealFoodService: MealFoodService) { }
 
-  @UseGuards(AuthGuard)
   @Post('/')
   async createMealFood(
     @Body() mealDto: MealFoodDto,
@@ -16,7 +16,6 @@ export class MealFoodController {
     return this.mealFoodService.createMealFood(mealDto)
   }
 
-  @UseGuards(AuthGuard)
   @Delete('/:id')
   async deleteMealFood(
     @Param('id') id: number

@@ -28,15 +28,15 @@ export class SeedService {
         'src/assets/seeds/planilha_produtos_growth.csv',
       );
 
-      await this.seedFoodFoodsGrowth('src/assets/seeds/alimentos_growth.csv');
+     // await this.seedFoodFoodsGrowth('src/assets/seeds/alimentos_growth.csv');
 
       await this.seedMeasureProductsGrowth(
         'src/assets/seeds/planilha_produtos_growth.csv',
       );
 
-      await this.seedMeasureFoodsGrowth(
-        'src/assets/seeds/alimentos_growth.csv',
-      );
+      // await this.seedMeasureFoodsGrowth(
+      //   'src/assets/seeds/alimentos_growth.csv',
+      // );
 
       await this.seedFoodsIbge('src/assets/seeds/ibge.csv');
 
@@ -87,42 +87,42 @@ export class SeedService {
     });
   }
 
-  async seedFoodFoodsGrowth(filePath: string): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      const results = [];
+  // async seedFoodFoodsGrowth(filePath: string): Promise<void> {
+  //   return new Promise(async (resolve, reject) => {
+  //     const results = [];
 
-      fs.createReadStream(filePath)
-        .pipe(csvParser({ separator: ';', headers: false }))
-        .on('data', (row) => {
-          // console.log('Linha do CSV:', row);
-          const food = new Food();
+  //     fs.createReadStream(filePath)
+  //       .pipe(csvParser({ separator: ';', headers: false }))
+  //       .on('data', (row) => {
+  //         // console.log('Linha do CSV:', row);
+  //         const food = new Food();
 
-          food.description = row[1] || '';
-          food.energy = row[6] != '-' ? parseFloat(row[6]) : 0;
-          food.carb = row[7] != '-' ? parseFloat(row[7]) : 0;
-          food.protein = row[5] != '-' ? parseFloat(row[5]) : 0;
-          food.fat = row[8] != '-' ? parseFloat(row[8]) : 0;
-          food.fiber = row[10] != '-' ? parseFloat(row[10]) : 0;
-          food.sodium = row[12] != '-' ? parseFloat(row[12]) : 0;
+  //         food.description = row[1] || '';
+  //         food.energy = row[6] != '-' ? parseFloat(row[6]) : 0;
+  //         food.carb = row[7] != '-' ? parseFloat(row[7]) : 0;
+  //         food.protein = row[5] != '-' ? parseFloat(row[5]) : 0;
+  //         food.fat = row[8] != '-' ? parseFloat(row[8]) : 0;
+  //         food.fiber = row[10] != '-' ? parseFloat(row[10]) : 0;
+  //         food.sodium = row[12] != '-' ? parseFloat(row[12]) : 0;
 
-          results.push(food);
-        })
-        .on('end', async () => {
-          // console.log('Dados de Food:', results);
-          try {
-            console.log('Seeding Foods Growth...\n');
-            await this.foodRepository.save(results);
+  //         results.push(food);
+  //       })
+  //       .on('end', async () => {
+  //         // console.log('Dados de Food:', results);
+  //         try {
+  //           console.log('Seeding Foods Growth...\n');
+  //           await this.foodRepository.save(results);
 
-            // await this.updateNullFieldsFoodToZero();
+  //           // await this.updateNullFieldsFoodToZero();
 
-            resolve();
-          } catch (error) {
-            console.error('Erro em seed foods growth:', error);
-            reject(error);
-          }
-        });
-    });
-  }
+  //           resolve();
+  //         } catch (error) {
+  //           console.error('Erro em seed foods growth:', error);
+  //           reject(error);
+  //         }
+  //       });
+  //   });
+  // }
 
   async updateNullFieldsFoodToZero(): Promise<void> {
     return new Promise(async (resolve, reject) => {
@@ -225,53 +225,53 @@ export class SeedService {
     });
   }
 
-  async seedMeasureFoodsGrowth(filePath: string): Promise<void> {
-    console.log('Seeding Measure Foods Growth...\n');
+  // async seedMeasureFoodsGrowth(filePath: string): Promise<void> {
+  //   console.log('Seeding Measure Foods Growth...\n');
 
-    return new Promise(async (resolve, reject) => {
-      fs.createReadStream(filePath)
-        .pipe(csvParser({ separator: ';', headers: false }))
-        .on('data', async (row) => {
-          // console.log('Linha do CSV:', row);
-          const measure = new Measure();
+  //   return new Promise(async (resolve, reject) => {
+  //     fs.createReadStream(filePath)
+  //       .pipe(csvParser({ separator: ';', headers: false }))
+  //       .on('data', async (row) => {
+  //         // console.log('Linha do CSV:', row);
+  //         const measure = new Measure();
 
-          const food = await this.foodRepository.findOneBy({
-            description: row[1],
-          });
+  //         const food = await this.foodRepository.findOneBy({
+  //           description: row[1],
+  //         });
 
-          const DESC = row[2];
+  //         const DESC = row[2];
 
-          const GRAMA = 'Grama';
-          const UNIDADE = 'Unidade';
-          const ML = 'Mililitro';
+  //         const GRAMA = 'Grama';
+  //         const UNIDADE = 'Unidade';
+  //         const ML = 'Mililitro';
 
-          if (food) {
-            measure.food = food;
-            measure.description = row[2] || '';
-            measure.amount = 100; // Regra de contexto
+  //         if (food) {
+  //           measure.food = food;
+  //           measure.description = row[2] || '';
+  //           measure.amount = 100; // Regra de contexto
 
-            if (
-              !DESC.includes(GRAMA) &&
-              !DESC.includes(UNIDADE) &&
-              !DESC.includes(ML)
-            ) {
-              await this.foodRepository.delete(food)
-              return;
-            }
+  //           if (
+  //             !DESC.includes(GRAMA) &&
+  //             !DESC.includes(UNIDADE) &&
+  //             !DESC.includes(ML)
+  //           ) {
+  //             await this.foodRepository.delete(food)
+  //             return;
+  //           }
 
-            try {
-              return await this.measureRepository.save(measure);
-            } catch (error) {
-              console.error('Erro em seed mesure foods growth:', error);
-              reject(error);
-            }
-          }
-        })
-        .on('end', async () => {
-          resolve();
-        });
-    });
-  }
+  //           try {
+  //             return await this.measureRepository.save(measure);
+  //           } catch (error) {
+  //             console.error('Erro em seed mesure foods growth:', error);
+  //             reject(error);
+  //           }
+  //         }
+  //       })
+  //       .on('end', async () => {
+  //         resolve();
+  //       });
+  //   });
+  // }
 
   async seedFoodsIbge(filePath: string): Promise<void> {
     return new Promise(async (resolve, reject) => {

@@ -13,11 +13,11 @@ import { FoodService } from './food.service';
 import { FoodDto } from './dtos/food.dto';
 import { FoodPaginationDto } from './dtos/food.pagination';
 
+@UseGuards(AuthGuard)
 @Controller('foods')
 export class FoodController {
   constructor(private readonly foodService: FoodService) {}
 
- @UseGuards(AuthGuard)
   @Get('')
   async getFoods(
     @Query('') paginationDto: FoodPaginationDto,
@@ -26,14 +26,12 @@ export class FoodController {
     return this.foodService.getFoods(paginationDto, search);
   }
 
-  @UseGuards(AuthGuard)
   @Get('/:id')
   async getFoodById(
     @Param('id') id: string
   ) {
     return this.foodService.getFoodById(id);
   }
-  @UseGuards(AuthGuard)
   @Get('/:idIbge')
   async getFoodByIdIbge(
     @Param('idIbge') idIbge: string

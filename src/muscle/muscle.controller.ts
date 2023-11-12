@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 import { MuscleService } from "./muscle.service";
 import { MuscleDto } from "./dtos/muscle.dto";
+import { AuthGuard } from "src/auth/auth.guard";
 
+@UseGuards(AuthGuard)
 @Controller('muscle')
 export class MuscleController {
   constructor(private readonly muscleService: MuscleService) { }

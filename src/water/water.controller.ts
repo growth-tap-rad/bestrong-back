@@ -1,13 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards, Request } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards, Request, Query } from "@nestjs/common";
 import { WaterService } from "./water.service";
 import { WaterDto } from "./dtos/water.dto";
 import { AuthGuard } from "src/auth/auth.guard";
 
+@UseGuards(AuthGuard)
 @Controller()
 export class WaterController {
     constructor(private readonly waterService: WaterService) { }
 
-    @UseGuards(AuthGuard)
     @Post('me/water')
     async createWater(
         @Body() waterData: WaterDto,
@@ -15,15 +15,13 @@ export class WaterController {
     ) {
         return this.waterService.createWater(waterData, request['user'])
     }
-    @UseGuards(AuthGuard)
     @Get('me/water')
     async getWater(
-        @Request() request: Request,
+        @Request() request: Request, @Query('date') date: string
     ) {
-        return this.waterService.getWater(request['user'])
+        return this.waterService.getWater(request['user'], date)
     }
 
-    @UseGuards(AuthGuard)
     @Delete('me/water/:id')
     async deleteWater(
         @Param('id') id: string

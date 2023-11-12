@@ -120,18 +120,6 @@ export class ProgressService {
       .getMany();
   }
 
-  // Rota vai ser mudada
-  async getProgresses(): Promise<Progress[]> {
-    const progresses = await this.progressRepository
-      .createQueryBuilder('progress')
-      .leftJoinAndSelect('progress.user', 'user')
-      .getMany();
-
-    return progresses.map((progress) => {
-      delete progress.user.password;
-      return progress;
-    });
-  }
   dailyGoalFormated(dailyGoal: number): number {
     return parseFloat(dailyGoal.toFixed(2));
   }

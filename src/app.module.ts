@@ -17,6 +17,7 @@ import { ExercisesModule } from './exercises/exercises.module';
 import { TrainsModule } from './trains/trains.module';
 import { TrainsExercisesModule } from './trains_exercises/trains_exercises.module';
 import { MuscleModule } from './muscle/muscle.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { MuscleModule } from './muscle/muscle.module';
       autoLoadEntities: Boolean(process.env.autoLoadEntities),
       synchronize: Boolean(process.env.synchronize),
     }),
+    ScheduleModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService],
