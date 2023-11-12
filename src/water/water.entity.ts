@@ -9,14 +9,13 @@ export class Water {
   @Column()
   consumed_water: number
 
-
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   created_at: Date;
+
   @ManyToOne(() => Diary, (diary) => diary.water)
   diary: Diary;
-
 
 }

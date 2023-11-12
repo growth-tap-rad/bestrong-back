@@ -22,7 +22,7 @@ export class TrainService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
-      .orderBy('diary.created_at', 'DESC')
+      .orderBy('diary.id', 'DESC')
       .getOne();
     newTrain.diary = foundUser.diary[0];
 

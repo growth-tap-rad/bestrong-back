@@ -21,13 +21,13 @@ export class TrainExercise {
   @Column({ default: "30" })
   rest_duration: number;
 
-  @Column({ default: "0" }) // tirar default
+  @Column()
   reps: number;
 
-  @Column({ default: "0" }) // tirar default
+  @Column()
   wheight: number;
 
-  @Column({ default: "1" }) 
+  @Column() 
   series: number;
 
   // @Column()
