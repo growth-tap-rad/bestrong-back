@@ -15,8 +15,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Growth Dieta e Treino"', () => {
-      expect(appController.getHello()).toBe("Growth Dieta e Treino");
+    it('should return "BeStrong Dieta e Treino"', () => {
+      expect(appController.getHello()).toBe("BeStrong Dieta e Treino");
     });
   });
 });
