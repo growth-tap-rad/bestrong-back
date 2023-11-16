@@ -8,6 +8,7 @@ import {
   Param,
   Put,
   Delete,
+  Query
 } from '@nestjs/common';
 import { TrainService } from './trains.service';
 import { TrainDto } from './dtos/train.dto';
@@ -24,8 +25,11 @@ export class TrainsController {
   }
 
   @Get('')
-  async getTrains(@Request() request: Request) {
-    return this.trainService.getTrains(request['user']);
+  async getTrains(
+    @Request() request: Request,
+    @Query('date') date: string
+  ) {
+    return this.trainService.getTrains(date, request['user']);
   }
 
   @Get('/:id')
