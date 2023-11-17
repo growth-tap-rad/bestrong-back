@@ -4,7 +4,7 @@ import { TrainExerciseDto } from "./dtos/train_exercise.dto";
 import { AuthGuard } from "src/auth/auth.guard";
 
 @UseGuards(AuthGuard)
-@Controller('trains_exercises')
+@Controller('me/trains_exercises')
 export class TrainsExercisesController {
   constructor(private readonly trainsExercisesService: TrainsExercisesService) { }
 

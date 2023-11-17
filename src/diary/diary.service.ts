@@ -23,7 +23,7 @@ export class DiaryService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Meal)
     private readonly mealsRepository: Repository<Meal>,
-  ) {}
+  ) { }
 
   async createDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
     const newDiary = new Diary();
@@ -89,7 +89,6 @@ export class DiaryService {
         'Diário não encontrado para a data especificada',
       );
     }
-
     return diary;
   }
 
@@ -125,7 +124,7 @@ export class DiaryService {
   //@Cron('20 * * * * *') // para testar 20s
   async handleCron() {
     const users = await this.usersRepository.find({});
-    //console.log('\ncron-job\n');
+    console.log('\ncron-job\n');
     if (!users) {
       return;
     }

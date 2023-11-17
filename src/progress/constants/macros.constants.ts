@@ -54,60 +54,59 @@
 //   },
 // };
 
-//Testar estes macros
 
 export const MACROS = {
   low: {
     gain: {
-      protein: 2 / 6, // 33%
-      carb: 4 / 6, // 66.67%
-      fat: 1 / 6, // 16.67%
+      protein: 2 / 7,
+      carb: 4 / 7,
+      fat: 1 / 7,
     },
     maintain: {
-      protein: 2 / 5, // 40%
-      carb: 2 / 5, // 40%
-      fat: 1 / 5, //40%
+      protein: 2 / 5,
+      carb: 2 / 5,
+      fat: 1 / 5,
     },
     lose: {
-      protein: 2.1 / 4.5, // 46.67%
-      carb: 1.6 / 4.5, // 35.56%
-      fat: 0.8 / 4.5, // 17.78%
+      protein: 1.9 / 4.5,
+      carb: 1.6 / 4.5,
+      fat: 1 / 4.5,
     },
   },
 
   moderate: {
     gain: {
-      protein: 2 / 6, // 33%
-      carb: 4 / 6, // 66.67%
-      fat: 1 / 6, // 16.67%
+      protein: 2.1 / 7.1,
+      carb: 4 / 7.1,
+      fat: 1 / 7.1,
     },
     maintain: {
-      protein: 2 / 5, // 40%
-      carb: 2 / 5, // 40%
-      fat: 1 / 5, //40%
+      protein: 2 / 5,
+      carb: 2 / 5,
+      fat: 1 / 5,
     },
     lose: {
-      protein: 2 / 4.5, // 44.44%
-      carb: 1.7 / 4.5, // 37.78%
-      fat: 0.8 / 4.5, //17.78%
+      protein: 1.9 / 4.5,
+      carb: 1.6 / 4.5,
+      fat: 1 / 4.5,
     },
   },
 
   intense: {
     gain: {
-      protein: 2 / 6, // 33%
-      carb: 4 / 6, // 66.67%
-      fat: 1 / 6, // 16.67%
+      protein: 2.1 / 7.1,
+      carb: 4 / 7.1,
+      fat: 1 / 7.1,
     },
     maintain: {
-      protein: 2 / 5, // 40%
-      carb: 2 / 5, // 40%
-      fat: 1 / 5, //40%
+      protein: 2 / 5,
+      carb: 2 / 5,
+      fat: 1 / 5,
     },
     lose: {
-      protein: 2 / 4.6, // 43.48%
-      carb: 1.8 / 4.6, // 39.13%
-      fat: 0.8 / 4.6, // 17.39%
+      protein: 2 / 4.6,
+      carb: 1.6 / 4.6,
+      fat: 1 / 4.6,
     },
   },
 };
