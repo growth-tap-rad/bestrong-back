@@ -22,7 +22,7 @@ export class SeedService {
     @InjectRepository(Exercise)
     private readonly exerciseRepository: Repository<Exercise>,
     private readonly entityManager: EntityManager,
-  ) {}
+  ) { }
 
   async seed(): Promise<string> {
     try {
@@ -42,11 +42,11 @@ export class SeedService {
         'src/assets/seeds/alimentos_growth.csv',
       );
 
-      //await this.seedFoodsIbge('src/assets/seeds/ibge.csv'); // quebrando
+      await this.seedFoodsIbge('src/assets/seeds/ibge.csv'); 
 
       await this.updateNullFieldsFoodToZero();
 
-      //await this.seedMeasureIbge('src/assets/seeds/ibge_medidas.csv'); // quebrando
+      await this.seedMeasureIbge('src/assets/seeds/ibge_medidas.csv');
 
       await this.seedMuscles();
       await this.seedExercises();
@@ -115,7 +115,7 @@ export class SeedService {
             }
           } catch (error) {
             console.error(
-              'Erro em seed measure products growth row:',
+              'Erro em seed products growth row:',
               row[1],
               'error:',
               error,
@@ -181,7 +181,7 @@ export class SeedService {
             }
           } catch (error) {
             console.error(
-              'Erro em seed measure foods growth row:',
+              'Erro em seed foods growth row:',
               row[1],
               'error:',
               error,
@@ -380,129 +380,140 @@ export class SeedService {
     });
   }
 
-  // async seedFoodsIbge(filePath: string): Promise<void> {
-  //   return new Promise(async (resolve, reject) => {
-  //     const results = [];
+  async seedFoodsIbge(filePath: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      const batchSize = 1000;
+      let results = [];
 
-  //     fs.createReadStream(filePath)
-  //       .pipe(csvParser({ separator: ';', headers: false }))
-  //       .on('data', (row) => {
-  //         // console.log('Linha do CSV:', row);
+      console.log('Seeding Foods ibge...');
+      console.time('time food ibge');
 
-  //         //const rowArray = Object.values(row);
-  //         const food = new Food();
+      fs.createReadStream(filePath)
+        .pipe(csvParser({ separator: ';', headers: false }))
+        .on('data', async (row) => {
+          try {
+            // console.log('Linha do CSV:', row);
+            const food = new Food();
 
-  //         // para melhor entendimento, e testes
-  //         //console.log(rowArray);
-  //         //console.log(rowArray.slice(rowArray.indexOf('-') + 1))
-  //         // if (row[1] != 6300101) {
-  //         //   return;
-  //         // }
+            food.id_ibge = row[1] || '';
+            food.description = row[2] || '';
+            food.energy = row[4] != '-' ? parseFloat(row[4]) / 100 : 0;
+            food.carb = row[7] != '-' ? parseFloat(row[7]) / 100 : 0;
+            food.protein = row[5] != '-' ? parseFloat(row[5]) / 100 : 0;
+            food.fat = row[6] != '-' ? parseFloat(row[6]) / 100 : 0;
+            food.fat_sat = row[33] != '-' ? parseFloat(row[33]) / 100 : 0;
+            food.fat_trans = row[38] != '-' ? parseFloat(row[38]) / 100 : 0;
+            food.fiber = row[8] != '-' ? parseFloat(row[8]) / 100 : 0;
+            food.sugar = row[39] != '-' ? parseFloat(row[39]) / 100 : 0;
+            food.sodium = row[14] != '-' ? parseFloat(row[14]) / 100 : 0;
+            food.calcium = row[9] != '-' ? parseFloat(row[9]) / 100 : 0;
+            food.iron = row[13] != '-' ? parseFloat(row[13]) / 100 : 0;
 
-  //         food.id_ibge = row[1] || '';
-  //         food.description = row[2] || '';
-  //         food.energy = row[4] != '-' ? parseFloat(row[4]) : 0;
-  //         food.carb = row[7] != '-' ? parseFloat(row[7]) : 0;
-  //         food.protein = row[5] != '-' ? parseFloat(row[5]) : 0;
-  //         food.fat = row[6] != '-' ? parseFloat(row[6]) : 0;
-  //         food.fat_sat = row[33] != '-' ? parseFloat(row[33]) : 0;
-  //         food.fat_trans = row[38] != '-' ? parseFloat(row[38]) : 0;
-  //         food.fiber = row[8] != '-' ? parseFloat(row[8]) : 0;
-  //         food.sugar = row[39] != '-' ? parseFloat(row[39]) : 0;
-  //         food.sodium = row[14] != '-' ? parseFloat(row[14]) : 0;
-  //         food.calcium = row[9] != '-' ? parseFloat(row[9]) : 0;
-  //         food.iron = row[13] != '-' ? parseFloat(row[13]) : 0;
+            // DIVIDIR VALOR POR 100 AI VAI SER EM GRAMAS JG.. ja fazend
+            results.push(food);
 
-  //         results.push(food);
+            
+            if (results.length === batchSize) {
+              await this.entityManager.transaction(
+                async (transactionalEntityManager) => {
+                  await transactionalEntityManager.save(Food, results);
+                },
+              );
 
-  //         // Tem mais de um alimentos apos o "-", por isso adicionar mais de uma medida
-  //         // nao vai funcionar, e como nao  tem padrao no csv de aliemtnos
-  //         // nao sei qual parte vai ser grama, unidade pedaço ou etc..
+              results = [];
+            }
+          } catch (error) {
+            console.error(
+              'Erro em seed foods ibge row:',
+              row[1],
+              'error:',
+              error,
+            );
+            reject(error);
+          }
 
-  //         // if (rowArray.includes('-')) {
-  //         //   results.push(food);
-  //         //   const remainingFields = rowArray.slice(rowArray.indexOf('-') + 1);
 
-  //         //   const newFood = {
-  //         //     ...food,
-  //         //     id_ibge: String(remainingFields[0] || ''),
-  //         //   } as Food;
+        })
+        .on('end', async () => {
+          try {
+            if (results.length > 0) {
+              await this.entityManager.transaction(
+                async (transactionalEntityManager) => {
+                  await transactionalEntityManager.save(Food, results);
+                },
+              );
+            }
 
-  //         //   results.push(newFood);
-  //         // } else {
-  //         //   results.push(food);
-  //         // }
-  //       })
-  //       .on('end', async () => {
-  //         // console.log('Dados de Food Ibge:', results);
-  //         try {
-  //           console.log('Seeding Foods Ibge...\n');
-  //           await this.foodRepository.save(results);
+            console.timeEnd('time food ibge');
+            console.log('>Finished foods ibge seed. \n');
 
-  //           // await this.updateNullFieldsFoodToZero();
+            resolve();
+          } catch (error) {
+            console.error('Erro em seed foods ibge:', error);
+            reject(error);
+          }
+        });
+    });
+  }
 
-  //           resolve();
-  //         } catch (error) {
-  //           console.error('Erro em seed ibge foods:', error);
-  //           reject(error);
-  //         }
-  //       });
-  //   });
-  // }
+  async seedMeasureIbge(filePath: string): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      console.log('Seeding Measure Ibge...');
+      console.time('time measure ibge');
 
-  // async seedMeasureIbge(filePath: string): Promise<void> {
-  //   console.log('Seeding Measure Ibge...\n');
+      fs.createReadStream(filePath)
+        .pipe(csvParser({ separator: ';', headers: false }))
+        .on('data', async (row) => {
+          //console.log('Linha do CSV:', row);
+          const measure = new Measure();
 
-  //   return new Promise(async (resolve, reject) => {
-  //     fs.createReadStream(filePath)
-  //       .pipe(csvParser({ separator: ';', headers: false }))
-  //       .on('data', async (row) => {
-  //         //console.log('Linha do CSV:', row);
-  //         const measure = new Measure();
+          const food = await this.foodRepository.findOneBy({
+            id_ibge: row[0],
+          });
 
-  //         const food = await this.foodRepository.findOneBy({
-  //           id_ibge: row[0],
-  //         });
+          const DESC = row[2];
+          const AMOUNT = row[3];
 
-  //         const DESC = row[2];
-  //         const AMOUNT = row[3];
+          const GRAMA = 'Grama';
+          const ML = 'Mililitro';
 
-  //         const GRAMA = 'Grama';
-  //         const UNIDADE = 'Unidade';
-  //         const ML = 'Mililitro';
+          if (food) {
+            if (
+              !DESC.includes(GRAMA) &&
+              !DESC.includes(ML)
+            ) {
+             // await this.foodRepository.delete(food) // estava quebrando
+              return;
+            }
 
-  //         if (food) {
-  //           if (
-  //             !DESC.includes(GRAMA) &&
-  //             !DESC.includes(UNIDADE) &&
-  //             !DESC.includes(ML)
-  //           ) {
-  //             // await this.foodRepository.delete(food) // estava quebrando
-  //             return;
-  //           }
+            measure.food = food;
+            measure.description = DESC || '';
+            measure.amount = parseFloat(AMOUNT) || 1;
 
-  //           measure.food = food;
-  //           measure.description = DESC || '';
-  //           measure.amount = parseFloat(AMOUNT) || 1;
+            // if (!measure.description) {
+            //   return;
+            // }
 
-  //           // if (!measure.description) {
-  //           //   return;
-  //           // }
+            try {
+              await this.measureRepository.save(measure);
+            } catch (error) {
+              console.error(
+                'Erro em seed mesure foods ibge: row:',
+                row[1],
+                'error:',
+                error,
+              );
+              reject(error);
+            }
+          }
+        })
 
-  //           try {
-  //             await this.measureRepository.save(measure);
-  //             // console.log('\n -Seed finished- \n');
-  //           } catch (error) {
-  //             console.error('Erro em seed mesure foods ibge:', error);
-  //             reject(error);
-  //           }
-  //         }
-  //       })
-  //       .on('end', async () => {
-  //         resolve();
-  //       });
-  //   });
-  // }
+        resolve();
+
+        console.timeEnd('time measure ibge');
+        console.log('>Finished measure ibge seed. \n');
+    });
+  }
 
   async seedMuscles(): Promise<void> {
     return new Promise(async (resolve, reject) => {
