@@ -11,4 +11,9 @@ export class SeedController {
   async seed() {
     return await this.seedService.seed();
   }
+
+  @Get('/truncate')
+  async truncateSeededTables() {
+    return await this.seedService.truncateSeededTables();
+  }
 }

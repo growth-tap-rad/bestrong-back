@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Train } from './train.entity';
 import { TrainDto } from './dtos/train.dto';
@@ -17,25 +17,47 @@ export class TrainService {
     let newTrain = new Train();
     Object.assign(newTrain, trainDto);
 
+    const dateValid = new Date(trainDto.date + 'T00:00:00.000');
+    dateValid.setHours(0, 0, 0, 0);
     const foundUser = await this.userRepository
 
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
+      .where('diary.userId = :userId', { userId: user.id })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
       .orderBy('diary.id', 'DESC')
       .getOne();
+
+    if (!foundUser) {
+      throw new NotFoundException(
+        'Diário não encontrado para a data especificada',
+      );
+    }
     newTrain.diary = foundUser.diary[0];
 
     return this.trainsRepository.save(newTrain);
   }
 
-  async getTrains(user: User): Promise<Train[]> {
+  async getTrains(date: string, user: User): Promise<Train[]> {
+
+
+
+    const dateValid = new Date(date + 'T00:00:00.000');
+    dateValid.setHours(0, 0, 0, 0);
+  
+
     return await this.trainsRepository
       .createQueryBuilder('train')
       .leftJoinAndSelect('train.diary', 'diary')
       .leftJoinAndSelect('train.trains_exercises', 'trains_exercises')
-      .where('diary.id = :userId', { userId: user.id })
-      .orderBy('diary.id', 'DESC')
+      .where('diary.userId = :userId', { userId: user.id })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+  
       .getMany();
 
   }

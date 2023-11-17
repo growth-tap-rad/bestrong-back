@@ -18,8 +18,11 @@ export class Exercise {
   @Column()
   name: string;
 
-  @Column({default: 'all'})
+  @Column({ default: 'all' })
   level: string;
+
+  @Column({ nullable: true })
+  muscleId: number;
 
   @CreateDateColumn({
     type: 'timestamp',
