@@ -20,7 +20,10 @@ export class TrainsController {
   constructor(private readonly trainService: TrainService) { }
 
   @Post('')
-  async createTrain(@Body() trainsDto: TrainDto, @Request() request: Request) {
+  async createTrain(
+    @Body() trainsDto: TrainDto,
+    @Request() request: Request
+  ) {
     return this.trainService.createTrain(trainsDto, request['user']);
   }
 

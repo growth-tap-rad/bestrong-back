@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "src/users/user.entity";
@@ -15,19 +15,31 @@ export class MealService {
   async createMeal(mealDto: MealDto, user: User): Promise<Meal> {
 
     let newMeal = new Meal();
-    const foundUser = await this.userRepository
 
+    const dateValid = new Date(mealDto.date + 'T00:00:00.000');
+    dateValid.setHours(0, 0, 0, 0);
+
+    const foundUser = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
+      .where('diary.userId = :userId', { userId: user.id })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
       .orderBy('diary.id', 'DESC')
       .getOne();
 
+
+    if (!foundUser) {
+      throw new NotFoundException(
+        'Diário não encontrado para a data especificada',
+      );
+    }
     Object.assign(newMeal, mealDto)
-
     newMeal.diary = foundUser.diary[0]
-
     return this.mealRepository.save(newMeal);
+    
   }
   async findMeal(id: string): Promise<Meal> {
     return await this.mealRepository
@@ -48,7 +60,7 @@ export class MealService {
     return await this.mealRepository.save(meal)
   }
 
-  async deleteMeal(id: string){
+  async deleteMeal(id: string) {
     return await this.mealRepository.delete(id)
   }
 
