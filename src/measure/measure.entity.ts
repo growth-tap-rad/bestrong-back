@@ -19,7 +19,7 @@ export class Measure {
   @Column()
   description: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true, default: "1" })
   amount: number | null;
 
   @CreateDateColumn({
