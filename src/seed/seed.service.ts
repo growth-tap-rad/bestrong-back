@@ -9,6 +9,7 @@ import { Muscle } from 'src/muscle/muscle.entity';
 import { EXERCISES } from './definitions/Exercises';
 import { Exercise } from 'src/exercises/exercise.entity';
 import { EntityManager } from 'typeorm';
+import { Readable } from 'typeorm/platform/PlatformTools';
 
 @Injectable()
 export class SeedService {
@@ -22,11 +23,12 @@ export class SeedService {
     @InjectRepository(Exercise)
     private readonly exerciseRepository: Repository<Exercise>,
     private readonly entityManager: EntityManager,
-  ) { }
+  ) {}
 
   async seed(): Promise<string> {
     try {
       console.time('SeedTime');
+      console.log('\nSeeding...\n');
 
       await this.seedFoodProductsGrowth(
         'src/assets/seeds/planilha_produtos_growth.csv',
@@ -42,14 +44,15 @@ export class SeedService {
         'src/assets/seeds/alimentos_growth.csv',
       );
 
-      await this.seedFoodsIbge('src/assets/seeds/ibge.csv'); 
-
-      await this.updateNullFieldsFoodToZero();
+      await this.seedFoodsIbge('src/assets/seeds/ibge.csv');
 
       await this.seedMeasureIbge('src/assets/seeds/ibge_medidas.csv');
 
       await this.seedMuscles();
+
       await this.seedExercises();
+
+      // await this.updateNullFieldsFoodToZero();
 
       console.timeEnd('SeedTime');
       console.log('Seeds Successfull Finished!');
@@ -66,13 +69,14 @@ export class SeedService {
 
     try {
       const tables = ['measure', 'food', 'exercise', 'muscle'];
+      await this.entityManager.query('SET foreign_key_checks = 0');
 
       for (const table of tables) {
-        await this.entityManager.query('SET foreign_key_checks = 0');
         await this.entityManager.query(`TRUNCATE TABLE ${table}`);
         console.log(`Droped rows from: ${table} \n`);
       }
 
+      await this.entityManager.query('SET foreign_key_checks = 1');
       console.timeEnd('time truncate');
       return `Truncates Successfull Finished!`;
     } catch (error) {
@@ -83,7 +87,7 @@ export class SeedService {
 
   async seedFoodProductsGrowth(filePath: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      const batchSize = 1000;
+      const batchSize = 100;
       let results = [];
 
       console.log('Seeding Products Growth...');
@@ -147,7 +151,7 @@ export class SeedService {
 
   async seedFoodFoodsGrowth(filePath: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      const batchSize = 1000;
+      const batchSize = 100;
       let results = [];
 
       console.log('Seeding Foods Growth...');
@@ -157,6 +161,9 @@ export class SeedService {
         .pipe(csvParser({ separator: ';', headers: false }))
         .on('data', async (row) => {
           try {
+            const existingFood = results.find((f) => f.description === row[1]);
+            if (existingFood) return;
+
             // console.log('Linha do CSV:', row);
             const food = new Food();
 
@@ -304,7 +311,7 @@ export class SeedService {
               return;
             }
 
-            this.measureRepository.save(measure);
+            await this.measureRepository.save(measure);
           } catch (error) {
             console.error(
               'Erro em seed measure products growth row:',
@@ -382,7 +389,7 @@ export class SeedService {
 
   async seedFoodsIbge(filePath: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
-      const batchSize = 1000;
+      const batchSize = 100;
       let results = [];
 
       console.log('Seeding Foods ibge...');
@@ -410,9 +417,9 @@ export class SeedService {
             food.iron = row[13] != '-' ? parseFloat(row[13]) / 100 : 0;
 
             // DIVIDIR VALOR POR 100 AI VAI SER EM GRAMAS JG.. ja fazend
+            // Testar...
             results.push(food);
 
-            
             if (results.length === batchSize) {
               await this.entityManager.transaction(
                 async (transactionalEntityManager) => {
@@ -431,8 +438,6 @@ export class SeedService {
             );
             reject(error);
           }
-
-
         })
         .on('end', async () => {
           try {
@@ -478,11 +483,8 @@ export class SeedService {
           const ML = 'Mililitro';
 
           if (food) {
-            if (
-              !DESC.includes(GRAMA) &&
-              !DESC.includes(ML)
-            ) {
-             // await this.foodRepository.delete(food) // estava quebrando
+            if (!DESC.includes(GRAMA) && !DESC.includes(ML)) {
+              // await this.foodRepository.delete(food) // estava quebrando
               return;
             }
 
@@ -506,12 +508,12 @@ export class SeedService {
               reject(error);
             }
           }
-        })
+        });
 
-        resolve();
+      resolve();
 
-        console.timeEnd('time measure ibge');
-        console.log('>Finished measure ibge seed. \n');
+      console.timeEnd('time measure ibge');
+      console.log('>Finished measure ibge seed. \n');
     });
   }
 
@@ -576,7 +578,7 @@ export class SeedService {
           ex.muscle = muscles[index];
         });
 
-        const batchSize = 100;
+        const batchSize = 20;//47
         const savePromises = [];
 
         for (let i = 0; i < exercisesArray.length; i += batchSize) {
@@ -602,4 +604,14 @@ export class SeedService {
       }
     });
   }
+
+  // convertToCSV(arr) {
+  //   const array = [Object.keys(arr[0])].concat(arr);
+
+  //   return array
+  //     .map((it) => {
+  //       return Object.values(it).map(String).join(';');
+  //     })
+  //     .join('\n');
+  // }
 }
