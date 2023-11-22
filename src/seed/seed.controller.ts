@@ -1,8 +1,8 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { SeedService } from './seed.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 
-@UseGuards(AuthGuard)
+//@UseGuards(AuthGuard)
 @Controller('seeds')
 export class SeedController {
   constructor(private readonly seedService: SeedService) {}
@@ -21,5 +21,10 @@ export class SeedController {
   async truncateSeed() {
     await this.seedService.truncateSeededTables();
     return await this.seedService.seed();
+  }
+
+  @Get('/truncate/:table')
+  async truncate(@Param('table') table: string) {
+    await this.seedService.truncate(table);
   }
 }
