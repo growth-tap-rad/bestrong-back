@@ -34,6 +34,9 @@ export class User {
   @Column()
   birthday: Date;
 
+  @Column({default: ""})
+  avatar:string;
+
   @Column({
     type: 'enum',
     enum: GenderEnum,

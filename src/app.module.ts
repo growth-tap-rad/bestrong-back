@@ -13,6 +13,7 @@ import { FoodModule } from './food/food.module';
 import { MealFoodModule } from './meal_food/meal_food.module';
 import { MeasureModule } from './measure/measure.module';
 import { SeedModule } from './seed/seed.module';
+import { UploadModule } from './upload/upload.module';
 import { ExercisesModule } from './exercises/exercises.module';
 import { TrainsModule } from './trains/trains.module';
 import { TrainsExercisesModule } from './trains_exercises/trains_exercises.module';
@@ -35,6 +36,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     TrainsModule,
     TrainsExercisesModule,
     MuscleModule,
+    UploadModule,
     RouterModule.register([
       {
         path: 'users',
@@ -55,6 +57,10 @@ import { ScheduleModule } from '@nestjs/schedule';
           {
             path: '/',
             module: WaterModule,
+          },
+          {
+            path: '/',
+            module:UploadModule
           },
           {
             path: '/',
