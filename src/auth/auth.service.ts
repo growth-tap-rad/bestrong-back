@@ -16,10 +16,10 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private usersRepository: Repository<User>,
     private jwtService: JwtService,
-  ) {}
+  ) { }
   async signIn(userDto: UserDto): Promise<AuthDto> {
     const user = await this.usersRepository.findOneBy({
-      email: userDto.email,
+      email: userDto.email.toLowerCase(),
     });
     if (!user) {
       throw new UnauthorizedException('Credenciais inválidas');
@@ -79,8 +79,8 @@ export class AuthService {
     if (errors.length > 0) {
       throw new BadRequestException(errors.join(' '));
     }
-    Object.assign(newUser,user)
-
+    Object.assign(newUser, user)
+    newUser.email = user.email.toLowerCase();
     newUser.password = await hashPassword(user.password);
     const userToSend = await this.usersRepository.save(newUser);
     const accessToken = await this.jwtService.signAsync({
