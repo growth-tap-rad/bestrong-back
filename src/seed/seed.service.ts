@@ -85,6 +85,25 @@ export class SeedService {
     }
   }
 
+  async truncate(table: string): Promise<string> {
+    console.time('time truncate table');
+    console.log(`Truncating table ${table}...`);
+
+    try {
+      await this.entityManager.query('SET foreign_key_checks = 0');
+
+      await this.entityManager.query(`TRUNCATE TABLE ${table}`);
+      console.log(`Droped rows from: ${table} \n`);
+
+      await this.entityManager.query('SET foreign_key_checks = 1');
+      console.timeEnd('time truncate table');
+      return `Truncate Successfull Finished!`;
+    } catch (error) {
+      console.error('Error deleting table:', error);
+      throw error;
+    }
+  }
+
   async seedFoodProductsGrowth(filePath: string): Promise<void> {
     return new Promise(async (resolve, reject) => {
       const batchSize = 100;
@@ -161,19 +180,19 @@ export class SeedService {
         .pipe(csvParser({ separator: ';', headers: false }))
         .on('data', async (row) => {
           try {
-            const existingFood = results.find((f) => f.description === row[1]);
-            if (existingFood) return;
+            // const existingFood = results.find((f) => f.description === row[1]);
+            // if (existingFood) return;
 
             // console.log('Linha do CSV:', row);
             const food = new Food();
 
             food.description = row[1] || '';
-            food.energy = row[6] != '-' ? parseFloat(row[6]) : 0;
-            food.carb = row[7] != '-' ? parseFloat(row[7]) : 0;
-            food.protein = row[5] != '-' ? parseFloat(row[5]) : 0;
-            food.fat = row[8] != '-' ? parseFloat(row[8]) : 0;
-            food.fiber = row[10] != '-' ? parseFloat(row[10]) : 0;
-            food.sodium = row[12] != '-' ? parseFloat(row[12]) : 0;
+            food.energy = row[6] != '-' ? parseFloat(row[6]) / 100 : 0;
+            food.carb = row[7] != '-' ? parseFloat(row[7]) / 100 : 0;
+            food.protein = row[5] != '-' ? parseFloat(row[5]) / 100 : 0;
+            food.fat = row[8] != '-' ? parseFloat(row[8]) / 100 : 0;
+            food.fiber = row[10] != '-' ? parseFloat(row[10]) / 100 : 0;
+            food.sodium = row[12] != '-' ? parseFloat(row[12]) / 100 : 0;
 
             results.push(food);
 
@@ -272,7 +291,7 @@ export class SeedService {
     return new Promise(async (resolve, reject) => {
       console.log('Seeding Measure Products Growth...');
       console.time('time measure prods growth');
-
+      await this.entityManager.query('SET foreign_key_checks = 0');
       fs.createReadStream(filePath)
         .pipe(csvParser({ separator: ';', headers: false }))
         .on('data', async (row) => {
@@ -296,7 +315,7 @@ export class SeedService {
             const CAPS = 'capsulas';
 
             measure.food = food;
-            measure.description = row[2] || '';
+            measure.description = row[2];
             measure.amount = parseFloat(row[3]) || 1;
 
             if (
@@ -307,11 +326,11 @@ export class SeedService {
                 DESC.includes(CAPS)
               )
             ) {
-              await this.foodRepository.delete(food);
+              // await this.entityManager.delete(Food, food);
               return;
             }
 
-            await this.measureRepository.save(measure);
+            await this.entityManager.save(Measure, measure);
           } catch (error) {
             console.error(
               'Erro em seed measure products growth row:',
@@ -321,12 +340,13 @@ export class SeedService {
             );
             reject(error);
           }
+        })
+        .on('end', async () => {
+          console.timeEnd('time measure prods growth');
+          console.log('>Finished measure products growth seed. \n');
+          await this.entityManager.query('SET foreign_key_checks = 1');
+          resolve();
         });
-
-      resolve();
-
-      console.timeEnd('time measure prods growth');
-      console.log('>Finished measure products growth seed. \n');
     });
   }
 
@@ -335,6 +355,7 @@ export class SeedService {
       console.log('Seeding Measure Foods Growth...');
       console.time('time measure foods growth');
 
+      await this.entityManager.query('SET foreign_key_checks = 0');
       fs.createReadStream(filePath)
         .pipe(csvParser({ separator: ';', headers: false }))
         .on('data', async (row) => {
@@ -346,30 +367,29 @@ export class SeedService {
               description: row[1],
             });
 
-            if (food) {
-              measure.food = food;
-              measure.description = row[2] || '';
-              measure.amount = 100; // Regra de contexto
+            if (!food) return;
 
-              const DESC = row[2];
+            const DESC = row[2];
+            const GRAMA = 'Grama';
+            const UNIDADE = 'Unidade';
+            const ML = 'Mililitro';
 
-              const GRAMA = 'Grama';
-              const UNIDADE = 'Unidade';
-              const ML = 'Mililitro';
+            measure.food = food;
+            measure.description = row[2];
+            measure.amount = 1; // 100 // Regra de contexto
 
-              if (
-                !(
-                  DESC.includes(GRAMA) ||
-                  DESC.includes(UNIDADE) ||
-                  DESC.includes(ML)
-                )
-              ) {
-                await this.foodRepository.delete(food);
-                return;
-              }
-
-              await this.measureRepository.save(measure);
+            if (
+              !(
+                DESC.includes(GRAMA) ||
+                DESC.includes(UNIDADE) ||
+                DESC.includes(ML)
+              )
+            ) {
+              //await this.entityManager.delete(Food, food);
+              return;
             }
+
+            await this.entityManager.save(Measure, measure);
           } catch (error) {
             console.error(
               'Erro em seed measure foods growth row:',
@@ -379,11 +399,13 @@ export class SeedService {
             );
             reject(error);
           }
+        })
+        .on('end', async () => {
+          console.timeEnd('time measure foods growth');
+          console.log('>Finished measure foods growth seed. \n');
+          await this.entityManager.query('SET foreign_key_checks = 1');
+          resolve();
         });
-
-      console.timeEnd('time measure foods growth');
-      console.log('>Finished measure foods growth seed. \n');
-      resolve();
     });
   }
 
@@ -399,11 +421,13 @@ export class SeedService {
         .pipe(csvParser({ separator: ';', headers: false }))
         .on('data', async (row) => {
           try {
+            // const existingFood = results.find((f) => f.description === row[2]);
+            // if (existingFood) return;
             // console.log('Linha do CSV:', row);
             const food = new Food();
 
             food.id_ibge = row[1] || '';
-            food.description = row[2] || '';
+            food.description = row[2];
             food.energy = row[4] != '-' ? parseFloat(row[4]) / 100 : 0;
             food.carb = row[7] != '-' ? parseFloat(row[7]) / 100 : 0;
             food.protein = row[5] != '-' ? parseFloat(row[5]) / 100 : 0;
@@ -418,6 +442,7 @@ export class SeedService {
 
             // DIVIDIR VALOR POR 100 AI VAI SER EM GRAMAS JG.. ja fazend
             // Testar...
+
             results.push(food);
 
             if (results.length === batchSize) {
@@ -465,7 +490,7 @@ export class SeedService {
     return new Promise(async (resolve, reject) => {
       console.log('Seeding Measure Ibge...');
       console.time('time measure ibge');
-
+      await this.entityManager.query('SET foreign_key_checks = 0');
       fs.createReadStream(filePath)
         .pipe(csvParser({ separator: ';', headers: false }))
         .on('data', async (row) => {
@@ -476,44 +501,41 @@ export class SeedService {
             id_ibge: row[0],
           });
 
+          if (!food) return;
+
           const DESC = row[2];
           const AMOUNT = row[3];
 
           const GRAMA = 'Grama';
           const ML = 'Mililitro';
 
-          if (food) {
-            if (!DESC.includes(GRAMA) && !DESC.includes(ML)) {
-              // await this.foodRepository.delete(food) // estava quebrando
-              return;
-            }
-
-            measure.food = food;
-            measure.description = DESC || '';
-            measure.amount = parseFloat(AMOUNT) || 1;
-
-            // if (!measure.description) {
-            //   return;
-            // }
-
-            try {
-              await this.measureRepository.save(measure);
-            } catch (error) {
-              console.error(
-                'Erro em seed mesure foods ibge: row:',
-                row[1],
-                'error:',
-                error,
-              );
-              reject(error);
-            }
+          if (!(DESC.includes(GRAMA) || DESC.includes(ML))) {
+            //await this.entityManager.delete(Food, food); // estava quebrando
+            return;
           }
+
+          measure.food = food;
+          measure.description = DESC || '';
+          measure.amount = parseFloat(AMOUNT) || 1;
+
+          try {
+            await this.entityManager.save(Measure, measure);
+          } catch (error) {
+            console.error(
+              'Erro em seed mesure foods ibge: row:',
+              row[1],
+              'error:',
+              error,
+            );
+            reject(error);
+          }
+        })
+        .on('end', async () => {
+          console.timeEnd('time measure ibge');
+          console.log('>Finished measure ibge seed. \n');
+          await this.entityManager.query('SET foreign_key_checks = 1');
+          resolve();
         });
-
-      resolve();
-
-      console.timeEnd('time measure ibge');
-      console.log('>Finished measure ibge seed. \n');
     });
   }
 
@@ -578,7 +600,7 @@ export class SeedService {
           ex.muscle = muscles[index];
         });
 
-        const batchSize = 20;//47
+        const batchSize = 20; //47
         const savePromises = [];
 
         for (let i = 0; i < exercisesArray.length; i += batchSize) {

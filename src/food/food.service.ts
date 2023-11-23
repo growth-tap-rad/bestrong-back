@@ -3,34 +3,41 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Food } from './food.entity';
 import { FoodPaginationDto } from './dtos/food.pagination';
-
+import { Measure } from 'src/measure/measure.entity';
 
 @Injectable()
 export class FoodService {
   constructor(
+   @InjectRepository(Measure) private readonly measureRepository: Repository<Measure>,
     @InjectRepository(Food) private readonly foodRepository: Repository<Food>,
   ) { }
-  async getFoods(pageDto: FoodPaginationDto, search: string): Promise<Food[]> {
+   
+  ) {}
 
+  async getFoods(pageDto: FoodPaginationDto, search: string): Promise<Food[]> {
     const pagination = {
       page: pageDto?.page || 0,
       limit: pageDto?.limit || 20,
     };
 
     let query = this.foodRepository
-
       .createQueryBuilder('food')
-      .skip(pagination.page)
-      .take(pagination.limit)
-      .orderBy('food.description');
+      .innerJoin('food.measures', 'measure');
 
     if (search) {
-      query = query.andWhere('food.description LIKE :description', {
-        description: `%${search}%`,
-      });
+      query = query.andWhere(
+        'LOWER(food.description) LIKE LOWER(:description)',
+        {
+          description: `%${search.toLowerCase()}%`,
+        },
+      );
     }
 
-    const foods = await query.getMany();
+    const foods = await query
+      .skip(pagination.page)
+      .take(pagination.limit)
+      .orderBy('food.description', 'ASC')
+      .getMany();
 
     return foods;
   }
