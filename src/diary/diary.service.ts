@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Diary } from './diary.entity';
@@ -19,7 +23,7 @@ export class DiaryService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Meal)
     private readonly mealsRepository: Repository<Meal>,
-  ) {}
+  ) { }
 
   async createDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
     const newDiary = new Diary();
@@ -45,8 +49,8 @@ export class DiaryService {
     const diary = await this.diaryRepository.save(newDiary);
 
     await this.createDefaultMeals(diary);
-    
-    return diary
+
+    return diary;
   }
 
   async editDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
@@ -75,7 +79,7 @@ export class DiaryService {
       .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
       .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1})
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
       .andWhere('diary.day = :day', { day: dateValid.getDate() })
       .orderBy('diary.id', 'DESC')
       .getOne();
@@ -85,7 +89,6 @@ export class DiaryService {
         'Diário não encontrado para a data especificada',
       );
     }
-
     return diary;
   }
 
@@ -121,7 +124,7 @@ export class DiaryService {
   //@Cron('20 * * * * *') // para testar 20s
   async handleCron() {
     const users = await this.usersRepository.find({});
-    //console.log('\ncron-job\n');
+    console.log('\ncron-job\n');
     if (!users) {
       return;
     }
@@ -143,7 +146,7 @@ export class DiaryService {
     ) {
       currentYear = currentYear + 1;
       currentMonth = 1;
-      currentDay = 1; 
+      currentDay = 1;
     } else if (
       currentDay === new Date(currentYear, currentMonth, 0).getDate()
     ) {
@@ -168,7 +171,7 @@ export class DiaryService {
     for (const name of defaultMealNames) {
       const meal = new Meal();
       meal.name = name;
-      meal.diary = diary
+      meal.diary = diary;
       await this.mealsRepository.save(meal);
     }
   }

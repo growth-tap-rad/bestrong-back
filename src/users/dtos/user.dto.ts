@@ -5,4 +5,5 @@ export interface UserDto {
   password: string;
   birthday: Date;
   gender: string;
+  avatar:string;
 }
