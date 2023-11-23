@@ -8,13 +8,12 @@ import { Measure } from 'src/measure/measure.entity';
 @Injectable()
 export class FoodService {
   constructor(
+
     @InjectRepository(Measure)
     private readonly measureRepository: Repository<Measure>,
     @InjectRepository(Food)
     private readonly foodRepository: Repository<Food>,
-
   ) { }
-
   async getFoods(pageDto: FoodPaginationDto, search: string): Promise<Food[]> {
     const pagination = {
       page: pageDto?.page || 0,
