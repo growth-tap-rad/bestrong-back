@@ -178,7 +178,6 @@ export class ProgressService {
     foundedProgress.fat = fat;
     foundedProgress.daily_goal_kcal = dailyGoal
 
-    console.log("foundedProgress ", foundedProgress)
     return this.progressRepository.save(foundedProgress);
   }
 

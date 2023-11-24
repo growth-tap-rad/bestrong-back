@@ -40,7 +40,6 @@ export class UsersService {
 
   async update(id: number, userDto: UserDto): Promise<User> {
     let foundUser = await this.findById(id);
-    console.log(userDto, foundUser)
 
     Object.assign(foundUser, userDto);
 
