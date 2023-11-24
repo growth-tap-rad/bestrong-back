@@ -82,6 +82,9 @@ export class DiaryService {
       .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
       .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
       .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('progress.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('progress.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('progress.day = :day', { day: dateValid.getDate() })
       .orderBy('progress.id', 'ASC')
       .getOne();
 
@@ -122,7 +125,7 @@ export class DiaryService {
   }
 
   @Cron('58 23 * * *') // 23:58
- // @Cron('20 * * * * *') // para testar 20s
+   //@Cron('20 * * * * *') // para testar 20s
   async handleCron() {
     const users = await this.usersRepository.find({});
     console.log('\ncron-job\n');

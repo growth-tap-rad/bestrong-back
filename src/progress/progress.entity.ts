@@ -50,6 +50,15 @@ export class Progress {
   @Column()
   fat: number;
 
+  @Column({ type: 'int', default: "0" })
+  year: number;
+
+  @Column({ type: 'int', default: "0" })
+  month: number;
+
+  @Column({ type: 'int', default: "0" })
+  day: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

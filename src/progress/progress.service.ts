@@ -47,11 +47,15 @@ export class ProgressService {
 
   async recordProgress(progressDto: ProgressDto, user: User) {
     const newProgress = new Progress();
+ const currentDate = this.getCurrentNextDate();
 
     newProgress.height = progressDto.height;
     newProgress.weight = progressDto.weight;
     newProgress.activity_level = progressDto.activity_level;
     newProgress.goal = progressDto.goal;
+    newProgress.year = currentDate.currentYear;
+    newProgress.month = currentDate.currentMonth;
+    newProgress.day = currentDate.currentDay;
 
     const foundedUser = await this.usersRepository.findOneBy({ id: user.id })
     if (!foundedUser) {
@@ -215,5 +219,37 @@ export class ProgressService {
       .leftJoinAndSelect('progress.user', 'user')
       .orderBy('progress.id', 'DESC')
       .getOne();
+  }
+  getCurrentNextDate() {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth() + 1;
+    let currentDay = currentDate.getDate();
+
+    if (
+      currentMonth === 12 &&
+      currentDay === new Date(currentYear, currentMonth, 0).getDate()
+    ) {
+      currentYear = currentYear + 1;
+      currentMonth = 1;
+      currentDay = 1;
+    } else if (
+      currentDay === new Date(currentYear, currentMonth, 0).getDate()
+    ) {
+      currentYear = currentYear;
+      currentMonth = currentMonth + 1;
+      currentDay = 1;
+    } else {
+      currentYear = currentYear;
+      currentMonth = currentMonth;
+      currentDay = currentDay + 1;
+    }
+
+    return {
+      currentYear,
+      currentMonth,
+      currentDay,
+    };
   }
 }
