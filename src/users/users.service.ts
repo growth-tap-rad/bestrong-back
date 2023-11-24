@@ -25,12 +25,20 @@ export class UsersService {
     return this.usersRepository.findOneBy({ id: id });
   }
 
-  async getUser(userId: number): Promise<User> {
+  async getUser(userId: number, date: string): Promise<User> {
+    const dateValid = new Date(date + 'T00:00:00.000');
+    dateValid.setHours(0, 0, 0, 0);
 
+    if (isNaN(dateValid.getTime())) {
+      throw new BadRequestException('Data especificada inválida para Diário');
+    }
     const user = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.progress', 'progress')
       .where('user.id = :userId', { userId })
+      .andWhere('progress.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('progress.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('progress.day = :day', { day: dateValid.getDate() })
       .orderBy('user.id', 'ASC')
       .getOne();
 

@@ -74,7 +74,7 @@ export class Progress {
 
   @ManyToOne(() => User, (user) => user.progress)
   user: User;
-  
+
   @OneToMany(() => Diary, (diary) => diary.progress)
-   diary: Diary[];
+  diary: Diary[];
 }

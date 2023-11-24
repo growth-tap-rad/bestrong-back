@@ -19,9 +19,10 @@ export class UsersController {
   @UseGuards(AuthGuard)
   @Get('/me')
   show(
+    @Query('date') date: string,
     @Request() request: Request,
   ): Promise<User> {
-    return this.usersService.getUser( request['user'].id);
+    return this.usersService.getUser( request['user'].id ,date);
   }
 
   @UseGuards(AuthGuard)
