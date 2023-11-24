@@ -43,18 +43,18 @@ export class ProgressService {
     private progressRepository: Repository<Progress>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async recordProgress(progressDto: ProgressDto, user: User) {
     const newProgress = new Progress();
-    
+
     newProgress.height = progressDto.height;
-    newProgress.weight = progressDto.weight;   
-    newProgress.activity_level = progressDto.activity_level; 
+    newProgress.weight = progressDto.weight;
+    newProgress.activity_level = progressDto.activity_level;
     newProgress.goal = progressDto.goal;
 
-    const foundedUser = await this.usersRepository.findOneBy({id: user.id})
-    if(!foundedUser){
+    const foundedUser = await this.usersRepository.findOneBy({ id: user.id })
+    if (!foundedUser) {
       throw new Error('Usuario não encontrado para o progresso.');
     }
 
@@ -104,13 +104,21 @@ export class ProgressService {
     const dailyGoal = this.dailyGoalFormated(
       this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
     );
-    
+
     newProgress.protein = protein;
-    newProgress.carb = carb; 
-    newProgress.fat = fat; 
+    newProgress.carb = carb;
+    newProgress.fat = fat;
     newProgress.daily_goal_kcal = dailyGoal
 
     return this.progressRepository.save(newProgress);
+  }
+
+  async editProgress(progressDto: ProgressDto, id: number) {
+
+    const foundedProgress = await this.progressRepository.findOneBy({ id: id })
+    Object.assign(foundedProgress, progressDto)
+console.log("foundedProgress ",foundedProgress)
+    return this.progressRepository.save(foundedProgress);
   }
 
   getProgress(userId: User): Promise<Progress[]> {
@@ -149,6 +157,6 @@ export class ProgressService {
       .createQueryBuilder('progress')
       .leftJoinAndSelect('progress.user', 'user')
       .orderBy('progress.id', 'DESC')
-      .getOne(); 
+      .getOne();
   }
 }

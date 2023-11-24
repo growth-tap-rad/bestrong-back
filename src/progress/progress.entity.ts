@@ -19,7 +19,11 @@ export class Progress {
   @Column()
   height: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 6,
+    scale: 2,
+  })
   weight: number;
 
   @Column({
