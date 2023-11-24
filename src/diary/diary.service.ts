@@ -72,7 +72,8 @@ export class DiaryService {
 
     const diary = await this.diaryRepository
       .createQueryBuilder('diary')
-      .leftJoinAndSelect('diary.progress', 'progress')
+      .leftJoinAndSelect('diary.user', 'user')
+      .leftJoinAndSelect('user.progress', 'progress')
       .leftJoinAndSelect('diary.water', 'water')
       .leftJoinAndSelect('diary.meal', 'meal')
       .leftJoinAndSelect('meal.meal_food', 'foods')
@@ -81,7 +82,7 @@ export class DiaryService {
       .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
       .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
       .andWhere('diary.day = :day', { day: dateValid.getDate() })
-      .orderBy('diary.id', 'DESC')
+      .orderBy('progress.id', 'ASC')
       .getOne();
 
     if (!diary) {
@@ -121,7 +122,7 @@ export class DiaryService {
   }
 
   @Cron('58 23 * * *') // 23:58
-  //@Cron('20 * * * * *') // para testar 20s
+ // @Cron('20 * * * * *') // para testar 20s
   async handleCron() {
     const users = await this.usersRepository.find({});
     console.log('\ncron-job\n');

@@ -9,7 +9,7 @@ import { hashPassword } from 'src/utils/hashPassword';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async findOneByEmail(email: string): Promise<Boolean> {
     const foundEmail = await this.usersRepository.findOneBy({ email: email });
@@ -30,6 +30,7 @@ export class UsersService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.progress', 'progress')
       .where('user.id = :userId', { userId })
+      .orderBy('user.id', 'ASC')
       .getOne();
 
     delete user.password;
@@ -38,7 +39,7 @@ export class UsersService {
 
   async update(id: number, userDto: UserDto): Promise<User> {
     let foundUser = await this.findById(id);
-    console.log(userDto,foundUser)
+    console.log(userDto, foundUser)
 
     Object.assign(foundUser, userDto);
 

@@ -22,7 +22,7 @@ export class ProgressController {
   getProgress(@Request() request: Request): Promise<Progress[]> {
     return this.progressService.getProgress(request['user'].id);
   }
-  
+
   @Post('/')
   async createProgress(
     @Body() progressData: ProgressDto,
@@ -34,9 +34,10 @@ export class ProgressController {
   @Put('/:id')
   async editProgress(
     @Body() progressData: ProgressDto,
+    @Request() request: Request,
     @Param('id') id: number
   ) {
-    return this.progressService.editProgress(progressData, id);
+    return this.progressService.editProgress(progressData, request['user'], id);
   }
 
 

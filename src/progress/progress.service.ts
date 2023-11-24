@@ -113,11 +113,68 @@ export class ProgressService {
     return this.progressRepository.save(newProgress);
   }
 
-  async editProgress(progressDto: ProgressDto, id: number) {
+  async editProgress(progressDto: ProgressDto, user: User, id: number) {
 
     const foundedProgress = await this.progressRepository.findOneBy({ id: id })
+    const foundedUser = await this.usersRepository.findOneBy({ id: user.id })
     Object.assign(foundedProgress, progressDto)
-console.log("foundedProgress ",foundedProgress)
+    if (!foundedUser) {
+      throw new Error('Usuario não encontrado para o progresso.');
+    }
+
+    foundedProgress.user = user;
+
+    const { birthday, gender } = foundedUser;
+    const { weight, height, activity_level, goal } = foundedProgress;
+    let bmr = null;
+
+    if (!birthday) {
+      throw new Error('Usuário necessita da data de nascimento.');
+    }
+
+    if (gender === MAN) {
+      bmr = BMR_MAN(weight, height, CALC_AGE(birthday));
+    } else if (gender === WOMEN) {
+      bmr = BMR_WOMEN(weight, height, CALC_AGE(birthday));
+    } else {
+      throw new Error('User gender invalid!');
+    }
+
+    const activityFactor = ACTIVITY_FACTOR[activity_level];
+    const goalFactor = GOAL_FACTOR[goal];
+    const macros = MACROS[activity_level];
+
+    const per_gram_porcents = {
+      protein: macros[goal].protein,
+      carb: macros[goal].carb,
+      fat: macros[goal].fat,
+    };
+
+    const protein = this.macroCalorieToGrams(
+      per_gram_porcents['protein'],
+      this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+      PER_GRAM_CALORIE.protein,
+    );
+    const carb = this.macroCalorieToGrams(
+      per_gram_porcents['carb'],
+      this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+      PER_GRAM_CALORIE.carb,
+    );
+    const fat = this.macroCalorieToGrams(
+      per_gram_porcents['fat'],
+      this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+      PER_GRAM_CALORIE.fat,
+    );
+    const dailyGoal = this.dailyGoalFormated(
+      this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+    );
+
+    foundedProgress.protein = protein;
+    foundedProgress.carb = carb;
+    foundedProgress.fat = fat;
+    foundedProgress.daily_goal_kcal = dailyGoal
+
+    console.log("foundedProgress ", foundedProgress)
     return this.progressRepository.save(foundedProgress);
   }
 
