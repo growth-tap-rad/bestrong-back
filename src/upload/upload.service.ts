@@ -30,7 +30,7 @@ export class UploadService {
         )
 
         const s3Url = `https://bestrong-teste.s3.amazonaws.com/ibagens/${fileName}`;
-       
+
         const foundUser = await this.usersRepository.findOneBy({ id: user.id });
         foundUser.avatar = s3Url
 
