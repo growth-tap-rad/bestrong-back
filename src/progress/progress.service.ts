@@ -43,18 +43,26 @@ export class ProgressService {
     private progressRepository: Repository<Progress>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async recordProgress(progressDto: ProgressDto, user: User) {
     const newProgress = new Progress();
-    
-    newProgress.height = progressDto.height;
-    newProgress.weight = progressDto.weight;   
-    newProgress.activity_level = progressDto.activity_level; 
-    newProgress.goal = progressDto.goal;
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentDay = currentDate.getDate();
 
-    const foundedUser = await this.usersRepository.findOneBy({id: user.id})
-    if(!foundedUser){
+    newProgress.height = progressDto.height;
+    newProgress.weight = progressDto.weight;
+    newProgress.activity_level = progressDto.activity_level;
+    newProgress.goal = progressDto.goal;
+    newProgress.year = currentYear;
+    newProgress.month = currentMonth;
+    newProgress.day = currentDay;
+
+    const foundedUser = await this.usersRepository.findOneBy({ id: user.id })
+    if (!foundedUser) {
       throw new Error('Usuario não encontrado para o progresso.');
     }
 
@@ -104,13 +112,77 @@ export class ProgressService {
     const dailyGoal = this.dailyGoalFormated(
       this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
     );
-    
+
     newProgress.protein = protein;
-    newProgress.carb = carb; 
-    newProgress.fat = fat; 
+    newProgress.carb = carb;
+    newProgress.fat = fat;
     newProgress.daily_goal_kcal = dailyGoal
 
     return this.progressRepository.save(newProgress);
+  }
+
+  async editProgress(progressDto: ProgressDto, user: User, id: number) {
+
+    const foundedProgress = await this.progressRepository.findOneBy({ id: id })
+    const foundedUser = await this.usersRepository.findOneBy({ id: user.id })
+    Object.assign(foundedProgress, progressDto)
+    if (!foundedUser) {
+      throw new Error('Usuario não encontrado para o progresso.');
+    }
+
+    foundedProgress.user = user;
+
+    const { birthday, gender } = foundedUser;
+    const { weight, height, activity_level, goal } = foundedProgress;
+    let bmr = null;
+
+    if (!birthday) {
+      throw new Error('Usuário necessita da data de nascimento.');
+    }
+
+    if (gender === MAN) {
+      bmr = BMR_MAN(weight, height, CALC_AGE(birthday));
+    } else if (gender === WOMEN) {
+      bmr = BMR_WOMEN(weight, height, CALC_AGE(birthday));
+    } else {
+      throw new Error('User gender invalid!');
+    }
+
+    const activityFactor = ACTIVITY_FACTOR[activity_level];
+    const goalFactor = GOAL_FACTOR[goal];
+    const macros = MACROS[activity_level];
+
+    const per_gram_porcents = {
+      protein: macros[goal].protein,
+      carb: macros[goal].carb,
+      fat: macros[goal].fat,
+    };
+
+    const protein = this.macroCalorieToGrams(
+      per_gram_porcents['protein'],
+      this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+      PER_GRAM_CALORIE.protein,
+    );
+    const carb = this.macroCalorieToGrams(
+      per_gram_porcents['carb'],
+      this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+      PER_GRAM_CALORIE.carb,
+    );
+    const fat = this.macroCalorieToGrams(
+      per_gram_porcents['fat'],
+      this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+      PER_GRAM_CALORIE.fat,
+    );
+    const dailyGoal = this.dailyGoalFormated(
+      this.totalEnergyExpenditure(bmr, activityFactor, goalFactor),
+    );
+
+    foundedProgress.protein = protein;
+    foundedProgress.carb = carb;
+    foundedProgress.fat = fat;
+    foundedProgress.daily_goal_kcal = dailyGoal
+
+    return this.progressRepository.save(foundedProgress);
   }
 
   getProgress(userId: User): Promise<Progress[]> {
@@ -149,6 +221,38 @@ export class ProgressService {
       .createQueryBuilder('progress')
       .leftJoinAndSelect('progress.user', 'user')
       .orderBy('progress.id', 'DESC')
-      .getOne(); 
+      .getOne();
+  }
+  getCurrentNextDate() {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth() + 1;
+    let currentDay = currentDate.getDate();
+
+    if (
+      currentMonth === 12 &&
+      currentDay === new Date(currentYear, currentMonth, 0).getDate()
+    ) {
+      currentYear = currentYear + 1;
+      currentMonth = 1;
+      currentDay = 1;
+    } else if (
+      currentDay === new Date(currentYear, currentMonth, 0).getDate()
+    ) {
+      currentYear = currentYear;
+      currentMonth = currentMonth + 1;
+      currentDay = 1;
+    } else {
+      currentYear = currentYear;
+      currentMonth = currentMonth;
+      currentDay = currentDay + 1;
+    }
+
+    return {
+      currentYear,
+      currentMonth,
+      currentDay,
+    };
   }
 }

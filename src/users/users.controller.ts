@@ -14,12 +14,15 @@ import { UserDto } from './dtos/user.dto';
 
 @Controller('')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @UseGuards(AuthGuard)
   @Get('/me')
-  show(@Request() request: Request): Promise<User> {
-    return this.usersService.getUser(request['user'].id);
+  show(
+    @Query('date') date: string,
+    @Request() request: Request,
+  ): Promise<User> {
+    return this.usersService.getUser( request['user'].id ,date);
   }
 
   @UseGuards(AuthGuard)

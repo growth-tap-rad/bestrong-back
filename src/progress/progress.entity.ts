@@ -19,7 +19,11 @@ export class Progress {
   @Column()
   height: number;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 6,
+    scale: 2,
+  })
   weight: number;
 
   @Column({
@@ -46,6 +50,15 @@ export class Progress {
   @Column()
   fat: number;
 
+  @Column({ type: 'int', default: "0" })
+  year: number;
+
+  @Column({ type: 'int', default: "0" })
+  month: number;
+
+  @Column({ type: 'int', default: "0" })
+  day: number;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
@@ -61,7 +74,7 @@ export class Progress {
 
   @ManyToOne(() => User, (user) => user.progress)
   user: User;
-  
+
   @OneToMany(() => Diary, (diary) => diary.progress)
   diary: Diary[];
 }
