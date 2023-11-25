@@ -36,9 +36,10 @@ export class UsersService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.progress', 'progress')
       .where('user.id = :userId', { userId })
-      .andWhere('progress.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('progress.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('progress.day = :day', { day: dateValid.getDate() })
+      // .andWhere('progress.year = :year', { year: dateValid.getFullYear() })
+      // .andWhere('progress.month = :month', { month: dateValid.getMonth() + 1 })
+      // .andWhere('progress.day = :day', { day: dateValid.getDate() })
+      // traz todos os progressos referentes a este diary
       .orderBy('user.id', 'ASC')
       .getOne();
 

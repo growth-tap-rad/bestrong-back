@@ -47,15 +47,19 @@ export class ProgressService {
 
   async recordProgress(progressDto: ProgressDto, user: User) {
     const newProgress = new Progress();
- const currentDate = this.getCurrentNextDate();
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentDay = currentDate.getDate();
 
     newProgress.height = progressDto.height;
     newProgress.weight = progressDto.weight;
     newProgress.activity_level = progressDto.activity_level;
     newProgress.goal = progressDto.goal;
-    newProgress.year = currentDate.currentYear;
-    newProgress.month = currentDate.currentMonth;
-    newProgress.day = currentDate.currentDay;
+    newProgress.year = currentYear;
+    newProgress.month = currentMonth;
+    newProgress.day = currentDay;
 
     const foundedUser = await this.usersRepository.findOneBy({ id: user.id })
     if (!foundedUser) {
