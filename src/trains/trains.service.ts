@@ -18,16 +18,16 @@ export class TrainService {
     Object.assign(newTrain, trainDto);
 
     const dateValid = new Date(trainDto.date + 'T00:00:00.000');
-    dateValid.setUTCHours(0, 0, 0, 0);
+    dateValid.setHours(0, 0, 0, 0);
     const foundUser = await this.userRepository
 
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
       .orderBy('diary.id', 'DESC')
       .getOne();
 
@@ -46,7 +46,7 @@ export class TrainService {
 
 
     const dateValid = new Date(date + 'T00:00:00.000');
-    dateValid.setUTCHours(0, 0, 0, 0);
+    dateValid.setHours(0, 0, 0, 0);
   
 
     return await this.trainsRepository
@@ -54,9 +54,9 @@ export class TrainService {
       .leftJoinAndSelect('train.diary', 'diary')
       .leftJoinAndSelect('train.trains_exercises', 'trains_exercises')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
   
       .getMany();
 
