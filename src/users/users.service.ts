@@ -9,7 +9,7 @@ import { hashPassword } from 'src/utils/hashPassword';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async findOneByEmail(email: string): Promise<Boolean> {
     const foundEmail = await this.usersRepository.findOneBy({ email: email });
@@ -26,12 +26,12 @@ export class UsersService {
   }
 
   async getUser(userId: number, date: string): Promise<User> {
-    const dateValid = new Date(date + 'T00:00:00.000');
-    dateValid.setHours(0, 0, 0, 0);
+    // const dateValid = new Date(date + 'T00:00:00.000');
+    // dateValid.setUTCHours(0, 0, 0, 0);
 
-    if (isNaN(dateValid.getTime())) {
-      throw new BadRequestException('Data especificada inválida para Diário');
-    }
+    // if (isNaN(dateValid.getTime())) {
+    //   throw new BadRequestException('Data especificada inválida para Diário');
+    // }
     const user = await this.usersRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.progress', 'progress')

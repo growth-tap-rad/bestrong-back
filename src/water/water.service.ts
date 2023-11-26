@@ -24,7 +24,7 @@ export class WaterService {
     Object.assign(newWater, waterData);
 
     const dateValid = new Date(waterData.date + 'T00:00:00.000');
-    dateValid.setHours(0, 0, 0, 0);
+    dateValid.setUTCHours(0, 0, 0, 0);
 
     if (isNaN(dateValid.getTime())) {
       throw new BadRequestException('Data especificada inválida');
@@ -34,9 +34,9 @@ export class WaterService {
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.water', 'water')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
       .orderBy('diary.id', 'DESC')
       .getOne();
 
@@ -52,19 +52,19 @@ export class WaterService {
 
   async getWater(user: User, date: string) {
     const dateValid = new Date(date + 'T00:00:00.000');
-    dateValid.setHours(0, 0, 0, 0);
+    dateValid.setUTCHours(0, 0, 0, 0);
 
     if (isNaN(dateValid.getTime())) {
       throw new BadRequestException('Data especificada inválida');
     }
 
     const foundDiary = await this.waterRepository
-    .createQueryBuilder('water')
+      .createQueryBuilder('water')
       .leftJoinAndSelect('water.diary', 'diary')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
       .orderBy('diary.id', 'DESC')
       .getMany();
 

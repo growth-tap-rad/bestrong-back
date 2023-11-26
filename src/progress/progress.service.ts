@@ -43,15 +43,15 @@ export class ProgressService {
     private progressRepository: Repository<Progress>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async recordProgress(progressDto: ProgressDto, user: User) {
     const newProgress = new Progress();
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentDay = currentDate.getDate();
+    currentDate.setUTCHours(0, 0, 0, 0);
+    const currentYear = currentDate.getUTCFullYear();
+    const currentMonth = currentDate.getUTCFullYear() + 1;
+    const currentDay = currentDate.getUTCDate();
 
     newProgress.height = progressDto.height;
     newProgress.weight = progressDto.weight;
@@ -61,7 +61,7 @@ export class ProgressService {
     newProgress.month = currentMonth;
     newProgress.day = currentDay;
 
-    const foundedUser = await this.usersRepository.findOneBy({ id: user.id })
+    const foundedUser = await this.usersRepository.findOneBy({ id: user.id });
     if (!foundedUser) {
       throw new Error('Usuario não encontrado para o progresso.');
     }
@@ -116,16 +116,15 @@ export class ProgressService {
     newProgress.protein = protein;
     newProgress.carb = carb;
     newProgress.fat = fat;
-    newProgress.daily_goal_kcal = dailyGoal
+    newProgress.daily_goal_kcal = dailyGoal;
 
     return this.progressRepository.save(newProgress);
   }
 
   async editProgress(progressDto: ProgressDto, user: User, id: number) {
-
-    const foundedProgress = await this.progressRepository.findOneBy({ id: id })
-    const foundedUser = await this.usersRepository.findOneBy({ id: user.id })
-    Object.assign(foundedProgress, progressDto)
+    const foundedProgress = await this.progressRepository.findOneBy({ id: id });
+    const foundedUser = await this.usersRepository.findOneBy({ id: user.id });
+    Object.assign(foundedProgress, progressDto);
     if (!foundedUser) {
       throw new Error('Usuario não encontrado para o progresso.');
     }
@@ -180,7 +179,7 @@ export class ProgressService {
     foundedProgress.protein = protein;
     foundedProgress.carb = carb;
     foundedProgress.fat = fat;
-    foundedProgress.daily_goal_kcal = dailyGoal
+    foundedProgress.daily_goal_kcal = dailyGoal;
 
     return this.progressRepository.save(foundedProgress);
   }
@@ -225,20 +224,20 @@ export class ProgressService {
   }
   getCurrentNextDate() {
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth() + 1;
-    let currentDay = currentDate.getDate();
+    currentDate.setUTCHours(0, 0, 0, 0);
+    let currentYear = currentDate.getUTCFullYear();
+    let currentMonth = currentDate.getUTCMonth() + 1;
+    let currentDay = currentDate.getUTCDate();
 
     if (
       currentMonth === 12 &&
-      currentDay === new Date(currentYear, currentMonth, 0).getDate()
+      currentDay === new Date(currentYear, currentMonth, 0).getUTCDate()
     ) {
       currentYear = currentYear + 1;
       currentMonth = 1;
       currentDay = 1;
     } else if (
-      currentDay === new Date(currentYear, currentMonth, 0).getDate()
+      currentDay === new Date(currentYear, currentMonth, 0).getUTCDate()
     ) {
       currentYear = currentYear;
       currentMonth = currentMonth + 1;
