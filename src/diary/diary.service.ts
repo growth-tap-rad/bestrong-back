@@ -23,7 +23,7 @@ export class DiaryService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Meal)
     private readonly mealsRepository: Repository<Meal>,
-  ) { }
+  ) {}
 
   async createDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
     const newDiary = new Diary();
@@ -34,10 +34,10 @@ export class DiaryService {
     Object.assign(newDiary, diaryDto);
 
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentDay = currentDate.getDate();
+    currentDate.setUTCHours(0, 0, 0, 0);
+    const currentYear = currentDate.getUTCFullYear();
+    const currentMonth = currentDate.getUTCMonth() + 1;
+    const currentDay = currentDate.getUTCDate();
 
     newDiary.year = currentYear;
     newDiary.month = currentMonth;
@@ -64,7 +64,7 @@ export class DiaryService {
 
   async getDiary(user: User, date: string): Promise<Diary> {
     const dateValid = new Date(date + 'T00:00:00.000');
-    dateValid.setHours(0, 0, 0, 0);
+    dateValid.setUTCHours(0, 0, 0, 0);
 
     if (isNaN(dateValid.getTime())) {
       throw new BadRequestException('Data especificada inválida para Diário');
@@ -79,12 +79,12 @@ export class DiaryService {
       .leftJoinAndSelect('meal.meal_food', 'foods')
       .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('progress.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('progress.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('progress.day = :day', { day: dateValid.getDate() })
-      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('progress.year = :year', { year: dateValid.getUTCFullYear() })
+      .andWhere('progress.month = :month', { month: dateValid.getUTCMonth() + 1 })
+      .andWhere('progress.day = :day', { day: dateValid.getUTCDate() })
+      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
       .orderBy('progress.id', 'ASC')
       .getOne();
 
@@ -97,9 +97,9 @@ export class DiaryService {
       .leftJoinAndSelect('meal.meal_food', 'foods')
       .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
       .orderBy('progress.id', 'ASC')
       .getOne();
 
@@ -142,8 +142,15 @@ export class DiaryService {
     await this.createDefaultMeals(diary);
   }
 
-  @Cron('58 23 * * *') // 23:58
-  //@Cron('10 * * * * *') // para testar 20s
+  @Cron('50 22 * * *', {
+    name: 'createNextDiary',
+    timeZone: 'America/Campo_Grande',
+  }) // 23:50 cg-mss
+
+  //@Cron('20 * * * * *', {
+  //   name: 'createNextDiary',
+  //   timeZone: 'America/Campo_Grande',
+  //}) // para testar 20s cg-ms
   async handleCron() {
     const users = await this.usersRepository.find({});
     console.log('\ncron-job\n');
@@ -157,20 +164,20 @@ export class DiaryService {
 
   getCurrentNextDate() {
     const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth() + 1;
-    let currentDay = currentDate.getDate();
+    currentDate.setUTCHours(0, 0, 0, 0);
+    let currentYear = currentDate.getUTCFullYear();
+    let currentMonth = currentDate.getUTCMonth() + 1;
+    let currentDay = currentDate.getUTCDate();
 
     if (
       currentMonth === 12 &&
-      currentDay === new Date(currentYear, currentMonth, 0).getDate()
+      currentDay === new Date(currentYear, currentMonth, 0).getUTCDate()
     ) {
       currentYear = currentYear + 1;
       currentMonth = 1;
       currentDay = 1;
     } else if (
-      currentDay === new Date(currentYear, currentMonth, 0).getDate()
+      currentDay === new Date(currentYear, currentMonth, 0).getUTCDate()
     ) {
       currentYear = currentYear;
       currentMonth = currentMonth + 1;
