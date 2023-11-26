@@ -48,10 +48,10 @@ export class ProgressService {
   async recordProgress(progressDto: ProgressDto, user: User) {
     const newProgress = new Progress();
     const currentDate = new Date();
-    currentDate.setUTCHours(0, 0, 0, 0);
-    const currentYear = currentDate.getUTCFullYear();
-    const currentMonth = currentDate.getUTCFullYear() + 1;
-    const currentDay = currentDate.getUTCDate();
+    currentDate.setHours(0, 0, 0, 0);
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentDay = currentDate.getDate();
 
     newProgress.height = progressDto.height;
     newProgress.weight = progressDto.weight;
@@ -224,20 +224,20 @@ export class ProgressService {
   }
   getCurrentNextDate() {
     const currentDate = new Date();
-    currentDate.setUTCHours(0, 0, 0, 0);
-    let currentYear = currentDate.getUTCFullYear();
-    let currentMonth = currentDate.getUTCMonth() + 1;
-    let currentDay = currentDate.getUTCDate();
+    currentDate.setHours(0, 0, 0, 0);
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth() + 1;
+    let currentDay = currentDate.getDate();
 
     if (
       currentMonth === 12 &&
-      currentDay === new Date(currentYear, currentMonth, 0).getUTCDate()
+      currentDay === new Date(currentYear, currentMonth, 0).getDate()
     ) {
       currentYear = currentYear + 1;
       currentMonth = 1;
       currentDay = 1;
     } else if (
-      currentDay === new Date(currentYear, currentMonth, 0).getUTCDate()
+      currentDay === new Date(currentYear, currentMonth, 0).getDate()
     ) {
       currentYear = currentYear;
       currentMonth = currentMonth + 1;
