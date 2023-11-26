@@ -170,6 +170,11 @@ export class DiaryService {
     timeZone: 'America/Campo_Grande',
   }) // 23:50 cg-ms
 
+  // @Cron('50 19 * * *', {
+  //   name: 'createNextDiary',
+  //   timeZone: 'America/Campo_Grande',
+  // }) // Teste horario especifico
+
   // @Cron('1 * * * * *', {
   //   name: 'createNextDiary',
   //   timeZone: 'America/Campo_Grande',
