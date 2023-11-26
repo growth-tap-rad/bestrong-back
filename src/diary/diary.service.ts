@@ -165,10 +165,15 @@ export class DiaryService {
     await this.createDefaultMeals(diary);
   }
 
-  @Cron('50 22 * * *', {
+  // @Cron('50 22 * * *', {
+  //   name: 'createNextDiary',
+  //   timeZone: 'America/Campo_Grande',
+  // }) // 23:50 cg-ms
+
+  @Cron('30 17 * * *', {
     name: 'createNextDiary',
     timeZone: 'America/Campo_Grande',
-  }) // 23:50 cg-ms
+  }) // 17:30 cg-ms TODO: Retirar e voltar com os da 22:50
 
   // @Cron('1 * * * * *', {
   //   name: 'createNextDiary',
