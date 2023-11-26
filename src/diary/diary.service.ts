@@ -80,7 +80,9 @@ export class DiaryService {
       .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
       .andWhere('progress.year = :year', { year: dateValid.getUTCFullYear() })
-      .andWhere('progress.month = :month', { month: dateValid.getUTCMonth() + 1 })
+      .andWhere('progress.month = :month', {
+        month: dateValid.getUTCMonth() + 1,
+      })
       .andWhere('progress.day = :day', { day: dateValid.getUTCDate() })
       .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
       .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
@@ -142,10 +144,15 @@ export class DiaryService {
     await this.createDefaultMeals(diary);
   }
 
-  @Cron('50 22 * * *', {
+  // @Cron('50 22 * * *', {
+  //   name: 'createNextDiary',
+  //   timeZone: 'America/Campo_Grande',
+  // }) // 23:50 cg-mss
+
+  @Cron('40 11 * * *', {
     name: 'createNextDiary',
     timeZone: 'America/Campo_Grande',
-  }) // 23:50 cg-mss
+  }) // 11:50 cg-mss para testar cg-ms
 
   //@Cron('20 * * * * *', {
   //   name: 'createNextDiary',
