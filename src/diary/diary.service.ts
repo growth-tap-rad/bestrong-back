@@ -34,10 +34,10 @@ export class DiaryService {
     Object.assign(newDiary, diaryDto);
 
     const currentDate = new Date();
-    currentDate.setUTCHours(0, 0, 0, 0);
-    const currentYear = currentDate.getUTCFullYear();
-    const currentMonth = currentDate.getUTCMonth() + 1;
-    const currentDay = currentDate.getUTCDate();
+    currentDate.setHours(0, 0, 0, 0);
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentDay = currentDate.getDate();
 
     newDiary.year = currentYear;
     newDiary.month = currentMonth;
@@ -64,7 +64,7 @@ export class DiaryService {
 
   async getDiary(user: User, date: string): Promise<Diary> {
     const dateValid = new Date(date + 'T00:00:00.000');
-    dateValid.setUTCHours(0, 0, 0, 0);
+    dateValid.setHours(0, 0, 0, 0);
 
     if (isNaN(dateValid.getTime())) {
       throw new BadRequestException('Data especificada inválida para Diário');
@@ -79,14 +79,14 @@ export class DiaryService {
       .leftJoinAndSelect('meal.meal_food', 'foods')
       .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('progress.year = :year', { year: dateValid.getUTCFullYear() })
+      .andWhere('progress.year = :year', { year: dateValid.getFullYear() })
       .andWhere('progress.month = :month', {
-        month: dateValid.getUTCMonth() + 1,
+        month: dateValid.getMonth() + 1,
       })
-      .andWhere('progress.day = :day', { day: dateValid.getUTCDate() })
-      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
+      .andWhere('progress.day = :day', { day: dateValid.getDate() })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
       .orderBy('progress.id', 'ASC')
       .getOne();
 
@@ -99,9 +99,9 @@ export class DiaryService {
       .leftJoinAndSelect('meal.meal_food', 'foods')
       .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
+      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.getDate() })
       .orderBy('progress.id', 'ASC')
       .getOne();
 
@@ -126,6 +126,8 @@ export class DiaryService {
 
   async createDiaryScheduled(user: User): Promise<Diary> {
     const newDiary = new Diary();
+    const newProgress = new Progress();
+
     const foundProgress = await this.findProgressById(user.id);
     if (!foundProgress) {
       return;
@@ -135,38 +137,53 @@ export class DiaryService {
     newDiary.year = currentDate.currentYear;
     newDiary.month = currentDate.currentMonth;
     newDiary.day = currentDate.currentDay;
-
     newDiary.user = user;
-    newDiary.progress = foundProgress;
+
+    newProgress.activity_level = foundProgress.activity_level;
+    newProgress.carb = foundProgress.carb;
+    newProgress.fat = foundProgress.fat;
+    newProgress.protein = foundProgress.protein;
+    newProgress.daily_goal_kcal = foundProgress.daily_goal_kcal;
+    newProgress.created_at = foundProgress.created_at;
+    newProgress.goal = foundProgress.goal;
+    newProgress.height = foundProgress.height;
+    newProgress.updated_at = foundProgress.updated_at;
+    newProgress.weight = foundProgress.weight;
+    newProgress.year = currentDate.currentYear;
+    newProgress.month = currentDate.currentMonth;
+    newProgress.day = currentDate.currentDay;
+    newProgress.user = user;
+
+    const newProgressBasedOnLast = await this.progressRepository.save(
+      newProgress,
+    );
+
+    newDiary.progress = newProgressBasedOnLast;
 
     const diary = await this.diaryRepository.save(newDiary);
 
     await this.createDefaultMeals(diary);
   }
 
-  // @Cron('50 22 * * *', {
-  //   name: 'createNextDiary',
-  //   timeZone: 'America/Campo_Grande',
-  // }) // 23:50 cg-mss
-
-  @Cron('40 11 * * *', {
+  @Cron('50 22 * * *', {
     name: 'createNextDiary',
     timeZone: 'America/Campo_Grande',
-  }) // 11:50 cg-mss para testar cg-ms
+  }) // 23:50 cg-ms
 
-  //@Cron('20 * * * * *', {
+  // @Cron('1 * * * * *', {
   //   name: 'createNextDiary',
   //   timeZone: 'America/Campo_Grande',
-  //}) // para testar 20s cg-ms
+  // }) // para testar, esperar alguns segundos ate 'cron-finished' teste e desative senao vai criar 2 seguidos
   async handleCron() {
     const users = await this.usersRepository.find({});
-    console.log('\ncron-job\n');
+    console.log('-cron-');
     if (!users) {
       return;
     }
     for (const user of users) {
       await this.createDiaryScheduled(user);
     }
+    console.log('\ncron-finished..\n');
   }
 
   getCurrentNextDate() {
