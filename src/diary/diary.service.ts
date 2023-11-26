@@ -170,10 +170,10 @@ export class DiaryService {
   //   timeZone: 'America/Campo_Grande',
   // }) // 23:50 cg-ms
 
-  @Cron('30 17 * * *', {
+  @Cron('50 19 * * *', {
     name: 'createNextDiary',
     timeZone: 'America/Campo_Grande',
-  }) // 17:30 cg-ms TODO: Retirar e voltar com os da 22:50
+  }) // 19:50 cg-ms TODO: Retirar e voltar com os da 22:50
 
   // @Cron('1 * * * * *', {
   //   name: 'createNextDiary',
