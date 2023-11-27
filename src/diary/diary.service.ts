@@ -34,7 +34,7 @@ export class DiaryService {
     }
     Object.assign(newDiary, diaryDto);
 
-    const currentDate = moment().startOf('day').tz('America/Campo_Grande');
+    const currentDate = moment().startOf('day')
 
     const currentYear = currentDate.year();
     const currentMonth = currentDate.month() + 1;
@@ -133,7 +133,7 @@ export class DiaryService {
     if (!foundProgress) {
       return;
     }
-    const currentDateToday = moment().startOf('day').tz('America/Campo_Grande');
+    const currentDateToday = moment().startOf('day')
     currentDateToday.add(1, 'day')
     const todayDiary = await this.diaryRepository
 
@@ -180,10 +180,7 @@ export class DiaryService {
     await this.createDefaultMeals(diary);
   }
 
-  @Cron('50 22 * * *', {
-    name: 'createNextDiary',
-    timeZone: 'America/Campo_Grande',
-  }) // 23:50 cg-ms
+  @Cron('50 22 * * *') // 23:50 cg-ms
 
   // @Cron('50 19 * * *', {
   //   name: 'createNextDiary',
@@ -207,7 +204,7 @@ export class DiaryService {
   }
 
   getCurrentNextDate() {
-    const currentDate = moment().startOf('day').tz('America/Campo_Grande');
+    const currentDate = moment().startOf('day')
     currentDate.add(1, 'day')
     return {
       currentYear: currentDate.year(),
