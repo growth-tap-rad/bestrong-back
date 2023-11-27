@@ -50,7 +50,7 @@ export class ProgressService {
     const newProgress = new Progress();
 
     const currentDate = moment();
-    currentDate.startOf('day').tz('America/Campo_Grande');
+    currentDate.startOf('day')
 
     
     const currentYear = currentDate.year();
