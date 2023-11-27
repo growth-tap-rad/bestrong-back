@@ -24,7 +24,7 @@ export class WaterService {
     let newWater = new Water();
     Object.assign(newWater, waterData);
 
-    const dateValid = moment(waterData.date).startOf('day');
+    const dateValid = moment(waterData.date).startOf('day').tz('America/Campo_Grande');
 
     if (!dateValid.isValid()) {
       throw new BadRequestException('Data especificada inválida');
@@ -51,7 +51,7 @@ export class WaterService {
   }
 
   async getWater(user: User, date: string) {
-    const dateValid = moment(date).startOf('day');
+    const dateValid = moment(date).startOf('day').tz('America/Campo_Grande');
 
     if (!dateValid.isValid()) {
       throw new BadRequestException('Data especificada inválida');
