@@ -18,7 +18,7 @@ export class TrainService {
     let newTrain = new Train();
     Object.assign(newTrain, trainDto);
 
-    const dateValid = moment(trainDto.date).startOf('day');
+    const dateValid = moment(trainDto.date).startOf('day').tz('America/Campo_Grande');
 
     const foundUser = await this.userRepository
 
@@ -43,7 +43,7 @@ export class TrainService {
   }
 
   async getTrains(date: string, user: User): Promise<Train[]> {
-    const dateValid = moment(date).startOf('day');
+    const dateValid = moment(date).startOf('day').tz('America/Campo_Grande');
 
     return await this.trainsRepository
       .createQueryBuilder('train')
