@@ -6,6 +6,7 @@ import { Progress } from './progress.entity';
 import { ProgressDto } from './dtos/progress.dto';
 import { CALC_AGE } from './constants/calc_age';
 import { MACROS } from './constants/macros.constants';
+import * as moment from 'moment-timezone';
 
 const BMR_MAN = (wheight: number, cmHeight: number, age: number): number => {
   return 66 + 13.7 * wheight + 5 * cmHeight - 6.8 * age;
@@ -47,11 +48,14 @@ export class ProgressService {
 
   async recordProgress(progressDto: ProgressDto, user: User) {
     const newProgress = new Progress();
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentDay = currentDate.getDate();
+
+    const currentDate = moment();
+    currentDate.startOf('day');
+
+    
+    const currentYear = currentDate.year();
+    const currentMonth = currentDate.month() + 1;
+    const currentDay = currentDate.date();
 
     newProgress.height = progressDto.height;
     newProgress.weight = progressDto.weight;
@@ -221,37 +225,5 @@ export class ProgressService {
       .leftJoinAndSelect('progress.user', 'user')
       .orderBy('progress.id', 'DESC')
       .getOne();
-  }
-  getCurrentNextDate() {
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    let currentYear = currentDate.getFullYear();
-    let currentMonth = currentDate.getMonth() + 1;
-    let currentDay = currentDate.getDate();
-
-    if (
-      currentMonth === 12 &&
-      currentDay === new Date(currentYear, currentMonth, 0).getDate()
-    ) {
-      currentYear = currentYear + 1;
-      currentMonth = 1;
-      currentDay = 1;
-    } else if (
-      currentDay === new Date(currentYear, currentMonth, 0).getDate()
-    ) {
-      currentYear = currentYear;
-      currentMonth = currentMonth + 1;
-      currentDay = 1;
-    } else {
-      currentYear = currentYear;
-      currentMonth = currentMonth;
-      currentDay = currentDay + 1;
-    }
-
-    return {
-      currentYear,
-      currentMonth,
-      currentDay,
-    };
   }
 }

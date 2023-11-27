@@ -1,16 +1,10 @@
+import * as moment from 'moment';
+
 export const CALC_AGE = (birthday: Date): number => {
-  const today = new Date();
-  const birthDate = new Date(birthday);
+  const today = moment();
+  const birthDate = moment(birthday);
 
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
-
-  if (
-    monthDiff < 0 ||
-    (monthDiff === 0 && today.getDate() < birthDate.getDate())
-  ) {
-    age--;
-  }
+  const age = today.diff(birthDate, 'years');
 
   return age;
 };

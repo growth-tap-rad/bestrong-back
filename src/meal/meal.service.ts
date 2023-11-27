@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { User } from "src/users/user.entity";
 import { Meal } from "./meal.entity";
 import { MealDto } from "./dtos/meal.dto";
+import * as moment from 'moment-timezone';
 
 @Injectable()
 export class MealService {
@@ -16,17 +17,16 @@ export class MealService {
 
     let newMeal = new Meal();
 
-    const dateValid = new Date(mealDto.date + 'T00:00:00.000');
-    dateValid.setHours(0, 0, 0, 0);
+    const dateValid = moment(mealDto.date).startOf('day');
 
     const foundUser = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.diary', 'diary')
       .where('user.id = :userId', { userId: user.id })
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('diary.year = :year', { year: dateValid.year() })
+      .andWhere('diary.month = :month', { month: dateValid.month() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.date() })
       .orderBy('diary.id', 'DESC')
       .getOne();
 
