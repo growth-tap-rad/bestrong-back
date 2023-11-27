@@ -24,7 +24,7 @@ export class DiaryService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Meal)
     private readonly mealsRepository: Repository<Meal>,
-  ) {}
+  ) { }
 
   async createDiary(diaryDto: DiaryDto, user: User): Promise<Diary> {
     const newDiary = new Diary();
@@ -50,6 +50,7 @@ export class DiaryService {
     const diary = await this.diaryRepository.save(newDiary);
 
     await this.createDefaultMeals(diary);
+    await this.createDiaryScheduled(user)
 
     return diary;
   }
@@ -132,6 +133,20 @@ export class DiaryService {
     if (!foundProgress) {
       return;
     }
+    const currentDateToday = moment().startOf('day').tz('America/Campo_Grande');
+
+    const todayDiary = await this.diaryRepository
+
+      .createQueryBuilder('diary')
+      .where('diary.userId = :userId', { userId: user.id })
+      .andWhere('diary.year = :year', { year: currentDateToday.year() })
+      .andWhere('diary.month = :month', { month: currentDateToday.month() + 1 })
+      .andWhere('diary.day = :day', { day: currentDateToday.date() })
+      .getOne();
+
+    if (todayDiary) {
+      return;
+    }
 
     const currentDate = this.getCurrentNextDate();
     newDiary.year = currentDate.currentYear;
@@ -175,7 +190,7 @@ export class DiaryService {
   //   timeZone: 'America/Campo_Grande',
   // }) // Teste horario especifico
 
-  // @Cron('1 * * * * *', {
+  // @Cron('* * * * * *', {
   //   name: 'createNextDiary',
   //   timeZone: 'America/Campo_Grande',
   // }) // para testar, esperar alguns segundos ate 'cron-finished' teste e desative senao vai criar 2 seguidos
@@ -193,7 +208,7 @@ export class DiaryService {
 
   getCurrentNextDate() {
     const currentDate = moment().startOf('day').tz('America/Campo_Grande');
-  
+    currentDate.add(1, 'day')
     return {
       currentYear: currentDate.year(),
       currentMonth: currentDate.month() + 1,
