@@ -134,7 +134,7 @@ export class DiaryService {
       return;
     }
     const currentDateToday = moment().startOf('day').tz('America/Campo_Grande');
-
+    currentDateToday.add(1, 'day')
     const todayDiary = await this.diaryRepository
 
       .createQueryBuilder('diary')
