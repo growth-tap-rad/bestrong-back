@@ -34,7 +34,7 @@ export class DiaryService {
     }
     Object.assign(newDiary, diaryDto);
 
-    const currentDate = moment().startOf('day');
+    const currentDate = moment().startOf('day').tz('America/Campo_Grande');
 
     const currentYear = currentDate.year();
     const currentMonth = currentDate.month() + 1;
@@ -192,7 +192,7 @@ export class DiaryService {
   }
 
   getCurrentNextDate() {
-    const currentDate = moment().startOf('day');
+    const currentDate = moment().startOf('day').tz('America/Campo_Grande');
   
     return {
       currentYear: currentDate.year(),
