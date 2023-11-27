@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { WaterDto } from './dtos/water.dto';
 import { User } from 'src/users/user.entity';
 import { Diary } from 'src/diary/diary.entity';
+import * as moment from 'moment-timezone';
 
 @Injectable()
 export class WaterService {
@@ -23,10 +24,9 @@ export class WaterService {
     let newWater = new Water();
     Object.assign(newWater, waterData);
 
-    const dateValid = new Date(waterData.date + 'T00:00:00.000');
-    dateValid.setHours(0, 0, 0, 0);
+    const dateValid = moment(waterData.date).startOf('day');
 
-    if (isNaN(dateValid.getTime())) {
+    if (!dateValid.isValid()) {
       throw new BadRequestException('Data especificada inválida');
     }
 
@@ -34,9 +34,9 @@ export class WaterService {
       .createQueryBuilder('diary')
       .leftJoinAndSelect('diary.water', 'water')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('diary.year = :year', { year: dateValid.year() })
+      .andWhere('diary.month = :month', { month: dateValid.month() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.date() })
       .orderBy('diary.id', 'DESC')
       .getOne();
 
@@ -51,10 +51,9 @@ export class WaterService {
   }
 
   async getWater(user: User, date: string) {
-    const dateValid = new Date(date + 'T00:00:00.000');
-    dateValid.setUTCHours(0, 0, 0, 0);
+    const dateValid = moment(date).startOf('day');
 
-    if (isNaN(dateValid.getTime())) {
+    if (!dateValid.isValid()) {
       throw new BadRequestException('Data especificada inválida');
     }
 
@@ -62,9 +61,9 @@ export class WaterService {
       .createQueryBuilder('water')
       .leftJoinAndSelect('water.diary', 'diary')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getUTCFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getUTCMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getUTCDate() })
+      .andWhere('diary.year = :year', { year: dateValid.year() })
+      .andWhere('diary.month = :month', { month: dateValid.month() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.date() })
       .orderBy('diary.id', 'DESC')
       .getMany();
 

@@ -27,7 +27,7 @@ export class UsersService {
 
   async getUser(userId: number, date: string): Promise<User> {
     // const dateValid = new Date(date + 'T00:00:00.000');
-    // dateValid.setUTCHours(0, 0, 0, 0);
+    // dateValid.setHours(0, 0, 0, 0);
 
     // if (isNaN(dateValid.getTime())) {
     //   throw new BadRequestException('Data especificada inválida para Diário');

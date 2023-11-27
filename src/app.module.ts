@@ -19,6 +19,7 @@ import { TrainsModule } from './trains/trains.module';
 import { TrainsExercisesModule } from './trains_exercises/trains_exercises.module';
 import { MuscleModule } from './muscle/muscle.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { MomentModule } from '@ccmos/nestjs-moment';
 
 @Module({
   imports: [
@@ -95,7 +96,8 @@ import { ScheduleModule } from '@nestjs/schedule';
       autoLoadEntities: Boolean(process.env.autoLoadEntities),
       synchronize: Boolean(process.env.synchronize),
     }),
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    MomentModule.forRoot({ tz: 'America/Campo_Grande' }),
   ],
   controllers: [AppController],
   providers: [AppService],
