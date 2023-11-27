@@ -17,7 +17,7 @@ export class MealService {
 
     let newMeal = new Meal();
 
-    const dateValid = moment(mealDto.date).startOf('day').tz('America/Campo_Grande');
+    const dateValid = moment(mealDto.date).startOf('day')
 
     const foundUser = await this.userRepository
       .createQueryBuilder('user')
