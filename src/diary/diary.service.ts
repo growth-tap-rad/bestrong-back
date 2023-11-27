@@ -11,6 +11,7 @@ import { User } from 'src/users/user.entity';
 import { Progress } from 'src/progress/progress.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Meal } from 'src/meal/meal.entity';
+import * as moment from 'moment-timezone';
 
 @Injectable()
 export class DiaryService {
@@ -33,11 +34,11 @@ export class DiaryService {
     }
     Object.assign(newDiary, diaryDto);
 
-    const currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth() + 1;
-    const currentDay = currentDate.getDate();
+    const currentDate = moment().startOf('day');
+
+    const currentYear = currentDate.year();
+    const currentMonth = currentDate.month() + 1;
+    const currentDay = currentDate.date();
 
     newDiary.year = currentYear;
     newDiary.month = currentMonth;
@@ -63,10 +64,9 @@ export class DiaryService {
   }
 
   async getDiary(user: User, date: string): Promise<Diary> {
-    const dateValid = new Date(date + 'T00:00:00.000');
-    dateValid.setHours(0, 0, 0, 0);
+    const dateValid = moment(date, 'YYYY-MM-DD', true);
 
-    if (isNaN(dateValid.getTime())) {
+    if (!dateValid.isValid()) {
       throw new BadRequestException('Data especificada inválida para Diário');
     }
 
@@ -79,14 +79,14 @@ export class DiaryService {
       .leftJoinAndSelect('meal.meal_food', 'foods')
       .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('progress.year = :year', { year: dateValid.getFullYear() })
+      .andWhere('progress.year = :year', { year: dateValid.year() })
       .andWhere('progress.month = :month', {
-        month: dateValid.getMonth() + 1,
+        month: dateValid.month() + 1,
       })
-      .andWhere('progress.day = :day', { day: dateValid.getDate() })
-      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('progress.day = :day', { day: dateValid.date() })
+      .andWhere('diary.year = :year', { year: dateValid.year() })
+      .andWhere('diary.month = :month', { month: dateValid.month() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.date() })
       .orderBy('progress.id', 'ASC')
       .getOne();
 
@@ -99,9 +99,9 @@ export class DiaryService {
       .leftJoinAndSelect('meal.meal_food', 'foods')
       .leftJoinAndSelect('diary.train', 'train')
       .where('diary.userId = :userId', { userId: user.id })
-      .andWhere('diary.year = :year', { year: dateValid.getFullYear() })
-      .andWhere('diary.month = :month', { month: dateValid.getMonth() + 1 })
-      .andWhere('diary.day = :day', { day: dateValid.getDate() })
+      .andWhere('diary.year = :year', { year: dateValid.year() })
+      .andWhere('diary.month = :month', { month: dateValid.month() + 1 })
+      .andWhere('diary.day = :day', { day: dateValid.date() })
       .orderBy('progress.id', 'ASC')
       .getOne();
 
@@ -192,35 +192,12 @@ export class DiaryService {
   }
 
   getCurrentNextDate() {
-    const currentDate = new Date();
-    currentDate.setUTCHours(0, 0, 0, 0);
-    let currentYear = currentDate.getUTCFullYear();
-    let currentMonth = currentDate.getUTCMonth() + 1;
-    let currentDay = currentDate.getUTCDate();
-
-    if (
-      currentMonth === 12 &&
-      currentDay === new Date(currentYear, currentMonth, 0).getUTCDate()
-    ) {
-      currentYear = currentYear + 1;
-      currentMonth = 1;
-      currentDay = 1;
-    } else if (
-      currentDay === new Date(currentYear, currentMonth, 0).getUTCDate()
-    ) {
-      currentYear = currentYear;
-      currentMonth = currentMonth + 1;
-      currentDay = 1;
-    } else {
-      currentYear = currentYear;
-      currentMonth = currentMonth;
-      currentDay = currentDay + 1;
-    }
-
+    const currentDate = moment().startOf('day');
+  
     return {
-      currentYear,
-      currentMonth,
-      currentDay,
+      currentYear: currentDate.year(),
+      currentMonth: currentDate.month() + 1,
+      currentDay: currentDate.date(),
     };
   }
 

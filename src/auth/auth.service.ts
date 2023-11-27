@@ -11,6 +11,8 @@ import { UserDto } from 'src/users/dtos/user.dto';
 import { hashPassword } from 'src/utils/hashPassword';
 import { GenderEnum, User } from '../users/user.entity';
 import { AuthDto } from './dtos/auth.dto';
+import * as moment from 'moment-timezone';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -56,11 +58,11 @@ export class AuthService {
     if (!user.birthday) {
       errors.push('O campo "birthday" é obrigatório.');
     } else {
-      const parsedBirthday = new Date(user.birthday);
-      if (isNaN(Number(parsedBirthday))) {
+      const parsedBirthday = moment(user.birthday, 'YYYY-MM-DD', true);
+      if (!parsedBirthday.isValid()) {
         errors.push('O campo "birthday" não contem uma data válida');
       } else {
-        newUser.birthday = parsedBirthday;
+        newUser.birthday = parsedBirthday.toDate();
       }
     }
     if (!user.password) {
